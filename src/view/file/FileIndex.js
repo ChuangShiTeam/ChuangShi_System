@@ -38,7 +38,7 @@ class FileIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -81,7 +81,7 @@ class FileIndex extends Component {
         });
 
         http.request({
-            url: '/file/system/list',
+            url: '/file/' + constant.action + '/list',
             data: {
                 app_id: this.props.file.app_id,
                 page_index: this.props.file.page_index,
@@ -151,7 +151,7 @@ class FileIndex extends Component {
         });
 
         http.request({
-            url: '/file/system/delete',
+            url: '/file/' + constant.action + '/delete',
             data: {
                 file_id: file_id,
                 system_version: system_version

@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Table, Popconfirm, message} from 'antd';
 
 import UserDetail from './UserDetail';
+import AdminDetail from './AdminDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -38,7 +39,7 @@ class UserIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -81,7 +82,7 @@ class UserIndex extends Component {
         });
 
         http.request({
-            url: '/user/system/list',
+            url: '/user/' + constant.action + '/list',
             data: {
                 app_id: this.props.user.app_id,
                 page_index: this.props.user.page_index,
@@ -136,7 +137,7 @@ class UserIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_user_detail_add', {});
+        notification.emit('notification_admin_detail_add', {});
     }
 
     handleEdit(user_id) {
@@ -151,7 +152,7 @@ class UserIndex extends Component {
         });
 
         http.request({
-            url: '/user/system/delete',
+            url: '/user/' + constant.action + '/delete',
             data: {
                 user_id: user_id,
                 system_version: system_version
@@ -211,14 +212,14 @@ class UserIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">用户信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                onClick={this.handleAdd.bind(this)}>{constant.add}管理员</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -259,6 +260,7 @@ class UserIndex extends Component {
                        dataSource={this.props.user.list} pagination={pagination}
                        bordered/>
                 <UserDetail/>
+                <AdminDetail/>
             </QueueAnim>
         );
     }

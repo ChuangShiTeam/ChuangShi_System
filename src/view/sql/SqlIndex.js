@@ -38,7 +38,7 @@ class SqlIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -81,7 +81,7 @@ class SqlIndex extends Component {
         });
 
         http.request({
-            url: '/sql/system/list',
+            url: '/sql/' + constant.action + '/list',
             data: {
                 app_id: this.props.sql.app_id,
                 page_index: this.props.sql.page_index,
@@ -151,7 +151,7 @@ class SqlIndex extends Component {
         });
 
         http.request({
-            url: '/sql/system/delete',
+            url: '/sql/' + constant.action + '/delete',
             data: {
                 sql_id: sql_id,
                 system_version: system_version

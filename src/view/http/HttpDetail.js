@@ -50,7 +50,7 @@ class HttpDetail extends Component {
         });
 
         http.request({
-            url: '/http/system/find',
+            url: '/http/' + constant.action + '/find',
             data: {
                 http_id: this.state.http_id
             },
@@ -158,46 +158,6 @@ class HttpDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="请求参数">
-                                    {
-                                        getFieldDecorator('http_request', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '请求参数'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="请求返回">
-                                    {
-                                        getFieldDecorator('http_response', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '请求返回'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="Token">
                                     {
                                         getFieldDecorator('http_token', {
@@ -288,6 +248,46 @@ class HttpDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '响应时间'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={16}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 3},
+                                    wrapperCol: {span: 21}
+                                }} className="form-item" label="请求参数">
+                                    {
+                                        getFieldDecorator('http_request', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '请求参数'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={16}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 3},
+                                    wrapperCol: {span: 21}
+                                }} className="form-item" label="请求返回">
+                                    {
+                                        getFieldDecorator('http_response', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '请求返回'}/>
                                         )
                                     }
                                 </FormItem>

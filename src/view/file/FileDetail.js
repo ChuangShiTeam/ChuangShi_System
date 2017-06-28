@@ -50,7 +50,7 @@ class FileDetail extends Component {
         });
 
         http.request({
-            url: '/file/system/find',
+            url: '/file/' + constant.action + '/find',
             data: {
                 file_id: this.state.file_id
             },
@@ -93,7 +93,7 @@ class FileDetail extends Component {
             });
 
             http.request({
-                url: '/file/system/' + this.state.action,
+                url: '/file/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

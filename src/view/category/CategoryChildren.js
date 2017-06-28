@@ -53,7 +53,7 @@ class CategoryChirldren extends Component {
         });
 
         http.request({
-            url: '/category/system/children/find',
+            url: '/category/' + constant.action + '/children/find',
             data: {
                 category_id: this.state.category_id
             },
@@ -113,7 +113,7 @@ class CategoryChirldren extends Component {
         });
 
         http.request({
-            url: '/category/system/delete',
+            url: '/category/' + constant.action + '/delete',
             data: {
                 category_id: category_id,
                 system_version: system_version

@@ -19,16 +19,25 @@ import FeijiuFastCustomerIndex from './view/feijiu_fast_customer/FeijiuFastCusto
 import FeijiuRecommendCustomerIndex from './view/feijiu_recommend_customer/FeijiuRecommendCustomerIndex';
 import FeijiuRecommendProductIndex from './view/feijiu_recommend_product/FeijiuRecommendProductIndex';
 
+import storage from './util/storage';
+
+import constant from './util/constant';
+
 function RouterConfig({history}) {
 
     const validate = function (next, replace, callback) {
+        if ((storage.getToken() === '' || storage.getToken() === null) && next.location.pathname !== '/login') {
+
+            replace('/login');
+        }
+
         callback();
     };
 
     return (
         <Router history={history}>
             <Route path="/">
-                <IndexRedirect to="feijiu/recommend/customer/index"/>
+                <IndexRedirect to={constant.index}/>
                 <Route path="login" component={Login}/>
                 <Route component={Main} onEnter={validate}>
                     <Route path="code/index" component={CodeIndex}/>

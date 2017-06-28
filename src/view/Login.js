@@ -4,6 +4,8 @@ import {routerRedux} from 'dva/router';
 import {Card, Spin, Form, Input, Button} from 'antd';
 
 import constant from '../util/constant';
+import storage from '../util/storage';
+import http from '../util/http';
 import './Style.css';
 
 class Login extends Component {
@@ -33,12 +35,23 @@ class Login extends Component {
                 is_load: true
             });
 
-            setTimeout(function () {
-                this.props.dispatch(routerRedux.push({
-                    pathname: '/',
-                    query: {}
-                }));
-            }.bind(this), 1000);
+            http.request({
+                url: '/' + constant.action + '/login',
+                data: values,
+                success: function (data) {
+                    storage.setToken(data.token);
+
+                    this.props.dispatch(routerRedux.push({
+                        pathname: '/',
+                        query: {}
+                    }));
+                }.bind(this),
+                complete: function () {
+                    this.setState({
+                        is_load: false
+                    });
+                }.bind(this)
+            });
         });
     }
 
@@ -47,43 +60,45 @@ class Login extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Card className="login_form">
-                <Spin spinning={this.state.is_load}>
-                    <FormItem hasFeedback className="">
-                        {
-                            getFieldDecorator('user_account', {
-                                rules: [{
-                                    required: true,
-                                    message: constant.required
-                                }],
-                                initialValue: 'admin'
-                            })(
-                                <Input type="text" placeholder={'用户名'}/>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem hasFeedback className="">
-                        {
-                            getFieldDecorator('user_password', {
-                                rules: [{
-                                    required: true,
-                                    message: constant.required
-                                }],
-                                initialValue: 'admin'
-                            })(
-                                <Input type="password" placeholder={'密码'}/>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem style={{
-                        marginBottom: '0px'
-                    }}>
-                        <Button type="primary" htmlType="submit" className="" size="default"
-                                loading={this.state.is_load}
-                                onClick={this.handleSubmit.bind(this)}>登录总控后台</Button>
-                    </FormItem>
-                </Spin>
-            </Card>
+            <div className="login">
+                <Card className="login_form">
+                    <Spin spinning={this.state.is_load}>
+                        <FormItem hasFeedback className="">
+                            {
+                                getFieldDecorator('user_account', {
+                                    rules: [{
+                                        required: true,
+                                        message: constant.required
+                                    }],
+                                    initialValue: 'admin'
+                                })(
+                                    <Input type="text" placeholder={'用户名'}/>
+                                )
+                            }
+                        </FormItem>
+                        <FormItem hasFeedback className="">
+                            {
+                                getFieldDecorator('user_password', {
+                                    rules: [{
+                                        required: true,
+                                        message: constant.required
+                                    }],
+                                    initialValue: 'admin'
+                                })(
+                                    <Input type="password" placeholder={'密码'}/>
+                                )
+                            }
+                        </FormItem>
+                        <FormItem style={{
+                            marginBottom: '0px'
+                        }}>
+                            <Button type="primary" htmlType="submit" className="" size="default" style={{width: '100%'}}
+                                    loading={this.state.is_load}
+                                    onClick={this.handleSubmit.bind(this)}>登录总控后台</Button>
+                        </FormItem>
+                    </Spin>
+                </Card>
+            </div>
         );
     }
 }

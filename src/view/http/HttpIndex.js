@@ -38,7 +38,7 @@ class HttpIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -81,7 +81,7 @@ class HttpIndex extends Component {
         });
 
         http.request({
-            url: '/http/system/list',
+            url: '/http/' + constant.action + '/list',
             data: {
                 app_id: this.props.http.app_id,
                 page_index: this.props.http.page_index,
@@ -151,7 +151,7 @@ class HttpIndex extends Component {
         });
 
         http.request({
-            url: '/http/system/delete',
+            url: '/http/' + constant.action + '/delete',
             data: {
                 http_id: http_id,
                 system_version: system_version

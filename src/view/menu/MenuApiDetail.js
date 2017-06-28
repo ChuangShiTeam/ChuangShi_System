@@ -56,7 +56,7 @@ class MenuApiDetail extends Component {
         });
 
         http.request({
-            url: '/category/system/find',
+            url: '/category/' + constant.action + '/find',
             data: {
                 category_id: this.state.category_id
             },
@@ -101,7 +101,7 @@ class MenuApiDetail extends Component {
             });
 
             http.request({
-                url: '/category/system/' + this.state.action,
+                url: '/category/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

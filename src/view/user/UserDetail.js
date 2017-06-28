@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -50,7 +50,7 @@ class UserDetail extends Component {
         });
 
         http.request({
-            url: '/user/system/find',
+            url: '/user/' + constant.action + '/find',
             data: {
                 user_id: this.state.user_id
             },
@@ -85,35 +85,7 @@ class UserDetail extends Component {
     }
 
     handleSubmit() {
-        this.props.form.validateFieldsAndScroll((errors, values) => {
-            if (!!errors) {
-                return;
-            }
-
-            values.user_id = this.state.user_id;
-            values.system_version = this.state.system_version;
-
-            this.setState({
-                is_load: true
-            });
-
-            http.request({
-                url: '/user/system/' + this.state.action,
-                data: values,
-                success: function (data) {
-                    message.success(constant.success);
-
-                    notification.emit('notification_user_index_load', {});
-
-                    this.handleCancel();
-                }.bind(this),
-                complete: function () {
-                    this.setState({
-                        is_load: false
-                    });
-                }.bind(this)
-            });
-        });
+        this.handleCancel();
     }
 
     handleCancel() {
@@ -133,7 +105,7 @@ class UserDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'用户详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -150,7 +122,7 @@ class UserDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="组织架构编号">
+                                }} className="form-item" label="组织架构">
                                     {
                                         getFieldDecorator('organization_id', {
                                             rules: [{
@@ -159,7 +131,7 @@ class UserDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '组织架构编号'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '组织架构'}/>
                                         )
                                     }
                                 </FormItem>
@@ -190,7 +162,7 @@ class UserDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户等级编号">
+                                }} className="form-item" label="用户等级">
                                     {
                                         getFieldDecorator('user_level_id', {
                                             rules: [{
@@ -199,7 +171,7 @@ class UserDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户等级编号'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '用户等级'}/>
                                         )
                                     }
                                 </FormItem>

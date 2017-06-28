@@ -46,7 +46,7 @@ class MenuApi extends Component {
         });
 
         http.request({
-            url: '/category/system/menu/api/list',
+            url: '/category/' + constant.action + '/menu/api/list',
             data: {
                 menu_id: this.state.category_id
             },
@@ -96,7 +96,7 @@ class MenuApi extends Component {
         });
 
         http.request({
-            url: '/category/system/delete',
+            url: '/category/' + constant.action + '/delete',
             data: {
                 category_id: category_id,
                 system_version: system_version

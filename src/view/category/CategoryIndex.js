@@ -39,7 +39,7 @@ class CategoryIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -82,7 +82,7 @@ class CategoryIndex extends Component {
         });
 
         http.request({
-            url: '/category/system/list',
+            url: '/category/' + constant.action + '/list',
             data: {
                 app_id: this.props.category.app_id,
                 page_index: this.props.category.page_index,
@@ -165,7 +165,7 @@ class CategoryIndex extends Component {
         });
 
         http.request({
-            url: '/category/system/delete',
+            url: '/category/' + constant.action + '/delete',
             data: {
                 category_id: category_id,
                 system_version: system_version

@@ -50,7 +50,7 @@ class AppDetail extends Component {
         });
 
         http.request({
-            url: '/app/system/find',
+            url: '/app/' + constant.action + '/find',
             data: {
                 app_id: this.state.app_id
             },
@@ -91,7 +91,7 @@ class AppDetail extends Component {
             });
 
             http.request({
-                url: '/app/system/' + this.state.action,
+                url: '/app/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

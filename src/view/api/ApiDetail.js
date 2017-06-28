@@ -50,7 +50,7 @@ class ApiDetail extends Component {
         });
 
         http.request({
-            url: '/api/system/find',
+            url: '/api/' + constant.action + '/find',
             data: {
                 api_id: this.state.api_id
             },
@@ -89,7 +89,7 @@ class ApiDetail extends Component {
             });
 
             http.request({
-                url: '/api/system/' + this.state.action,
+                url: '/api/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

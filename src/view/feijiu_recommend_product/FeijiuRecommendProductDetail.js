@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -161,17 +162,7 @@ class FeijiuRecommendProductDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="商品图片">
-                                    {
-                                        getFieldDecorator('product_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品图片'}/>
-                                        )
-                                    }
+                                    <InputImage name="product_image" limit={1} ref="product_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -179,7 +170,7 @@ class FeijiuRecommendProductDetail extends Component {
                             <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 3},
-                                    wrapperCol: {span: 18}
+                                    wrapperCol: {span: 21}
                                 }} className="form-item" label="商品介绍">
                                     {
                                         getFieldDecorator('product_content', {

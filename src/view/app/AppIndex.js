@@ -55,7 +55,7 @@ class AppIndex extends Component {
         });
 
         http.request({
-            url: '/app/system/list',
+            url: '/app/' + constant.action + '/list',
             data: {
                 app_id: this.props.app.app_id,
                 page_index: this.props.app.page_index,
@@ -125,7 +125,7 @@ class AppIndex extends Component {
         });
 
         http.request({
-            url: '/app/system/delete',
+            url: '/app/' + constant.action + '/delete',
             data: {
                 app_id: app_id,
                 system_version: system_version

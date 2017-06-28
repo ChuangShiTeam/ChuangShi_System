@@ -3,6 +3,7 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Form, Row, Col, Button, Input, Table, message} from 'antd';
 
+import constant from '../../util/constant';
 import http from '../../util/http';
 
 class CodeIndex extends Component {
@@ -48,7 +49,7 @@ class CodeIndex extends Component {
         });
 
         http.request({
-            url: '/code/system/list',
+            url: '/code/' + constant.action + '/list',
             data: {
                 table_name: this.props.code.table_name
             },
@@ -110,7 +111,7 @@ class CodeIndex extends Component {
         });
 
         http.request({
-            url: '/code/system/save',
+            url: '/code/' + constant.action + '/save',
             data: {
                 table_name: table_name
             },

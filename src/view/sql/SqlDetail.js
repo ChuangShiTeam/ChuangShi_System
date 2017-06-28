@@ -50,7 +50,7 @@ class SqlDetail extends Component {
         });
 
         http.request({
-            url: '/sql/system/find',
+            url: '/sql/' + constant.action + '/find',
             data: {
                 sql_id: this.state.sql_id
             },

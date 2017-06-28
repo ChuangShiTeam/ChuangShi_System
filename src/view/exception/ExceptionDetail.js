@@ -50,7 +50,7 @@ class ExceptionDetail extends Component {
         });
 
         http.request({
-            url: '/exception/system/find',
+            url: '/exception/' + constant.action + '/find',
             data: {
                 exception_id: this.state.exception_id
             },

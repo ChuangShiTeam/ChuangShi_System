@@ -1,47 +1,37 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Select, Input, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class CategoryDetail extends Component {
+class AdminDetail extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             is_load: false,
             is_show: false,
-            is_children: false,
             action: '',
-            category_id: '',
-            parent_id: '',
+            user_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_category_detail_add', this, function (data) {
+        notification.on('notification_admin_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                is_children: data.is_children,
-                action: 'save',
-                parent_id: data.parent_id,
-            });
-
-            this.props.form.setFieldsValue({
-                app_id: data.app_id,
-                category_type: data.category_type
+                action: 'save'
             });
         });
 
-        notification.on('notification_category_detail_edit', this, function (data) {
+        notification.on('notification_admin_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
-                is_children: data.is_children,
                 action: 'update',
-                category_id: data.category_id
+                user_id: data.user_id
             }, function () {
                 this.handleLoad();
             });
@@ -49,9 +39,9 @@ class CategoryDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_category_detail_add', this);
+        notification.remove('notification_admin_detail_add', this);
 
-        notification.remove('notification_category_detail_edit', this);
+        notification.remove('notification_admin_detail_edit', this);
     }
 
     handleLoad() {
@@ -60,24 +50,28 @@ class CategoryDetail extends Component {
         });
 
         http.request({
-            url: '/category/' + constant.action + '/find',
+            url: '/user/' + constant.action + '/find',
             data: {
-                category_id: this.state.category_id
+                user_id: this.state.user_id
             },
             success: function (data) {
                 this.props.form.setFieldsValue({
-                    app_id: data.app_id,
-                    category_name: data.category_name,
-                    category_image: data.category_image,
-                    category_key: data.category_key,
-                    category_value: data.category_value,
-                    category_sort: data.category_sort,
-                    category_type: data.category_type,
-                    object_id: data.object_id
+                    organization_id: data.organization_id,
+                    role_id: data.role_id,
+                    user_level_id: data.user_level_id,
+                    user_type: data.user_type,
+                    object_id: data.object_id,
+                    user_account: data.user_account,
+                    user_phone: data.user_phone,
+                    user_email: data.user_email,
+                    user_password: data.user_password,
+                    user_name: data.user_name,
+                    user_avatar: data.user_avatar,
+                    wechat_open_id: data.wechat_open_id,
+                    wechat_union_id: data.wechat_union_id,
                 });
 
                 this.setState({
-                    parent_id: data.parent_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -96,8 +90,7 @@ class CategoryDetail extends Component {
                 return;
             }
 
-            values.category_id = this.state.category_id;
-            values.parent_id = this.state.parent_id;
+            values.user_id = this.state.user_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -105,16 +98,12 @@ class CategoryDetail extends Component {
             });
 
             http.request({
-                url: '/category/' + constant.action + '/' + this.state.action,
+                url: '/user/' + constant.action + '/admin/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    if (this.state.is_children) {
-                        notification.emit('notification_category_children_load', {});
-                    } else {
-                        notification.emit('notification_category_index_load', {});
-                    }
+                    notification.emit('notification_user_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -131,10 +120,8 @@ class CategoryDetail extends Component {
         this.setState({
             is_load: false,
             is_show: false,
-            is_children: false,
             action: '',
-            category_id: '',
-            parent_id: '',
+            user_id: '',
             system_version: ''
         });
 
@@ -147,8 +134,7 @@ class CategoryDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'分类详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
-                   className="modal" zIndex={2}
+            <Modal title={'用户详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -176,7 +162,7 @@ class CategoryDetail extends Component {
                                         })(
                                             <Select allowClear placeholder="请选择应用">
                                                 {
-                                                    this.props.category.app_list.map(function (item) {
+                                                    this.props.user.app_list.map(function (item) {
                                                         return (
                                                             <Option key={item.app_id}
                                                                     value={item.app_id}>{item.app_name}</Option>
@@ -194,110 +180,18 @@ class CategoryDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="分类名称">
+                                }} className="form-item" label="用户类型">
                                     {
-                                        getFieldDecorator('category_name', {
+                                        getFieldDecorator('user_type', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类名称'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="分类图片">
-                                    {
-                                        getFieldDecorator('category_image', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类图片'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="分类键值">
-                                    {
-                                        getFieldDecorator('category_key', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类键值'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="分类数值">
-                                    {
-                                        getFieldDecorator('category_value', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类数值'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="分类排序">
-                                    {
-                                        getFieldDecorator('category_sort', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: 0
-                                        })(
-                                            <InputNumber min={0} max={999}
-                                                         placeholder={constant.placeholder + '分类排序'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="分类类型">
-                                    {
-                                        getFieldDecorator('category_type', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Select allowClear placeholder="请选分类类型">
-                                                <Option key="MENU" value="MENU">菜单</Option>
-                                                <Option key="PRODUCT" value="PRODUCT">商品</Option>
-                                                <Option key="ARTICLE" value="ARTICLE">文章</Option>
-                                                <Option key="EMPLOYEE_ORGANIZATION" value="EMPLOYEE_ORGANIZATION">员工组织架构</Option>
-                                                <Option key="MEMBER_ORGANIZATION" value="MEMBER_ORGANIZATION">会员组织架构</Option>
+                                            <Select allowClear placeholder="请选用户类型">
+                                                <Option key="ADMIN" value="ADMIN">管理员</Option>
+                                                <Option key="SYSTEM" value="SYSTEM">系统管理员</Option>
                                             </Select>
                                         )
                                     }
@@ -309,12 +203,56 @@ class CategoryDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="外键编号">
+                                }} className="form-item" label="用户帐号">
                                     {
-                                        getFieldDecorator('object_id', {
+                                        getFieldDecorator('user_account', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '外键编号'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '用户帐号'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="用户密码">
+                                    {
+                                        getFieldDecorator('user_password', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '用户密码'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="用户名称">
+                                    {
+                                        getFieldDecorator('user_name', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '用户名称'}/>
                                         )
                                     }
                                 </FormItem>
@@ -327,8 +265,8 @@ class CategoryDetail extends Component {
     }
 }
 
-CategoryDetail.propTypes = {};
+AdminDetail.propTypes = {};
 
-CategoryDetail = Form.create({})(CategoryDetail);
+AdminDetail = Form.create({})(AdminDetail);
 
-export default connect(({category}) => ({category}))(CategoryDetail);
+export default connect(({user}) => ({user}))(AdminDetail);

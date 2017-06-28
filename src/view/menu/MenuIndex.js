@@ -40,7 +40,7 @@ class MenuIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -86,7 +86,7 @@ class MenuIndex extends Component {
         });
 
         http.request({
-            url: '/category/system/menu/list',
+            url: '/category/' + constant.action + '/menu/list',
             data: {
                 app_id: this.props.menu.app_id,
                 category_name: this.props.menu.category_name,
@@ -166,7 +166,7 @@ class MenuIndex extends Component {
         });
 
         http.request({
-            url: '/category/system/menu/api/delete',
+            url: '/category/' + constant.action + '/menu/api/delete',
             data: {
                 menu_id: menu_id,
                 api_id: api_id,

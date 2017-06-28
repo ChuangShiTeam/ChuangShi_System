@@ -38,7 +38,7 @@ class ApiIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/system/all/list',
+            url: '/app/' + constant.action + '/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -81,7 +81,7 @@ class ApiIndex extends Component {
         });
 
         http.request({
-            url: '/api/system/list',
+            url: '/api/' + constant.action + '/list',
             data: {
                 app_id: this.props.api.app_id,
                 page_index: this.props.api.page_index,
@@ -151,7 +151,7 @@ class ApiIndex extends Component {
         });
 
         http.request({
-            url: '/api/system/delete',
+            url: '/api/' + constant.action + '/delete',
             data: {
                 api_id: api_id,
                 system_version: system_version
