@@ -1,0 +1,123 @@
+.ant-layout-content {
+    min-width: 980px !important;
+}
+
+.ant-table-pagination {
+     margin: 10px 0px 0px 0px !important;
+}
+
+.ant-pagination-options-size-changer {
+    margin-right: 0px !important;
+}
+
+.ant-input-number {
+    width: 100% !important;
+}
+
+.ant-modal-body {
+    height: 520px !important;
+    overflow: visible;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*.ant-layout-header {*/
+    /*background: #b30004 !important;*/
+/*}*/
+
+.header {
+    padding: 0 15px !important;
+}
+
+.title {
+    color: #ffffff;
+}
+
+.logout {
+    position: absolute;
+    font-size: 22px;
+    top: 22px;
+    right: 20px;
+    color: #ffffff;
+}
+
+.layout {
+    background: #ffffff;
+}
+
+.sider {
+    background: #f7f7f7;
+}
+
+.menu {
+    height: 100%;
+    background: #f7f7f7 !important;
+    padding-top: 8px;
+}
+
+.ant-menu-submenu > .ant-menu {
+    background-color: #f7f7f7 !important;
+}
+
+.content-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.content-button {
+    text-align: right;
+}
+
+.content-search {
+    padding: 10px 10px 0px 0px;
+    background: #f7f7f7;
+    border: 1px solid #e9e9e9;
+    border-radius: 4px;
+}
+
+.content-search-item {
+    margin-bottom: 10px !important;
+}
+
+.margin-top {
+    margin-top: 10px;
+}
+
+.margin-right {
+    margin-right: 10px;
+}
+
+.divider {
+    margin: 0 10px;
+    display: inline-block;
+    height: 8px;
+    width: 1px;
+    background: #cccccc;
+}
+
+.login_form {
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    margin: -200px 0 0 -160px;
+    width: 320px;
+    background: #f7f7f7;
+    border: 1px solid #e9e9e9;
+    border-radius: 4px;
+}
+
+.login_form .ant-card-body {
+    padding: 25px 20px 15px 20px !important;
+}
+
+.login_form .ant-form-item {
+    margin-bottom: 15px;
+}
+
+.form-item {
+    margin-bottom: 16px !important;
+}
+
+.modal {
+    min-width: 1000px;
+}
