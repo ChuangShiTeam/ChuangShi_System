@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import AppDetail from './AppDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
+import validate from '../../util/validate';
 import http from '../../util/http';
 
 class AppIndex extends Component {
@@ -18,8 +19,16 @@ class AppIndex extends Component {
     }
 
     componentDidMount() {
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
+                app_id: this.props.app.app_id
+            });
+
+            this.handleLoadApp();
+        }
+
         this.props.form.setFieldsValue({
-            app_id: this.props.app.app_id
+            app_name: this.props.app.app_name
         });
 
         this.handleLoad();
@@ -33,8 +42,33 @@ class AppIndex extends Component {
         notification.remove('notification_app_index_load', this);
     }
 
+    handleLoadApp() {
+        http.request({
+            url: '/app/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'app/fetch',
+                    data: {
+                        app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleSearch() {
         new Promise(function (resolve, reject) {
+            var app_id = this.props.form.getFieldValue('app_id');
+            if (validate.isUndefined(app_id)) {
+                app_id = '';
+            }
+
+            var app_name = this.props.form.getFieldValue('app_name');
+
             this.props.dispatch({
                 type: 'app/fetch',
                 data: {
@@ -58,6 +92,7 @@ class AppIndex extends Component {
             url: '/app/' + constant.action + '/list',
             data: {
                 app_id: this.props.app.app_id,
+                app_name: this.props.app.app_name,
                 page_index: this.props.app.page_index,
                 page_size: this.props.app.page_size
             },
@@ -145,6 +180,7 @@ class AppIndex extends Component {
 
     render() {
         const FormItem = Form.Item;
+        const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
@@ -200,16 +236,44 @@ class AppIndex extends Component {
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.app.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('app_id', {
+                                    getFieldDecorator('app_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入应用"/>
+                                        <Input type="text" placeholder="请输入名称"/>
                                     )
                                 }
                             </FormItem>

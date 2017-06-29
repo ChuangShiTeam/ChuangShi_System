@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -125,10 +125,11 @@ class FileDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
+        const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'文件详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -140,6 +141,35 @@ class FileDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="content-search-item" label="应用名称">
+                                    {
+                                        getFieldDecorator('app_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Select allowClear placeholder="请选择应用">
+                                                {
+                                                    this.props.file.app_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.app_id}
+                                                                    value={item.app_id}>{item.app_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
@@ -214,7 +244,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={11} placeholder={constant.placeholder + '文件大小'}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '文件大小'}/>
                                         )
                                     }
                                 </FormItem>

@@ -209,7 +209,7 @@ class InputImage extends Component {
                         ''
                 }
                 <Modal visible={this.state.is_preview} footer={null} onCancel={this.handleCancel.bind(this)}>
-                    <img alt="example" style={{width: '100%'}} src={this.state.image}/>
+                    <div className="item-image" style={{backgroundImage: 'url(' + this.state.image + ')'}}></div>
                 </Modal>
                 <ImageHelp name={this.props.name} type={this.props.type} limit={this.props.limit} ref="image"/>
             </div>

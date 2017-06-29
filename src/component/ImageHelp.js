@@ -55,19 +55,19 @@ class ImageHelp extends Component {
         });
 
         http.request({
-            url: '/file/admin/image/list',
+            url: '/file/' + constant.action + '/image/list',
             data: {
                 file_name: '',
                 page_index: page_index,
                 page_size: this.state.page_size
             },
-            success: function (json) {
+            success: function (data) {
                 var list = [];
 
-                for (var i = 0; i < json.data.length; i++) {
+                for (var i = 0; i < data.list.length; i++) {
                     list.push({
-                        file_id: json.data[i].file_id,
-                        file_path: json.data[i].file_path,
+                        file_id: data.list[i].file_id,
+                        file_path: data.list[i].file_path,
                         status: false,
                         select: false
                     });
@@ -76,7 +76,7 @@ class ImageHelp extends Component {
                 this.setState({
                     list: list,
                     page_index: page_index,
-                    total: json.total
+                    total: data.total
                 });
             }.bind(this),
             complete: function () {
@@ -273,9 +273,10 @@ class ImageHelp extends Component {
             action: constant.host + '/file/admin/upload',
             accept: 'image/jpg,image/jpeg,image/png',
             headers: {
-                'Token': storage.getToken(),
-                'Platform': constant.platform,
-                'Version': constant.version
+                'app_id': constant.app_id,
+                'token': storage.getToken(),
+                'platform': constant.platform,
+                'version': constant.version
             },
             onChange: this.handleChange.bind(this)
         };
@@ -330,8 +331,7 @@ class ImageHelp extends Component {
                     </div>
                 </Spin>
                 <Modal visible={this.state.is_preview} footer={null} onCancel={this.handleCancelPreview.bind(this)}>
-
-
+                    <div className="item-image" style={{backgroundImage: 'url(' + this.state.image + ')'}}></div>
                 </Modal>
             </Modal>
         );

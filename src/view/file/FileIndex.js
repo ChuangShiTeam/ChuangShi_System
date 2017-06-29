@@ -211,7 +211,7 @@ class FileIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">文件信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -268,4 +268,6 @@ FileIndex.propTypes = {};
 
 FileIndex = Form.create({})(FileIndex);
 
-export default connect(({file}) => ({file}))(FileIndex);
+export default connect(({file}) => ({
+    file
+}))(FileIndex);

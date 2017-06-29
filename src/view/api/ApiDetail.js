@@ -55,11 +55,15 @@ class ApiDetail extends Component {
                 api_id: this.state.api_id
             },
             success: function (data) {
+                if (constant.action === 'system') {
+                    this.props.form.setFieldsValue({
+                        app_id: data.app_id
+                    });
+                }
+
                 this.props.form.setFieldsValue({
-                    app_id: data.app_id,
                     api_name: data.api_name,
-                    api_url: data.api_url,
-                    api_sort: data.api_sort,
+                    api_url: data.api_url
                 });
 
                 this.setState({
@@ -137,35 +141,40 @@ class ApiDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="content-search-item" label="应用名称">
-                                    {
-                                        getFieldDecorator('app_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Select allowClear placeholder="请选择应用">
-                                                {
-                                                    this.props.api.app_list.map(function (item) {
-                                                        return (
-                                                            <Option key={item.app_id}
-                                                                    value={item.app_id}>{item.app_name}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
+                        {
+                            constant.action === 'system' ?
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="content-search-item" label="应用名称">
+                                            {
+                                                getFieldDecorator('app_id', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select allowClear placeholder="请选择应用">
+                                                        {
+                                                            this.props.api.app_list.map(function (item) {
+                                                                return (
+                                                                    <Option key={item.app_id}
+                                                                            value={item.app_id}>{item.app_name}</Option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Select>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                :
+                                ''
+                        }
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

@@ -128,6 +128,20 @@
     margin-bottom: 16px !important;
 }
 
+.form-image-item {
+    margin-bottom: 9px !important;
+}
+
+.form-required-item label:before {
+    display: inline-block;
+    margin-right: 4px;
+    content: "*";
+    font-family: SimSun;
+    line-height: 1;
+    font-size: 12px;
+    color: #f04134;
+}
+
 .modal {
     min-width: 1000px;
 }
@@ -165,26 +179,36 @@
     opacity: 0.5;
 }
 
-.item-preview-icon {
+.item-check-icon {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -8px;
+    margin-top: -14px;
+    margin-left: -14px;
+    font-size: 28px;
+    width: 28px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.item-preview-icon {
+    position: absolute;
+    bottom: 7px;
+    left: 50%;
     margin-left: -22px;
-    font-size: 16px;
-    width: 16px;
+    font-size: 17px;
+    width: 17px;
     color: #ffffff;
     cursor: pointer;
 }
 
 .item-remove-icon {
     position: absolute;
-    top: 50%;
+    bottom: 9px;
     left: 50%;
-    margin-top: -8px;
     margin-left: 10px;
-    font-size: 16px;
-    width: 16px;
+    font-size: 14px;
+    width: 14px;
     color: #ffffff;
     cursor: pointer;
 }
@@ -203,11 +227,12 @@
 }
 
 .button-icon {
-    font-size: 28px;
+    font-size: 30px;
     color: #999;
-    margin-top: 15px;
+    margin-top: 18px;
 }
 
 .button-text {
     color: #999;
+    line-height: 20px;
 }

@@ -161,7 +161,7 @@ class FeijiuRecommendProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品图片">
+                                }} className="form-image-item form-required-item" label="商品图片">
                                     <InputImage name="product_image" limit={1} ref="product_image"/>
                                 </FormItem>
                             </Col>

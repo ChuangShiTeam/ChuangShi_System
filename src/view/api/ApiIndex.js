@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import ApiDetail from './ApiDetail';
 import constant from '../../util/constant';
@@ -19,13 +19,19 @@ class ApiIndex extends Component {
     }
 
     componentDidMount() {
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
+                app_id: this.props.api.app_id
+            });
+
+            this.handleLoadApp();
+        }
+
         this.props.form.setFieldsValue({
-            app_id: this.props.api.app_id
+            api_name: this.props.api.api_name
         });
 
         this.handleLoad();
-
-        this.handleLoadApp();
 
         notification.on('notification_api_index_load', this, function (data) {
             this.handleLoad();
@@ -61,10 +67,13 @@ class ApiIndex extends Component {
                 app_id = '';
             }
 
+            var api_name = this.props.form.getFieldValue('api_name');
+
             this.props.dispatch({
                 type: 'api/fetch',
                 data: {
                     app_id: app_id,
+                    api_name: api_name,
                     page_index: 1
                 }
             });
@@ -84,6 +93,7 @@ class ApiIndex extends Component {
             url: '/api/' + constant.action + '/list',
             data: {
                 app_id: this.props.api.app_id,
+                api_name: this.props.api.api_name,
                 page_index: this.props.api.page_index,
                 page_size: this.props.api.page_size
             },
@@ -227,30 +237,47 @@ class ApiIndex extends Component {
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.api.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用名称">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('app_id', {
+                                    getFieldDecorator('api_name', {
                                         initialValue: ''
                                     })(
-                                        <Select allowClear placeholder="请选择应用">
-                                            {
-                                                this.props.api.app_list.map(function (item) {
-                                                    return (
-                                                        <Option key={item.app_id}
-                                                                value={item.app_id}>{item.app_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                        <Input type="text" placeholder="请输入名称"/>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={8}>
                         </Col>
                         <Col span={8}>
                         </Col>

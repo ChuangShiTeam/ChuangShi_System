@@ -23,7 +23,7 @@ export default {
     placeholder: '请输入',
     detail_width: 1080,
     // name: '上海星销信息技术有限公司',
-    // app_id: '',
+    // app_id: 'de6e1787ae4a47cda2c9a0223c766a73',
     // menu: [
     //     {
     //         'category_name': '系统管理',

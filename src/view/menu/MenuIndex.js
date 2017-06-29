@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import MenuDetail from './MenuDetail';
 import constant from '../../util/constant';
@@ -20,14 +20,19 @@ class MenuIndex extends Component {
     }
 
     componentDidMount() {
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
+                app_id: this.props.api.app_id
+            });
+
+            this.handleLoadApp();
+        }
+
         this.props.form.setFieldsValue({
-            app_id: this.props.menu.app_id,
             category_name: this.props.menu.category_name
         });
 
         this.handleLoad();
-
-        this.handleLoadApp();
 
         notification.on('notification_menu_index_load', this, function (data) {
             this.handleLoad();
@@ -86,7 +91,7 @@ class MenuIndex extends Component {
         });
 
         http.request({
-            url: '/category/' + constant.action + '/menu/list',
+            url: '/menu/' + constant.action + '/list',
             data: {
                 app_id: this.props.menu.app_id,
                 category_name: this.props.menu.category_name,
@@ -166,7 +171,7 @@ class MenuIndex extends Component {
         });
 
         http.request({
-            url: '/category/' + constant.action + '/menu/api/delete',
+            url: '/menu/api/' + constant.action + '/delete',
             data: {
                 menu_id: menu_id,
                 api_id: api_id,
@@ -207,7 +212,11 @@ class MenuIndex extends Component {
                         typeof (record.api_id) === 'undefined' ?
                             <a onClick={this.handleAdd.bind(this, record.category_id, record.app_id)}>{constant.add}接口</a>
                             :
-                            <a onClick={this.handleDel.bind(this, record.menu_id, record.api_id, record.system_version)}>删除</a>
+                            <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                                        cancelText={constant.popconfirm_cancel}
+                                        onConfirm={this.handleDel.bind(this, record.menu_id, record.api_id, record.system_version)}>
+                                <a>删除</a>
+                            </Popconfirm>
                     }
                 </span>
             )
@@ -240,29 +249,34 @@ class MenuIndex extends Component {
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用名称">
-                                {
-                                    getFieldDecorator('app_id', {
-                                        initialValue: ''
-                                    })(
-                                        <Select allowClear placeholder="请选择应用">
-                                            {
-                                                this.props.menu.app_list.map(function (item) {
-                                                    return (
-                                                        <Option key={item.app_id}
-                                                                value={item.app_id}>{item.app_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.menu.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},

@@ -61,7 +61,7 @@ class AppDetail extends Component {
                     wechat_app_id: data.wechat_app_id,
                     wechat_app_secret: data.wechat_app_secret,
                     wechat_mch_id: data.wechat_mch_id,
-                    wechat_mch_key: data.wechat_mch_key,
+                    wechat_mch_key: data.wechat_mch_key
                 });
 
                 this.setState({

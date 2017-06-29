@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import CategoryDetail from './CategoryDetail';
 import CategoryChildren from './CategoryChildren';
@@ -20,13 +20,20 @@ class CategoryIndex extends Component {
     }
 
     componentDidMount() {
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
+                app_id: this.props.category.app_id
+            });
+
+            this.handleLoadApp();
+        }
+
         this.props.form.setFieldsValue({
-            app_id: this.props.category.app_id
+            category_name: this.props.category.category_name,
+            category_type: this.props.category.category_type
         });
 
         this.handleLoad();
-
-        this.handleLoadApp();
 
         notification.on('notification_category_index_load', this, function (data) {
             this.handleLoad();
@@ -62,10 +69,18 @@ class CategoryIndex extends Component {
                 app_id = '';
             }
 
+            var category_name = this.props.form.getFieldValue('category_name');
+            var category_type = this.props.form.getFieldValue('category_type');
+            if (validate.isUndefined(category_type)) {
+                category_type = '';
+            }
+
             this.props.dispatch({
                 type: 'category/fetch',
                 data: {
                     app_id: app_id,
+                    category_name: category_name,
+                    category_type: category_type,
                     page_index: 1
                 }
             });
@@ -85,6 +100,8 @@ class CategoryIndex extends Component {
             url: '/category/' + constant.action + '/list',
             data: {
                 app_id: this.props.category.app_id,
+                category_name: this.props.category.category_name,
+                category_type: this.props.category.category_type,
                 page_index: this.props.category.page_index,
                 page_size: this.props.category.page_size
             },
@@ -251,25 +268,44 @@ class CategoryIndex extends Component {
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.category.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用名称">
+                            }} className="content-search-item" label="分类名称">
                                 {
-                                    getFieldDecorator('app_id', {
+                                    getFieldDecorator('category_name', {
                                         initialValue: ''
                                     })(
-                                        <Select allowClear placeholder="请选择应用">
-                                            {
-                                                this.props.category.app_list.map(function (item) {
-                                                    return (
-                                                        <Option key={item.app_id}
-                                                                value={item.app_id}>{item.app_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                        <Input type="text" placeholder="请输入分类名称"/>
                                     )
                                 }
                             </FormItem>

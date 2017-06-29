@@ -43,9 +43,9 @@ class MenuDetail extends Component {
         });
 
         http.request({
-            url: '/api/' + constant.action + '/unused/list',
+            url: '/menu/api/' + constant.action + '/list',
             data: {
-                app_id: this.state.app_id
+                menu_id: this.state.menu_id
             },
             success: function (data) {
                 this.setState({
@@ -74,7 +74,7 @@ class MenuDetail extends Component {
             });
 
             http.request({
-                url: '/category/' + constant.action + '/menu/api/' + this.state.action,
+                url: '/menu/api/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
