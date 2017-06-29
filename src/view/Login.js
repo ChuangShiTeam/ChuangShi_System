@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import {routerRedux} from 'dva/router';
-import {Card, Spin, Form, Input, Button} from 'antd';
+import {Card, Spin, Form, Input, Button, message} from 'antd';
 
 import constant from '../util/constant';
 import storage from '../util/storage';
@@ -39,12 +39,16 @@ class Login extends Component {
                 url: '/' + constant.action + '/login',
                 data: values,
                 success: function (data) {
+                    message.success("登录成功");
+
                     storage.setToken(data.token);
 
-                    this.props.dispatch(routerRedux.push({
-                        pathname: '/',
-                        query: {}
-                    }));
+                    setTimeout(function () {
+                        this.props.dispatch(routerRedux.push({
+                            pathname: '/',
+                            query: {}
+                        }));
+                    }.bind(this), 500);
                 }.bind(this),
                 complete: function () {
                     this.setState({

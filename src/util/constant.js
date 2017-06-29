@@ -1,11 +1,11 @@
 export default {
-    host: 'http://localhost:8080',
-    // host: 'http://api.chuangshi.nowui.com',
+    // host: 'http://localhost:8080',
+    host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
     index: 'feijiu/recommend/customer/index',
     platform: 'Admin',
-    version: '1.0.0',
+    version: '9.9.9',
     page_size: 10,
     operation: '操作',
     search: '搜索',
@@ -110,30 +110,30 @@ export default {
     //         'category_value': '/guangqi/prize/index'
     //     }
     // ],
-    // name: '久飞财富快速贷款管理后台',
-    // app_id: 'd49579df8f8342699657335868f90561',
-    // menu: [
-    //     {
-    //         'category_id': 'f9ba71d091a04d7ea953de029ba149ba',
-    //         'category_name': '申请资料管理',
-    //         'category_image': 'message',
-    //         'category_value': '/feijiu/fast/customer/index'
-    //     }
-    // ],
-    name: '久飞财富推荐贷款管理后台',
+    name: '久飞财富快速贷款管理后台',
     app_id: 'd49579df8f8342699657335868f90561',
     menu: [
         {
             'category_id': 'f9ba71d091a04d7ea953de029ba149ba',
             'category_name': '申请资料管理',
             'category_image': 'message',
-            'category_value': '/feijiu/recommend/customer/index'
-        },
-        {
-            'category_id': '31ed411b3b634d4f806ac979572a44dc',
-            'category_name': '商品管理',
-            'category_image': 'gift',
-            'category_value': '/feijiu/recommend/product/index'
+            'category_value': '/feijiu/fast/customer/index'
         }
     ],
+    // name: '久飞财富推荐贷款管理后台',
+    // app_id: 'd49579df8f8342699657335868f90561',
+    // menu: [
+    //     {
+    //         'category_id': 'f9ba71d091a04d7ea953de029ba149ba',
+    //         'category_name': '申请资料管理',
+    //         'category_image': 'message',
+    //         'category_value': '/feijiu/recommend/customer/index'
+    //     },
+    //     {
+    //         'category_id': '31ed411b3b634d4f806ac979572a44dc',
+    //         'category_name': '商品管理',
+    //         'category_image': 'gift',
+    //         'category_value': '/feijiu/recommend/product/index'
+    //     }
+    // ],
 };

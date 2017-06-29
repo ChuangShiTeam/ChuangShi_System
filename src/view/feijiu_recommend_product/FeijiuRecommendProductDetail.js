@@ -58,9 +58,14 @@ class FeijiuRecommendProductDetail extends Component {
             success: function (data) {
                 this.props.form.setFieldsValue({
                     product_name: data.product_name,
-                    product_image: data.product_image,
                     product_content: data.product_content,
                 });
+
+                var product_image = [];
+                if (data.product_image_file != '') {
+                    product_image.push(data.product_image_file);
+                }
+                this.refs.product_image.handleSetValue(product_image);
 
                 this.setState({
                     system_version: data.system_version
@@ -83,6 +88,13 @@ class FeijiuRecommendProductDetail extends Component {
 
             values.product_id = this.state.product_id;
             values.system_version = this.state.system_version;
+
+            var file_list = this.refs.product_image.handleGetValue();
+            if (file_list.length == 0) {
+                values.product_image = '';
+            } else {
+                values.product_image = file_list[0].file_id;
+            }
 
             this.setState({
                 is_load: true
@@ -117,6 +129,8 @@ class FeijiuRecommendProductDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.product_image.handleSetValue([]);
     }
 
     render() {

@@ -39,6 +39,6 @@ app.model(feijiu_recommend_product);
 
 app.router(Router);
 
-app.start('#root');
-
 document.getElementById("loading").remove();
+
+app.start('#root');
