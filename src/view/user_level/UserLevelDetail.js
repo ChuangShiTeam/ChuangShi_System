@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Select, Input, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class AdminDetail extends Component {
+class UserLevelDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,24 +14,24 @@ class AdminDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            user_id: '',
+            user_level_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_admin_detail_add', this, function (data) {
+        notification.on('notification_user_level_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_admin_detail_edit', this, function (data) {
+        notification.on('notification_user_level_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                user_id: data.user_id
+                user_level_id: data.user_level_id
             }, function () {
                 this.handleLoad();
             });
@@ -39,9 +39,9 @@ class AdminDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_admin_detail_add', this);
+        notification.remove('notification_user_level_detail_add', this);
 
-        notification.remove('notification_admin_detail_edit', this);
+        notification.remove('notification_user_level_detail_edit', this);
     }
 
     handleLoad() {
@@ -50,25 +50,21 @@ class AdminDetail extends Component {
         });
 
         http.request({
-            url: '/user/' + constant.action + '/find',
+            url: '/user/level/' + constant.action + '/find',
             data: {
-                user_id: this.state.user_id
+                user_level_id: this.state.user_level_id
             },
             success: function (data) {
+                if (constant.action === 'system') {
+                    this.props.form.setFieldsValue({
+                        app_id: data.app_id
+                    });
+                }
+
                 this.props.form.setFieldsValue({
-                    organization_id: data.organization_id,
-                    role_id: data.role_id,
-                    user_level_id: data.user_level_id,
-                    user_type: data.user_type,
-                    object_id: data.object_id,
-                    user_account: data.user_account,
-                    user_phone: data.user_phone,
-                    user_email: data.user_email,
-                    user_password: data.user_password,
-                    user_name: data.user_name,
-                    user_avatar: data.user_avatar,
-                    wechat_open_id: data.wechat_open_id,
-                    wechat_union_id: data.wechat_union_id,
+                    user_level_name: data.user_level_name,
+                    user_level_value: data.user_level_value,
+                    user_level_sort: data.user_level_sort,
                 });
 
                 this.setState({
@@ -90,7 +86,7 @@ class AdminDetail extends Component {
                 return;
             }
 
-            values.user_id = this.state.user_id;
+            values.user_level_id = this.state.user_level_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -98,12 +94,12 @@ class AdminDetail extends Component {
             });
 
             http.request({
-                url: '/admin/' + constant.action + '/' + this.state.action,
+                url: '/user/level/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_user_index_load', {});
+                    notification.emit('notification_user_level_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -121,7 +117,7 @@ class AdminDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            user_id: '',
+            user_level_id: '',
             system_version: ''
         });
 
@@ -134,7 +130,7 @@ class AdminDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'用户详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -146,9 +142,9 @@ class AdminDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
-                        <Row>
-                            {
-                                constant.action === 'system' ?
+                        {
+                            constant.action === 'system' ?
+                                <Row>
                                     <Col span={8}>
                                         <FormItem hasFeedback {...{
                                             labelCol: {span: 6},
@@ -164,7 +160,7 @@ class AdminDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.user.app_list.map(function (item) {
+                                                            this.props.user_level.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -176,25 +172,25 @@ class AdminDetail extends Component {
                                             }
                                         </FormItem>
                                     </Col>
-                                    :
-                                    ''
-                            }
-                        </Row>
+                                </Row>
+                                :
+                                ''
+                        }
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户帐号">
+                                }} className="form-item" label="等级名称">
                                     {
-                                        getFieldDecorator('user_account', {
+                                        getFieldDecorator('user_level_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户帐号'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '等级名称'}/>
                                         )
                                     }
                                 </FormItem>
@@ -205,16 +201,16 @@ class AdminDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户密码">
+                                }} className="form-item" label="等级数值">
                                     {
-                                        getFieldDecorator('user_password', {
+                                        getFieldDecorator('user_level_value', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: ''
+                                            initialValue: 0
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户密码'}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '等级数值'}/>
                                         )
                                     }
                                 </FormItem>
@@ -225,16 +221,16 @@ class AdminDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户名称">
+                                }} className="form-item" label="等级排序">
                                     {
-                                        getFieldDecorator('user_name', {
+                                        getFieldDecorator('user_level_sort', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: ''
+                                            initialValue: 0
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户名称'}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '等级排序'}/>
                                         )
                                     }
                                 </FormItem>
@@ -247,8 +243,8 @@ class AdminDetail extends Component {
     }
 }
 
-AdminDetail.propTypes = {};
+UserLevelDetail.propTypes = {};
 
-AdminDetail = Form.create({})(AdminDetail);
+UserLevelDetail = Form.create({})(UserLevelDetail);
 
-export default connect(({user}) => ({user}))(AdminDetail);
+export default connect(({user_level}) => ({user_level}))(UserLevelDetail);

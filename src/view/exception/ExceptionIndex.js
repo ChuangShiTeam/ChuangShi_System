@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Table, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
 
 import ExceptionDetail from './ExceptionDetail';
 import constant from '../../util/constant';
@@ -19,13 +19,15 @@ class ExceptionIndex extends Component {
     }
 
     componentDidMount() {
-        this.props.form.setFieldsValue({
-            app_id: this.props.exception.app_id
-        });
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
+                app_id: this.props.exception.app_id
+            });
+
+            this.handleLoadApp();
+        }
 
         this.handleLoad();
-
-        this.handleLoadApp();
 
         notification.on('notification_exception_index_load', this, function (data) {
             this.handleLoad();
@@ -61,10 +63,13 @@ class ExceptionIndex extends Component {
                 app_id = '';
             }
 
+            var http_id = this.props.form.getFieldValue('http_id');
+
             this.props.dispatch({
                 type: 'exception/fetch',
                 data: {
                     app_id: app_id,
+                    http_id: http_id,
                     page_index: 1
                 }
             });
@@ -179,6 +184,10 @@ class ExceptionIndex extends Component {
             dataIndex: 'exception_content'
         }, {
             width: 100,
+            title: '是否处理',
+            dataIndex: 'exception_is_confirm'
+        }, {
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
@@ -215,30 +224,47 @@ class ExceptionIndex extends Component {
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.exception.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用名称">
+                            }} className="content-search-item" label="请求编号">
                                 {
-                                    getFieldDecorator('app_id', {
+                                    getFieldDecorator('http_id', {
                                         initialValue: ''
                                     })(
-                                        <Select allowClear placeholder="请选择应用">
-                                            {
-                                                this.props.exception.app_list.map(function (item) {
-                                                    return (
-                                                        <Option key={item.app_id}
-                                                                value={item.app_id}>{item.app_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                        <Input type="text" placeholder="请求编号"/>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={8}>
                         </Col>
                         <Col span={8}>
                         </Col>

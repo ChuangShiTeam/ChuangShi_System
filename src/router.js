@@ -11,6 +11,7 @@ import CategoryIndex from './view/category/CategoryIndex';
 import MenuIndex from './view/menu/MenuIndex';
 import ApiIndex from './view/api/ApiIndex';
 import UserIndex from './view/user/UserIndex';
+import UserLevelIndex from './view/user_level/UserLevelIndex';
 import FileIndex from './view/file/FileIndex';
 
 import GuangqiCustomerIndex from './view/guangqi_customer/GuangqiCustomerIndex';
@@ -49,6 +50,7 @@ function RouterConfig({history}) {
                     <Route path="menu/index" component={MenuIndex}/>
                     <Route path="api/index" component={ApiIndex}/>
                     <Route path="user/index" component={UserIndex}/>
+                    <Route path="user/level/index" component={UserLevelIndex}/>
                     <Route path="file/index" component={FileIndex}/>
 
                     <Route path="guangqi/customer/index" component={GuangqiCustomerIndex}/>

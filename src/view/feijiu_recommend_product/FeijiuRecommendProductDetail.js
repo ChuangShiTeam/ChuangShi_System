@@ -62,7 +62,7 @@ class FeijiuRecommendProductDetail extends Component {
                 });
 
                 var product_image = [];
-                if (data.product_image_file != '') {
+                if (data.product_image_file !== '') {
                     product_image.push(data.product_image_file);
                 }
                 this.refs.product_image.handleSetValue(product_image);
@@ -90,7 +90,7 @@ class FeijiuRecommendProductDetail extends Component {
             values.system_version = this.state.system_version;
 
             var file_list = this.refs.product_image.handleGetValue();
-            if (file_list.length == 0) {
+            if (file_list.length === 0) {
                 values.product_image = '';
             } else {
                 values.product_image = file_list[0].file_id;

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import UserDetail from './UserDetail';
 import AdminDetail from './AdminDetail';
@@ -20,13 +20,19 @@ class UserIndex extends Component {
     }
 
     componentDidMount() {
-        this.props.form.setFieldsValue({
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
             app_id: this.props.user.app_id
+            });
+
+            this.handleLoadApp();
+        }
+
+        this.props.form.setFieldsValue({
+            user_name: this.props.user.user_name
         });
 
         this.handleLoad();
-
-        this.handleLoadApp();
 
         notification.on('notification_user_index_load', this, function (data) {
             this.handleLoad();
@@ -62,10 +68,13 @@ class UserIndex extends Component {
                 app_id = '';
             }
 
+            var user_name = this.props.form.getFieldValue('user_name');
+
             this.props.dispatch({
                 type: 'user/fetch',
                 data: {
                     app_id: app_id,
+                    user_name: user_name,
                     page_index: 1
                 }
             });
@@ -85,6 +94,7 @@ class UserIndex extends Component {
             url: '/user/' + constant.action + '/list',
             data: {
                 app_id: this.props.user.app_id,
+                user_name: this.props.user.user_name,
                 page_index: this.props.user.page_index,
                 page_size: this.props.user.page_size
             },
@@ -212,7 +222,7 @@ class UserIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">用户信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -224,30 +234,47 @@ class UserIndex extends Component {
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.user.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用名称">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('app_id', {
+                                    getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Select allowClear placeholder="请选择应用">
-                                            {
-                                                this.props.user.app_list.map(function (item) {
-                                                    return (
-                                                        <Option key={item.app_id}
-                                                                value={item.app_id}>{item.app_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                        <Input type="text" placeholder="请输入名称"/>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={8}>
                         </Col>
                         <Col span={8}>
                         </Col>

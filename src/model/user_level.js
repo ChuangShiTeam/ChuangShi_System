@@ -2,12 +2,12 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'exception',
+    namespace: 'user_level',
 
     state: {
         app_id: '',
         app_list: [],
-        http_id: '',
+        user_level_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

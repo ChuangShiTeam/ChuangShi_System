@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import FileDetail from './FileDetail';
+import UserLevelDetail from './UserLevelDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class FileIndex extends Component {
+class UserLevelIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class FileIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.file.app_id
+            app_id: this.props.user_level.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            file_name: this.props.file.file_name
+            user_level_name: this.props.user_level.user_level_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_file_index_load', this, function (data) {
+        notification.on('notification_user_level_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_file_index_load', this);
+        notification.remove('notification_user_level_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class FileIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'file/fetch',
+                    type: 'user_level/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +67,13 @@ class FileIndex extends Component {
                 app_id = '';
             }
 
-            var file_name = this.props.form.getFieldValue('file_name');
+            var user_level_name = this.props.form.getFieldValue('user_level_name');
 
             this.props.dispatch({
-                type: 'file/fetch',
+                type: 'user_level/fetch',
                 data: {
                     app_id: app_id,
-                    file_name: file_name,
+                    user_level_name: user_level_name,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class FileIndex extends Component {
         });
 
         http.request({
-            url: '/file/' + constant.action + '/list',
+            url: '/user/level/' + constant.action + '/list',
             data: {
-                app_id: this.props.file.app_id,
-                file_name: this.props.file.file_name,
-                page_index: this.props.file.page_index,
-                page_size: this.props.file.page_size
+                app_id: this.props.user_level.app_id,
+                user_level_name: this.props.user_level.user_level_name,
+                page_index: this.props.user_level.page_index,
+                page_size: this.props.user_level.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'file/fetch',
+                    type: 'user_level/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class FileIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'file/fetch',
+                type: 'user_level/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class FileIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'file/fetch',
+                type: 'user_level/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +146,24 @@ class FileIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_file_detail_add', {});
+        notification.emit('notification_user_level_detail_add', {});
     }
 
-    handleEdit(file_id) {
-        notification.emit('notification_file_detail_edit', {
-            file_id: file_id
+    handleEdit(user_level_id) {
+        notification.emit('notification_user_level_detail_edit', {
+            user_level_id: user_level_id
         });
     }
 
-    handleDel(file_id, system_version) {
+    handleDel(user_level_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/file/' + constant.action + '/delete',
+            url: '/user/level/' + constant.action + '/delete',
             data: {
-                file_id: file_id,
+                user_level_id: user_level_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,19 +185,19 @@ class FileIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '路径',
-            dataIndex: 'file_path'
+            title: '名称',
+            dataIndex: 'user_level_name'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.file_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.user_level_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.file_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.user_level_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -206,12 +206,12 @@ class FileIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.file.total,
+            total: this.props.user_level.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.file.page_index,
-            pageSize: this.props.file.page_size,
+            current: this.props.user_level.page_index,
+            pageSize: this.props.user_level.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -246,7 +246,7 @@ class FileIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.file.app_list.map(function (item) {
+                                                        this.props.user_level.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -267,7 +267,7 @@ class FileIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('file_name', {
+                                    getFieldDecorator('user_level_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入名称"/>
@@ -280,21 +280,21 @@ class FileIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="file_id"
+                       rowKey="user_level_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.file.list} pagination={pagination}
+                       dataSource={this.props.user_level.list} pagination={pagination}
                        bordered/>
-                <FileDetail/>
+                <UserLevelDetail/>
             </QueueAnim>
         );
     }
 }
 
-FileIndex.propTypes = {};
+UserLevelIndex.propTypes = {};
 
-FileIndex = Form.create({})(FileIndex);
+UserLevelIndex = Form.create({})(UserLevelIndex);
 
-export default connect(({file}) => ({
-    file
-}))(FileIndex);
+export default connect(({user_level}) => ({
+    user_level
+}))(UserLevelIndex);

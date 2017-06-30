@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -55,12 +55,17 @@ class UserDetail extends Component {
                 user_id: this.state.user_id
             },
             success: function (data) {
+                if (constant.action === 'system') {
+                    this.props.form.setFieldsValue({
+                        app_id: data.app_id
+                    });
+                }
+
                 this.props.form.setFieldsValue({
                     organization_id: data.organization_id,
                     role_id: data.role_id,
                     user_level_id: data.user_level_id,
                     user_type: data.user_type,
-                    object_id: data.object_id,
                     user_account: data.user_account,
                     user_phone: data.user_phone,
                     user_email: data.user_email,
@@ -69,6 +74,7 @@ class UserDetail extends Component {
                     user_avatar: data.user_avatar,
                     wechat_open_id: data.wechat_open_id,
                     wechat_union_id: data.wechat_union_id,
+                    extend_id: data.extend_id,
                 });
 
                 this.setState({
@@ -85,7 +91,35 @@ class UserDetail extends Component {
     }
 
     handleSubmit() {
-        this.handleCancel();
+        this.props.form.validateFieldsAndScroll((errors, values) => {
+            if (!!errors) {
+                return;
+            }
+
+            values.user_id = this.state.user_id;
+            values.system_version = this.state.system_version;
+
+            this.setState({
+                is_load: true
+            });
+
+            http.request({
+                url: '/user/' + constant.action + '/' + this.state.action,
+                data: values,
+                success: function (data) {
+                    message.success(constant.success);
+
+                    notification.emit('notification_user_index_load', {});
+
+                    this.handleCancel();
+                }.bind(this),
+                complete: function () {
+                    this.setState({
+                        is_load: false
+                    });
+                }.bind(this)
+            });
+        });
     }
 
     handleCancel() {
@@ -102,10 +136,11 @@ class UserDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
+        const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'用户详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -117,12 +152,46 @@ class UserDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
+                        {
+                            constant.action === 'system' ?
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="content-search-item" label="应用名称">
+                                            {
+                                                getFieldDecorator('app_id', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select allowClear placeholder="请选择应用">
+                                                        {
+                                                            this.props.user.app_list.map(function (item) {
+                                                                return (
+                                                                    <Option key={item.app_id}
+                                                                            value={item.app_id}>{item.app_name}</Option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Select>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                :
+                                ''
+                        }
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="组织架构">
+                                }} className="form-item" label="组织架构编号">
                                     {
                                         getFieldDecorator('organization_id', {
                                             rules: [{
@@ -131,7 +200,7 @@ class UserDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '组织架构'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '组织架构编号'}/>
                                         )
                                     }
                                 </FormItem>
@@ -162,7 +231,7 @@ class UserDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户等级">
+                                }} className="form-item" label="用户等级编号">
                                     {
                                         getFieldDecorator('user_level_id', {
                                             rules: [{
@@ -171,7 +240,7 @@ class UserDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户等级'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '用户等级编号'}/>
                                         )
                                     }
                                 </FormItem>
@@ -192,26 +261,6 @@ class UserDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '用户类型'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="外键编号">
-                                    {
-                                        getFieldDecorator('object_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '外键编号'}/>
                                         )
                                     }
                                 </FormItem>
@@ -372,6 +421,26 @@ class UserDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_union_id'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="扩展编号">
+                                    {
+                                        getFieldDecorator('extend_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '扩展编号'}/>
                                         )
                                     }
                                 </FormItem>

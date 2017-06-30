@@ -10,6 +10,7 @@ import category from './model/category';
 import menu from './model/menu';
 import api from './model/api';
 import user from './model/user';
+import user_level from './model/user_level';
 import file from './model/file';
 
 import guangqi_customer from './model/guangqi_customer';
@@ -29,6 +30,7 @@ app.model(category);
 app.model(menu);
 app.model(api);
 app.model(user);
+app.model(user_level);
 app.model(file);
 
 app.model(guangqi_customer);

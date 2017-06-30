@@ -200,12 +200,12 @@ class FeijiuRecommendProductIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="客户名称">
+                            }} className="content-search-item" label="产品名称">
                                 {
                                     getFieldDecorator('product_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入客户名称"/>
+                                        <Input type="text" placeholder="请输入产品名称"/>
                                     )
                                 }
                             </FormItem>
