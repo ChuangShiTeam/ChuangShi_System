@@ -14,22 +14,21 @@ class MenuIndex extends Component {
         super(props);
 
         this.state = {
-            is_load: false,
-            expandedRowKeys: []
+            is_load: false
         }
     }
 
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.api.app_id
+            app_id: this.props.menu.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            category_name: this.props.menu.category_name
+            menu_name: this.props.menu.menu_name
         });
 
         this.handleLoad();
@@ -68,13 +67,13 @@ class MenuIndex extends Component {
                 app_id = '';
             }
 
-            var category_name = this.props.form.getFieldValue('category_name');
+            var menu_name = this.props.form.getFieldValue('menu_name');
 
             this.props.dispatch({
                 type: 'menu/fetch',
                 data: {
                     app_id: app_id,
-                    category_name: category_name,
+                    menu_name: menu_name,
                     page_index: 1
                 }
             });
@@ -94,25 +93,17 @@ class MenuIndex extends Component {
             url: '/menu/' + constant.action + '/list',
             data: {
                 app_id: this.props.menu.app_id,
-                category_name: this.props.menu.category_name,
-                page_index: this.props.menu.page_index,
-                page_size: this.props.menu.page_size
+                menu_name: this.props.menu.menu_name
             },
             success: function (data) {
+                var expandedRowKeys = this.setExpandedRowKeys(data);
+
                 this.props.dispatch({
                     type: 'menu/fetch',
                     data: {
-                        total: data.total,
-                        list: data.list
+                        list: data,
+                        expandedRowKeys: expandedRowKeys
                     }
-                });
-
-                var expandedRowKeys = [];
-                for (var i = 0; i < data.list.length; i++) {
-                    expandedRowKeys.push(data.list[i].category_id);
-                }
-                this.setState({
-                    expandedRowKeys: expandedRowKeys
                 });
             }.bind(this),
             complete: function () {
@@ -121,6 +112,20 @@ class MenuIndex extends Component {
                 });
             }.bind(this)
         });
+    }
+
+    setExpandedRowKeys(list) {
+        var expandedRowKeys = [];
+
+        for (var i = 0; i < list.length; i++) {
+            expandedRowKeys.push(list[i].menu_id);
+
+            if (list[i].children) {
+                expandedRowKeys = expandedRowKeys.concat(this.setExpandedRowKeys(list[i].children));
+            }
+        }
+
+        return expandedRowKeys;
     }
 
     handleChangeIndex(page_index) {
@@ -154,27 +159,27 @@ class MenuIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd(menu_id, app_id) {
+    handleAdd(menu_parent_id) {
         notification.emit('notification_menu_detail_add', {
-            menu_id: menu_id,
-            app_id: app_id
+            menu_parent_id: menu_parent_id
         });
     }
 
     handleEdit(menu_id) {
-
+        notification.emit('notification_menu_detail_edit', {
+            menu_id: menu_id
+        });
     }
 
-    handleDel(menu_id, api_id, system_version) {
+    handleDel(menu_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/menu/api/' + constant.action + '/delete',
+            url: '/menu/' + constant.action + '/delete',
             data: {
                 menu_id: menu_id,
-                api_id: api_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -197,43 +202,33 @@ class MenuIndex extends Component {
 
         const columns = [{
             title: '名称',
-            dataIndex: 'category_name'
+            dataIndex: 'menu_name'
         }, {
-            width: 300,
-            title: '地址',
-            dataIndex: 'api_url'
+            width: 100,
+            title: '图片',
+            dataIndex: 'menu_image'
+        }, {
+            width: 100,
+            title: '排序',
+            dataIndex: 'menu_sort'
         }, {
             width: 135,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                    {
-                        typeof (record.api_id) === 'undefined' ?
-                            <a onClick={this.handleAdd.bind(this, record.category_id, record.app_id)}>{constant.add}接口</a>
-                            :
-                            <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                                        cancelText={constant.popconfirm_cancel}
-                                        onConfirm={this.handleDel.bind(this, record.menu_id, record.api_id, record.system_version)}>
-                                <a>删除</a>
-                            </Popconfirm>
-                    }
+                  <a onClick={this.handleAdd.bind(this, record.menu_id)}>{constant.add}</a>
+                  <span className="divider"/>
+                  <a onClick={this.handleEdit.bind(this, record.menu_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.menu_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
                 </span>
             )
         }];
-
-        const pagination = {
-            size: 'defalut',
-            total: this.props.menu.total,
-            showTotal: function (total, range) {
-                return '总共' + total + '条数据';
-            },
-            current: this.props.menu.page_index,
-            pageSize: this.props.menu.page_size,
-            showSizeChanger: true,
-            onShowSizeChange: this.handleChangeSize.bind(this),
-            onChange: this.handleChangeIndex.bind(this)
-        };
 
         return (
             <QueueAnim>
@@ -242,9 +237,11 @@ class MenuIndex extends Component {
                         <div className="">菜单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="primary" icon="search" size="default" className="margin-right"
+                        <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this, '')}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -281,12 +278,12 @@ class MenuIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="菜单名称">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('category_name', {
+                                    getFieldDecorator('menu_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入菜单名称"/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -296,11 +293,11 @@ class MenuIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="category_id"
+                       rowKey="menu_id"
                        className="margin-top"
-                       expandedRowKeys={this.state.expandedRowKeys}
+                       expandedRowKeys={this.props.menu.expandedRowKeys}
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.menu.list} pagination={pagination}
+                       dataSource={this.props.menu.list} pagination={false}
                        bordered/>
                 <MenuDetail/>
             </QueueAnim>
@@ -312,4 +309,6 @@ MenuIndex.propTypes = {};
 
 MenuIndex = Form.create({})(MenuIndex);
 
-export default connect(({menu}) => ({menu}))(MenuIndex);
+export default connect(({menu}) => ({
+    menu
+}))(MenuIndex);

@@ -205,7 +205,7 @@ class FeijiuRecommendProductIndex extends Component {
                                     getFieldDecorator('product_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入产品名称"/>
+                                        <Input type="text" placeholder="请输入产品名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

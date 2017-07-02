@@ -123,7 +123,7 @@ class GuangqiCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户姓名'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '客户姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -143,7 +143,7 @@ class GuangqiCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '手机号码'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '手机号码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -163,7 +163,7 @@ class GuangqiCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '省份'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '省份'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -183,7 +183,7 @@ class GuangqiCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '城市'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '城市'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -203,7 +203,7 @@ class GuangqiCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '经销商'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '经销商'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

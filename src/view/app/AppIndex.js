@@ -72,7 +72,8 @@ class AppIndex extends Component {
             this.props.dispatch({
                 type: 'app/fetch',
                 data: {
-                    app_id: this.props.form.getFieldValue('app_id'),
+                    app_id: app_id,
+                    app_name: app_name,
                     page_index: 1
                 }
             });
@@ -273,7 +274,7 @@ class AppIndex extends Component {
                                     getFieldDecorator('app_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

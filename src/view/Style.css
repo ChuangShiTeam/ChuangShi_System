@@ -1,3 +1,15 @@
+.ant-layout {
+    background: #ffffff !important;
+}
+
+.ant-layout-sider {
+    background: #f7f7f7 !important;
+}
+
+.ant-menu-inline, .ant-menu-vertical {
+    border-right: 0px solid #e9e9e9 !important;
+}
+
 .ant-layout-content {
     min-width: 980px !important;
 }
@@ -57,6 +69,7 @@
 
 .sider {
     background: #f7f7f7;
+    border-right: 1px solid #e9e9e9;
 }
 
 .menu {

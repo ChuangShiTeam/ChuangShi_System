@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, InputNumber, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -15,8 +15,8 @@ class MenuDetail extends Component {
             is_show: false,
             action: '',
             menu_id: '',
-            app_id: '',
-            api_list: []
+            menu_parent_id: '',
+            system_version: ''
         }
     }
 
@@ -25,8 +25,15 @@ class MenuDetail extends Component {
             this.setState({
                 is_show: true,
                 action: 'save',
-                menu_id: data.menu_id,
-                app_id: data.app_id
+                menu_parent_id: data.menu_parent_id
+            });
+        });
+
+        notification.on('notification_menu_detail_edit', this, function (data) {
+            this.setState({
+                is_show: true,
+                action: 'update',
+                menu_id: data.menu_id
             }, function () {
                 this.handleLoad();
             });
@@ -35,6 +42,8 @@ class MenuDetail extends Component {
 
     componentWillUnmount() {
         notification.remove('notification_menu_detail_add', this);
+
+        notification.remove('notification_menu_detail_edit', this);
     }
 
     handleLoad() {
@@ -43,13 +52,27 @@ class MenuDetail extends Component {
         });
 
         http.request({
-            url: '/menu/api/' + constant.action + '/list',
+            url: '/menu/' + constant.action + '/find',
             data: {
                 menu_id: this.state.menu_id
             },
             success: function (data) {
+                if (constant.action === 'system') {
+                    this.props.form.setFieldsValue({
+                        app_id: data.app_id
+                    });
+                }
+
+                this.props.form.setFieldsValue({
+                    menu_name: data.menu_name,
+                    menu_image: data.menu_image,
+                    menu_url: data.menu_url,
+                    menu_sort: data.menu_sort,
+                });
+
                 this.setState({
-                    api_list: data
+                    menu_parent_id: data.menu_parent_id,
+                    system_version: data.system_version
                 });
             }.bind(this),
             complete: function () {
@@ -68,13 +91,15 @@ class MenuDetail extends Component {
             }
 
             values.menu_id = this.state.menu_id;
+            values.menu_parent_id = this.state.menu_parent_id;
+            values.system_version = this.state.system_version;
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/menu/api/' + constant.action + '/' + this.state.action,
+                url: '/menu/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -98,7 +123,6 @@ class MenuDetail extends Component {
             is_show: false,
             action: '',
             menu_id: '',
-            parent_id: '',
             system_version: ''
         });
 
@@ -111,8 +135,7 @@ class MenuDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'菜单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
-                   className="modal" zIndex={2}
+            <Modal title={'菜单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -124,30 +147,55 @@ class MenuDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
+                        {
+                            constant.action === 'system' ?
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="content-search-item" label="应用名称">
+                                            {
+                                                getFieldDecorator('app_id', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select allowClear placeholder="请选择应用">
+                                                        {
+                                                            this.props.menu.app_list.map(function (item) {
+                                                                return (
+                                                                    <Option key={item.app_id}
+                                                                            value={item.app_id}>{item.app_name}</Option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Select>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                :
+                                ''
+                        }
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="content-search-item" label="接口名称">
+                                }} className="form-item" label="菜单名称">
                                     {
-                                        getFieldDecorator('api_id', {
+                                        getFieldDecorator('menu_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Select allowClear placeholder="请选择接口">
-                                                {
-                                                    this.state.api_list.map(function (item) {
-                                                        return (
-                                                            <Option key={item.api_id}
-                                                                    value={item.api_id}>{item.api_name}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
+                                            <Input type="text" placeholder={constant.placeholder + '菜单名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -158,17 +206,48 @@ class MenuDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="接口排序">
+                                }} className="form-item" label="菜单图片">
                                     {
-                                        getFieldDecorator('menu_api_sort', {
+                                        getFieldDecorator('menu_image', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '菜单图片'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="菜单地址">
+                                    {
+                                        getFieldDecorator('menu_url', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '菜单地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="菜单排序">
+                                    {
+                                        getFieldDecorator('menu_sort', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999}
-                                                         placeholder={constant.placeholder + '接口排序'}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '菜单排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

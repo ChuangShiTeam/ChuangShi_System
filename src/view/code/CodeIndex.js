@@ -184,7 +184,7 @@ class CodeIndex extends Component {
                                     getFieldDecorator('table_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

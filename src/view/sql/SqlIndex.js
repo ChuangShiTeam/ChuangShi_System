@@ -178,7 +178,7 @@ class SqlIndex extends Component {
             title: '数据表',
             dataIndex: 'sql_table'
         }, {
-            width: 100,
+            width: 200,
             title: '动作',
             dataIndex: 'sql_action'
         }, {

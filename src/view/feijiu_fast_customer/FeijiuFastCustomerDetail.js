@@ -131,7 +131,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '客户名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -151,7 +151,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '手机号码'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '手机号码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -171,7 +171,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '出生日期'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '出生日期'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -191,7 +191,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '所在城市'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '所在城市'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -211,7 +211,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '性别'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '性别'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -231,7 +231,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '身份证号'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '身份证号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -251,7 +251,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '借款金额'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '借款金额'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -271,7 +271,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '名下有房'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '名下有房'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -291,7 +291,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '名下有车'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '名下有车'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -311,7 +311,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '有信用卡'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '有信用卡'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -331,7 +331,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '有寿险保单'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '有寿险保单'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -351,7 +351,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '有微粒贷'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '有微粒贷'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -371,7 +371,7 @@ class FeijiuFastCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '有公积金'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '有公积金'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

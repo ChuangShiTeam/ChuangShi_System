@@ -121,7 +121,7 @@ class ExceptionDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '异常内容'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '异常内容'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -141,7 +141,7 @@ class ExceptionDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '是否确认'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '是否确认'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -161,7 +161,7 @@ class ExceptionDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '异常描述'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '异常描述'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

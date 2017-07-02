@@ -127,7 +127,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '请求地址'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '请求地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -147,7 +147,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '状态码'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '状态码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -167,7 +167,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'Token'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'Token'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -187,7 +187,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '请求平台'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '请求平台'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -207,7 +207,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '请求版本'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '请求版本'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -227,7 +227,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'IP地址'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'IP地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -247,7 +247,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '响应时间'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '响应时间'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -267,7 +267,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '请求参数'}/>
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '请求参数'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -287,7 +287,7 @@ class HttpDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '请求返回'}/>
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '请求返回'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

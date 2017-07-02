@@ -4,7 +4,6 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import UserDetail from './UserDetail';
-import AdminDetail from './AdminDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -147,7 +146,7 @@ class UserIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_admin_detail_add', {});
+
     }
 
     handleEdit(user_id) {
@@ -225,11 +224,9 @@ class UserIndex extends Component {
                         <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="default" icon="search" size="default" className="margin-right"
+                        <Button type="primary" icon="search" size="default" className=""
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}管理员</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -271,7 +268,7 @@ class UserIndex extends Component {
                                     getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -287,7 +284,6 @@ class UserIndex extends Component {
                        dataSource={this.props.user.list} pagination={pagination}
                        bordered/>
                 <UserDetail/>
-                <AdminDetail/>
             </QueueAnim>
         );
     }

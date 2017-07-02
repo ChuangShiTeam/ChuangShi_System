@@ -2,12 +2,12 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'user_level',
+    namespace: 'admin',
 
     state: {
         app_id: '',
         app_list: [],
-        user_level_name: '',
+        user_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

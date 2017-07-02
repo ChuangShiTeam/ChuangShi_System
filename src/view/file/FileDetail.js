@@ -195,7 +195,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件类型'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件类型'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -215,7 +215,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -235,7 +235,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件后缀'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件后缀'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -255,7 +255,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '文件大小'}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '文件大小'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -275,7 +275,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件路径'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件路径'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -295,7 +295,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件路径'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件路径'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -315,7 +315,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件路径'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件路径'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -335,7 +335,7 @@ class FileDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文件封面'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '文件封面'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

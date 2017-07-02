@@ -121,7 +121,7 @@ class FeijiuRecommendCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '客户名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -141,7 +141,7 @@ class FeijiuRecommendCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '手机号码'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '手机号码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -161,7 +161,7 @@ class FeijiuRecommendCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '所在城市'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '所在城市'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

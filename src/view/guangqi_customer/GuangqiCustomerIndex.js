@@ -223,7 +223,7 @@ class GuangqiCustomerIndex extends Component {
                                     getFieldDecorator('customer_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入客户姓名"/>
+                                        <Input type="text" placeholder="请输入客户姓名" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import UserLevelDetail from './UserLevelDetail';
+import AdminDetail from './AdminDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class UserLevelIndex extends Component {
+class AdminIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class UserLevelIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.user_level.app_id
+            app_id: this.props.admin.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            user_level_name: this.props.user_level.user_level_name
+            user_name: this.props.admin.user_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_user_level_index_load', this, function (data) {
+        notification.on('notification_admin_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_user_level_index_load', this);
+        notification.remove('notification_admin_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class UserLevelIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'user_level/fetch',
+                    type: 'admin/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +67,13 @@ class UserLevelIndex extends Component {
                 app_id = '';
             }
 
-            var user_level_name = this.props.form.getFieldValue('user_level_name');
+            var user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
-                type: 'user_level/fetch',
+                type: 'admin/fetch',
                 data: {
                     app_id: app_id,
-                    user_level_name: user_level_name,
+                    user_name: user_name,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class UserLevelIndex extends Component {
         });
 
         http.request({
-            url: '/user/level/' + constant.action + '/list',
+            url: '/admin/' + constant.action + '/list',
             data: {
-                app_id: this.props.user_level.app_id,
-                user_level_name: this.props.user_level.user_level_name,
-                page_index: this.props.user_level.page_index,
-                page_size: this.props.user_level.page_size
+                app_id: this.props.admin.app_id,
+                user_name: this.props.admin.user_name,
+                page_index: this.props.admin.page_index,
+                page_size: this.props.admin.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'user_level/fetch',
+                    type: 'admin/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class UserLevelIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'user_level/fetch',
+                type: 'admin/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class UserLevelIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'user_level/fetch',
+                type: 'admin/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +146,24 @@ class UserLevelIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_user_level_detail_add', {});
+        notification.emit('notification_admin_detail_add', {});
     }
 
-    handleEdit(user_level_id) {
-        notification.emit('notification_user_level_detail_edit', {
-            user_level_id: user_level_id
+    handleEdit(admin_id) {
+        notification.emit('notification_admin_detail_edit', {
+            admin_id: admin_id
         });
     }
 
-    handleDel(user_level_id, system_version) {
+    handleDel(admin_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/user/level/' + constant.action + '/delete',
+            url: '/admin/' + constant.action + '/delete',
             data: {
-                user_level_id: user_level_id,
+                admin_id: admin_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -186,18 +186,18 @@ class UserLevelIndex extends Component {
 
         const columns = [{
             title: '名称',
-            dataIndex: 'user_level_name'
+            dataIndex: 'user_name'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.user_level_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.admin_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.user_level_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.admin_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -206,12 +206,12 @@ class UserLevelIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.user_level.total,
+            total: this.props.admin.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.user_level.page_index,
-            pageSize: this.props.user_level.page_size,
+            current: this.props.admin.page_index,
+            pageSize: this.props.admin.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -246,7 +246,7 @@ class UserLevelIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.user_level.app_list.map(function (item) {
+                                                        this.props.admin.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -267,10 +267,10 @@ class UserLevelIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('user_level_name', {
+                                    getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -280,21 +280,21 @@ class UserLevelIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="user_level_id"
+                       rowKey="admin_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.user_level.list} pagination={pagination}
+                       dataSource={this.props.admin.list} pagination={pagination}
                        bordered/>
-                <UserLevelDetail/>
+                <AdminDetail/>
             </QueueAnim>
         );
     }
 }
 
-UserLevelIndex.propTypes = {};
+AdminIndex.propTypes = {};
 
-UserLevelIndex = Form.create({})(UserLevelIndex);
+AdminIndex = Form.create({})(AdminIndex);
 
-export default connect(({user_level}) => ({
-    user_level
-}))(UserLevelIndex);
+export default connect(({admin}) => ({
+    admin
+}))(AdminIndex);

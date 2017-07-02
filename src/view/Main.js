@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import {routerRedux, Link} from 'dva/router';
-import {Layout, Menu, Icon} from 'antd';
+import {Layout, Menu, Icon, Spin} from 'antd';
 
 import constant from '../util/constant';
+import http from '../util/http';
 import './Style.css';
 
 class Main extends Component {
@@ -11,47 +12,59 @@ class Main extends Component {
         super(props);
 
         this.state = {
+            is_load: false,
             collapsed: false,
             openKeys: [],
             selectedKeys: [],
-            menu: constant.menu
+            menu: []
         }
     }
 
     componentDidMount() {
-        var open_key = [];
-        var selected_key = [];
 
-        if (typeof (this.state.menu[0].children) === 'undefined') {
-            for (let i = 0; i < this.state.menu.length; i++) {
-                if (this.state.menu[i].category_value === '/' + this.props.routes[2].path) {
-                    open_key = [this.state.menu[i].category_id];
-                    selected_key = [this.state.menu[i].category_id];
 
-                    break;
-                }
-            }
-        } else {
-            for (let i = 0; i < this.state.menu.length; i++) {
-                for (var k = 0; k < this.state.menu[i].children.length; k++) {
-                    if (this.state.menu[i].children[k].category_value === '/' + this.props.routes[2].path) {
-                        open_key = [this.state.menu[i].category_id];
-                        selected_key = [this.state.menu[i].children[k].category_id];
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        this.setState({
-            openKeys: open_key,
-            selectedKeys: selected_key
-        });
+        this.handleLoad();
     }
 
     componentWillUnmount() {
 
+    }
+
+    handleLoad() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/menu/list',
+            data: {},
+            success: function (data) {
+                var open_key = [];
+                var selected_key = [];
+
+                for (let i = 0; i < data.length; i++) {
+                    for (var k = 0; k < data[i].children.length; k++) {
+                        if (data[i].children[k].menu_url === '/' + this.props.routes[2].path) {
+                            open_key = [data[i].menu_id];
+                            selected_key = [data[i].children[k].menu_id];
+
+                            break;
+                        }
+                    }
+                }
+
+                this.setState({
+                    menu: data,
+                    openKeys: open_key,
+                    selectedKeys: selected_key
+                });
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
     }
 
     handleOpenChange(openKeys) {
@@ -70,6 +83,10 @@ class Main extends Component {
         this.setState({
             openKeys: nextOpenKeys
         });
+
+        // this.setState({
+        //     openKeys: openKeys
+        // });
     }
 
     getAncestorKeys = (key) => {
@@ -104,47 +121,34 @@ class Main extends Component {
                 </Header>
                 <Layout>
                     <Sider className="sider">
-                        <Menu
-                            mode="inline"
-                            className="menu"
-                            openKeys={this.state.openKeys}
-                            selectedKeys={this.state.selectedKeys}
-                            onOpenChange={this.handleOpenChange.bind(this)}
-                            onClick={this.handleClick.bind(this)}
-                            style={{height: document.documentElement.clientHeight - 64}}
-                        >
-                            {
-                                typeof (this.state.menu[0].children) === 'undefined' ?
+                        <Spin spinning={this.state.is_load}>
+                            <Menu
+                                mode="inline"
+                                className="menu"
+                                openKeys={this.state.openKeys}
+                                selectedKeys={this.state.selectedKeys}
+                                onOpenChange={this.handleOpenChange.bind(this)}
+                                onClick={this.handleClick.bind(this)}
+                                style={{height: document.documentElement.clientHeight - 64}}
+                            >
+                                {
                                     this.state.menu.map(function (item) {
                                         return (
-                                            <Menu.Item key={item.category_id}>
-                                                <Link to={item.category_value}>
-                                                    <Icon type={item.category_image} />
-                                                    {item.category_name}
-                                                </Link>
-                                            </Menu.Item>
-                                        )
-                                    })
-                                    :
-                                    this.state.menu.map(function (item) {
-                                        return (
-                                            <SubMenu key={item.category_id}
-                                                     title={<span><Icon
-                                                         className={'anticon ' + item.category_remark}/><span
-                                                         className="nav-text">{item.category_name}</span></span>}>
+                                            <SubMenu key={item.menu_id}
+                                                     title={<span><Icon type={item.menu_image}/><span className="nav-text">{item.menu_name}</span></span>}>
                                                 {
                                                     item.children.map(function (children) {
                                                         return (
-                                                            <Menu.Item key={children.category_id}><Link
-                                                                to={children.category_value}>{children.category_name}</Link></Menu.Item>
+                                                            <Menu.Item key={children.menu_id}><Link to={children.menu_url}><Icon type="database"/>{children.menu_name}</Link></Menu.Item>
                                                         )
                                                     })
                                                 }
                                             </SubMenu>
                                         )
                                     })
-                            }
-                        </Menu>
+                                }
+                            </Menu>
+                        </Spin>
                     </Sider>
                     <Layout className="layout">
                         <Content style={{

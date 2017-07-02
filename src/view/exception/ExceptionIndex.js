@@ -261,7 +261,7 @@ class ExceptionIndex extends Component {
                                     getFieldDecorator('http_id', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请求编号"/>
+                                        <Input type="text" placeholder="请求编号" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

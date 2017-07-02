@@ -58,6 +58,7 @@ class FeijiuRecommendProductDetail extends Component {
             success: function (data) {
                 this.props.form.setFieldsValue({
                     product_name: data.product_name,
+                    product_link: data.product_link,
                     product_content: data.product_content,
                 });
 
@@ -164,7 +165,7 @@ class FeijiuRecommendProductDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '商品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -176,7 +177,27 @@ class FeijiuRecommendProductDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-image-item form-required-item" label="商品图片">
-                                    <InputImage name="product_image" limit={1} ref="product_image"/>
+                                    <InputImage name="product_image" limit={1} ref="product_image" onPressEnter={this.handleSubmit.bind(this)}/>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="商品链接">
+                                    {
+                                        getFieldDecorator('product_link', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '商品链接'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>
@@ -194,7 +215,7 @@ class FeijiuRecommendProductDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '商品介绍'}/>
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '商品介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

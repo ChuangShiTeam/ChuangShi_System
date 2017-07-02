@@ -189,7 +189,7 @@ class ApiDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '接口名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '接口名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -209,7 +209,7 @@ class ApiDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '接口地址'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '接口地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

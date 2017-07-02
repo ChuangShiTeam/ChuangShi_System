@@ -152,7 +152,7 @@ class GuangqiPrizeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '奖品名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '奖品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -172,7 +172,7 @@ class GuangqiPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={100} placeholder={constant.placeholder + '中奖率'}/>
+                                            <InputNumber min={0} max={100} placeholder={constant.placeholder + '中奖率'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -192,7 +192,7 @@ class GuangqiPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '奖品总数'}/>
+                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '奖品总数'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -212,7 +212,7 @@ class GuangqiPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '每天上限'}/>
+                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '每天上限'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -232,7 +232,7 @@ class GuangqiPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={99} placeholder={constant.placeholder + '奖品排序'}/>
+                                            <InputNumber min={0} max={99} placeholder={constant.placeholder + '奖品排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

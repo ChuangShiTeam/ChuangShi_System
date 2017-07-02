@@ -211,7 +211,7 @@ class GuangqiPrizeIndex extends Component {
                                     getFieldDecorator('prize_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入奖品名称"/>
+                                        <Input type="text" placeholder="请输入奖品名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

@@ -191,7 +191,7 @@ class BrandDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类编号'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '分类编号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -211,7 +211,7 @@ class BrandDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '品牌名称'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '品牌名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -231,7 +231,7 @@ class BrandDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '品牌图片'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '品牌图片'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -251,7 +251,7 @@ class BrandDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '品牌内容'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '品牌内容'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

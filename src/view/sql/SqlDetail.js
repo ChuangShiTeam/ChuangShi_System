@@ -121,7 +121,7 @@ class SqlDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'SQL表格'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'SQL表格'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -141,7 +141,7 @@ class SqlDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'SQL动作'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'SQL动作'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -161,7 +161,7 @@ class SqlDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'SQL内容'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'SQL内容'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

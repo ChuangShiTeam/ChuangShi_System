@@ -223,7 +223,7 @@ class FeijiuRecommendCustomerIndex extends Component {
                                     getFieldDecorator('customer_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入客户名称"/>
+                                        <Input type="text" placeholder="请输入客户名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

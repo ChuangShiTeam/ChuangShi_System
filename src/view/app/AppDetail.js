@@ -168,7 +168,7 @@ class AppDetail extends Component {
                                         getFieldDecorator('app_secret', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'app_secret'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'app_secret'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -184,7 +184,7 @@ class AppDetail extends Component {
                                         getFieldDecorator('wechat_app_id', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'wechat_app_id'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'wechat_app_id'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -200,7 +200,7 @@ class AppDetail extends Component {
                                         getFieldDecorator('wechat_app_secret', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'wechat_app_secret'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'wechat_app_secret'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -216,7 +216,7 @@ class AppDetail extends Component {
                                         getFieldDecorator('wechat_mch_id', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'wechat_mch_id'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'wechat_mch_id'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -232,7 +232,7 @@ class AppDetail extends Component {
                                         getFieldDecorator('wechat_mch_key', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'wechat_mch_key'}/>
+                                            <Input type="text" placeholder={constant.placeholder + 'wechat_mch_key'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

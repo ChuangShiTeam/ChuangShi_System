@@ -76,7 +76,7 @@ class Login extends Component {
                                     }],
                                     initialValue: 'admin'
                                 })(
-                                    <Input type="text" placeholder={'用户名'}/>
+                                    <Input type="text" placeholder={'用户名'} onPressEnter={this.handleSubmit.bind(this)}/>
                                 )
                             }
                         </FormItem>
@@ -89,7 +89,7 @@ class Login extends Component {
                                     }],
                                     initialValue: 'admin'
                                 })(
-                                    <Input type="password" placeholder={'密码'}/>
+                                    <Input type="password" placeholder={'密码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                 )
                             }
                         </FormItem>
