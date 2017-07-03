@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Checkbox, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, Checkbox, message} from 'antd';
 
 import InputImage from '../../component/InputImage';
 import InputHtml from '../../component/InputHtml';
@@ -209,10 +209,10 @@ class ProductDetail extends Component {
                                 ''
                         }
                         <Row>
-                            <Col span={16}>
+                            <Col span={24}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 3},
-                                    wrapperCol: {span: 21}
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-item" label="商品名称">
                                     {
                                         getFieldDecorator('product_name', {
@@ -271,12 +271,22 @@ class ProductDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-image-item form-required-item" label="图片列表">
+                                    <InputImage name="product_image_list" limit={5} ref="product_image_list"/>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
                             <Col span={24}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 2},
                                     wrapperCol: {span: 22}
                                 }} className="form-item" label="商品标记">
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_is_new', {
                                                 valuePropName: 'checked',
@@ -286,7 +296,7 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_is_recommend', {
                                                 valuePropName: 'checked',
@@ -296,7 +306,7 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_is_bargain', {
                                                 valuePropName: 'checked',
@@ -306,7 +316,7 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_is_hot', {
                                                 valuePropName: 'checked',
@@ -316,7 +326,7 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_is_sold_out', {
                                                 valuePropName: 'checked',
@@ -326,7 +336,7 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_is_virtual', {
                                                 valuePropName: 'checked',
@@ -336,7 +346,7 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem style={{width: '70px', float: 'left'}}>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
                                         {
                                             getFieldDecorator('product_status', {
                                                 valuePropName: 'checked',
@@ -346,6 +356,74 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="会员价格">
+                                    {
+                                        this.props.product.member_level_list.map(function (item) {
+                                            return (
+                                                <div key={item.member_level_id} style={{width: '200px', float: 'left'}}>
+                                                    <FormItem hasFeedback {...{
+                                                        labelCol: {span: 12},
+                                                        wrapperCol: {span: 12}
+                                                    }} className="form-item" label={item.member_level_name + '(¥)'}>
+                                                        {
+                                                            getFieldDecorator('product_sku_price_' + item.member_level_id, {
+                                                                rules: [{
+                                                                    type: 'number',
+                                                                    required: true,
+                                                                    message: constant.required
+                                                                }],
+                                                                initialValue: 0.00
+                                                            })(
+                                                                <InputNumber min={0} max={99999} step={0.01} placeholder={constant.placeholder + '分类排序'}/>
+                                                            )
+                                                        }
+                                                    </FormItem>
+                                                </div>
+                                            )
+                                        }.bind(this))
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="会员佣金">
+                                    {
+                                        this.props.product.member_level_list.map(function (item) {
+                                            return (
+                                                <div key={item.member_level_id} style={{width: '200px', float: 'left'}}>
+                                                    <FormItem hasFeedback {...{
+                                                        labelCol: {span: 12},
+                                                        wrapperCol: {span: 12}
+                                                    }} className="form-item" label={item.member_level_name + '(%)'}>
+                                                        {
+                                                            getFieldDecorator('product_sku_commission_' + item.member_level_id, {
+                                                                rules: [{
+                                                                    type: 'number',
+                                                                    required: true,
+                                                                    message: constant.required
+                                                                }],
+                                                                initialValue: 0.00
+                                                            })(
+                                                                <InputNumber min={0} max={100} step={1} placeholder={constant.placeholder + '分类排序'}/>
+                                                            )
+                                                        }
+                                                    </FormItem>
+                                                </div>
+                                            )
+                                        }.bind(this))
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>

@@ -27,6 +27,8 @@ class ProductIndex extends Component {
             this.handleLoadApp();
         }
 
+        this.handleLoadMemberLevel();
+
         this.props.form.setFieldsValue({
             product_name: this.props.product.product_name
         });
@@ -51,6 +53,24 @@ class ProductIndex extends Component {
                     type: 'product/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadMemberLevel() {
+        http.request({
+            url: '/member/level/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'product/fetch',
+                    data: {
+                        member_level_list: data
                     }
                 });
             }.bind(this),
