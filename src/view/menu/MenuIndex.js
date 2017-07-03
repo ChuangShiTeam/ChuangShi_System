@@ -208,6 +208,10 @@ class MenuIndex extends Component {
             title: '图片',
             dataIndex: 'menu_image'
         }, {
+            width: 200,
+            title: '地址',
+            dataIndex: 'menu_url'
+        }, {
             width: 100,
             title: '排序',
             dataIndex: 'menu_sort'

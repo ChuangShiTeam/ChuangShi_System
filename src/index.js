@@ -12,6 +12,11 @@ import api from './model/api';
 import user from './model/user';
 import admin from './model/admin';
 import file from './model/file';
+import product from './model/product';
+import product_brand from './model/product_brand';
+import product_category from './model/product_category';
+import member from './model/member';
+import member_level from './model/member_level';
 
 import guangqi_customer from './model/guangqi_customer';
 import guangqi_prize from './model/guangqi_prize';
@@ -32,6 +37,11 @@ app.model(api);
 app.model(user);
 app.model(admin);
 app.model(file);
+app.model(product);
+app.model(product_brand);
+app.model(product_category);
+app.model(member);
+app.model(member_level);
 
 app.model(guangqi_customer);
 app.model(guangqi_prize);

@@ -131,7 +131,7 @@ class FeijiuRecommendProductDetail extends Component {
 
         this.props.form.resetFields();
 
-        this.refs.product_image.handleSetValue([]);
+        this.refs.product_image.handleReset();
     }
 
     render() {
@@ -177,7 +177,7 @@ class FeijiuRecommendProductDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-image-item form-required-item" label="商品图片">
-                                    <InputImage name="product_image" limit={1} ref="product_image" onPressEnter={this.handleSubmit.bind(this)}/>
+                                    <InputImage name="product_image" limit={1} ref="product_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

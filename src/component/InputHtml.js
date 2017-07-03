@@ -13,7 +13,7 @@ class InputHtml extends Component {
     super(props);
 
     this.state = {
-      editor: ''
+
     }
   }
 
@@ -45,16 +45,6 @@ class InputHtml extends Component {
 
   handleReset() {
     this.handleSetValue("");
-  }
-
-  handleSubmitReturn(list) {
-    var html = '';
-
-    for (var i = 0; i < list.length; i++) {
-      html += '<img src="' + constant.host + list[i].file_path + '" />';
-    }
-
-    this.editor.insertContent(html);
   }
 
   render() {
