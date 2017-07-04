@@ -117,6 +117,39 @@ class ProductDetail extends Component {
 
             values.product_content = this.refs.product_content.handleGetValue();
 
+            //设置sku
+            var product_sku_price_list = [{
+                member_level_id: '',
+                member_level_name: '',
+                product_sku_price: values.product_sku_price
+            }];
+            delete values.product_sku_price;
+            for (let i = 0; i < this.props.product.member_level_list.length; i++) {
+                product_sku_price_list.push({
+                    member_level_id: this.props.product.member_level_list[i].member_level_id,
+                    member_level_name: this.props.product.member_level_list[i].member_level_name,
+                    product_sku_price: this.props.form.getFieldValue('product_sku_price_' + this.props.product.member_level_list[i].member_level_id)
+                });
+                delete values['product_sku_price_' + this.props.product.member_level_list[i].member_level_id];
+            }
+            var product_sku_list = [{
+                product_sku_is_default: true,
+                product_sku_price_list: product_sku_price_list
+            }];
+            values.product_sku_list = product_sku_list;
+
+            //设置佣金
+            var product_sku_commission_list = [];
+            for (let i = 0; i < this.props.product.member_level_list.length; i++) {
+                product_sku_commission_list.push({
+                    member_level_id: this.props.product.member_level_list[i].member_level_id,
+                    member_level_name: this.props.product.member_level_list[i].member_level_name,
+                    product_sku_commission: this.props.form.getFieldValue('product_sku_commission_' + this.props.product.member_level_list[i].member_level_id)
+                });
+                delete values['product_sku_commission_' + this.props.product.member_level_list[i].member_level_id];
+            }
+            values.product_sku_commission_list = product_sku_commission_list;
+
             this.setState({
                 is_load: true
             });
@@ -368,7 +401,7 @@ class ProductDetail extends Component {
                                     {
                                         this.props.product.member_level_list.map(function (item) {
                                             return (
-                                                <div key={item.member_level_id} style={{width: '200px', float: 'left'}}>
+                                                <div key={item.member_level_id} style={{width: '210px', float: 'left'}}>
                                                     <FormItem hasFeedback {...{
                                                         labelCol: {span: 12},
                                                         wrapperCol: {span: 12}
@@ -382,14 +415,33 @@ class ProductDetail extends Component {
                                                                 }],
                                                                 initialValue: 0.00
                                                             })(
-                                                                <InputNumber min={0} max={99999} step={0.01} placeholder={constant.placeholder + '分类排序'}/>
+                                                                <InputNumber min={0} max={99999} step={0.01} placeholder={constant.placeholder + '价格'}/>
                                                             )
                                                         }
                                                     </FormItem>
                                                 </div>
                                             )
-                                        }.bind(this))
+                                        })
                                     }
+                                    <div style={{width: '210px', float: 'left'}}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 12},
+                                            wrapperCol: {span: 12}
+                                        }} className="form-item" label={'普通会员(¥)'}>
+                                            {
+                                                getFieldDecorator('product_sku_price', {
+                                                    rules: [{
+                                                        type: 'number',
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: 0.00
+                                                })(
+                                                    <InputNumber min={0} max={99999} step={0.01} placeholder={constant.placeholder + '价格'}/>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </div>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -402,7 +454,7 @@ class ProductDetail extends Component {
                                     {
                                         this.props.product.member_level_list.map(function (item) {
                                             return (
-                                                <div key={item.member_level_id} style={{width: '200px', float: 'left'}}>
+                                                <div key={item.member_level_id} style={{width: '210px', float: 'left'}}>
                                                     <FormItem hasFeedback {...{
                                                         labelCol: {span: 12},
                                                         wrapperCol: {span: 12}
@@ -416,13 +468,13 @@ class ProductDetail extends Component {
                                                                 }],
                                                                 initialValue: 0.00
                                                             })(
-                                                                <InputNumber min={0} max={100} step={1} placeholder={constant.placeholder + '分类排序'}/>
+                                                                <InputNumber min={0} max={100} step={1} placeholder={constant.placeholder + '佣金'}/>
                                                             )
                                                         }
                                                     </FormItem>
                                                 </div>
                                             )
-                                        }.bind(this))
+                                        })
                                     }
                                 </FormItem>
                             </Col>

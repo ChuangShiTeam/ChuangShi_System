@@ -1,5 +1,3 @@
-import constant from '../util/constant';
-
 export default {
 
     namespace: 'product_category',

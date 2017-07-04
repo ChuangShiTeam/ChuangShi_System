@@ -5,7 +5,6 @@ import {Layout, Menu, Icon, Spin} from 'antd';
 
 import constant from '../util/constant';
 import http from '../util/http';
-import './Style.css';
 
 class Main extends Component {
     constructor(props) {

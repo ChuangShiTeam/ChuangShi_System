@@ -6,7 +6,6 @@ import {Card, Spin, Form, Input, Button, message} from 'antd';
 import constant from '../util/constant';
 import storage from '../util/storage';
 import http from '../util/http';
-import './Style.css';
 
 class Login extends Component {
     constructor(props) {
