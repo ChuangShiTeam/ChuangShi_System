@@ -18,6 +18,7 @@ import ProductBrandIndex from './view/product_brand/ProductBrandIndex';
 import ProductCategoryIndex from './view/product_category/ProductCategoryIndex';
 import MemberIndex from './view/member/MemberIndex';
 import MemberLevelIndex from './view/member_level/MemberLevelIndex';
+import MemberStockActionIndex from './view/member_stock_action/MemberStockActionIndex';
 import StockIndex from './view/stock/StockIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 
@@ -65,6 +66,7 @@ function RouterConfig({history}) {
                     <Route path="product/category/index" component={ProductCategoryIndex}/>
                     <Route path="member/index" component={MemberIndex}/>
                     <Route path="member/level/index" component={MemberLevelIndex}/>
+                    <Route path="member/stock/action/index" component={MemberStockActionIndex}/>
                     <Route path="stock/index" component={StockIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
 

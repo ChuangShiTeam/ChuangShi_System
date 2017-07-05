@@ -19,6 +19,7 @@ import product_brand from './model/product_brand';
 import product_category from './model/product_category';
 import member from './model/member';
 import member_level from './model/member_level';
+import member_stock_action from './model/member_stock_action';
 import stock from './model/stock';
 import express from './model/express';
 
@@ -46,6 +47,7 @@ app.model(product_brand);
 app.model(product_category);
 app.model(member);
 app.model(member_level);
+app.model(member_stock_action);
 app.model(stock);
 app.model(express);
 
