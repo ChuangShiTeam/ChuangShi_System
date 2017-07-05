@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -131,14 +131,14 @@ class StockDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'����'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>�ر�</Button>,
+                               onClick={this.handleCancel.bind(this)}>关闭</Button>,
                        <Button key="submit" type="primary" size="default" icon="check-circle"
                                loading={this.state.is_load}
-                               onClick={this.handleSubmit.bind(this)}>ȷ��</Button>
+                               onClick={this.handleSubmit.bind(this)}>确定</Button>
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
@@ -150,7 +150,7 @@ class StockDetail extends Component {
                                         <FormItem hasFeedback {...{
                                             labelCol: {span: 6},
                                             wrapperCol: {span: 18}
-                                        }} className="content-search-item" label="Ӧ������">
+                                        }} className="content-search-item" label="应用名称">
                                             {
                                                 getFieldDecorator('app_id', {
                                                     rules: [{
@@ -159,7 +159,7 @@ class StockDetail extends Component {
                                                     }],
                                                     initialValue: ''
                                                 })(
-                                                    <Select allowClear placeholder="��ѡ��Ӧ��">
+                                                    <Select allowClear placeholder="请选择应用">
                                                         {
                                                             this.props.stock.app_list.map(function (item) {
                                                                 return (

@@ -185,7 +185,7 @@ class StockIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '√˚≥∆',
+            title: 'ÂêçÁß∞',
             dataIndex: 'stock_name'
         }, {
             width: 100,
@@ -208,7 +208,7 @@ class StockIndex extends Component {
             size: 'defalut',
             total: this.props.stock.total,
             showTotal: function (total, range) {
-                return '◊‹π≤' + total + 'Ãı ˝æ›';
+                return 'ÊÄªÂÖ±' + total + 'Êù°Êï∞ÊçÆ';
             },
             current: this.props.stock.page_index,
             pageSize: this.props.stock.page_size,
@@ -221,7 +221,7 @@ class StockIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">–≈œ¢</div>
+                        <div className="">‰ø°ÊÅØ</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -239,12 +239,12 @@ class StockIndex extends Component {
                                     <FormItem hasFeedback {...{
                                         labelCol: {span: 6},
                                         wrapperCol: {span: 18}
-                                    }} className="content-search-item" label="”¶”√√˚≥∆">
+                                    }} className="content-search-item" label="Â∫îÁî®ÂêçÁß∞">
                                         {
                                             getFieldDecorator('app_id', {
                                                 initialValue: ''
                                             })(
-                                                <Select allowClear placeholder="«Î—°‘Ò”¶”√">
+                                                <Select allowClear placeholder="ËØ∑ÈÄâÊã©Â∫îÁî®">
                                                     {
                                                         this.props.stock.app_list.map(function (item) {
                                                             return (
@@ -265,12 +265,12 @@ class StockIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="√˚≥∆">
+                            }} className="content-search-item" label="ÂêçÁß∞">
                                 {
                                     getFieldDecorator('stock_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="«Î ‰»Î√˚≥∆" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="ËØ∑ËæìÂÖ•ÂêçÁß∞" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
