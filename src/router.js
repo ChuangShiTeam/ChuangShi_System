@@ -18,6 +18,7 @@ import ProductBrandIndex from './view/product_brand/ProductBrandIndex';
 import ProductCategoryIndex from './view/product_category/ProductCategoryIndex';
 import MemberIndex from './view/member/MemberIndex';
 import MemberLevelIndex from './view/member_level/MemberLevelIndex';
+import StockIndex from './view/stock/StockIndex';
 
 import GuangqiCustomerIndex from './view/guangqi_customer/GuangqiCustomerIndex';
 import GuangqiPrizeIndex from './view/guangqi_prize/GuangqiPrizeIndex';
@@ -62,6 +63,7 @@ function RouterConfig({history}) {
                     <Route path="product/category/index" component={ProductCategoryIndex}/>
                     <Route path="member/index" component={MemberIndex}/>
                     <Route path="member/level/index" component={MemberLevelIndex}/>
+                    <Route path="stock/index" component={StockIndex}/>
 
                     <Route path="guangqi/customer/index" component={GuangqiCustomerIndex}/>
                     <Route path="guangqi/prize/index" component={GuangqiPrizeIndex}/>
