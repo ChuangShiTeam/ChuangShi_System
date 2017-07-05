@@ -6,7 +6,7 @@ import ImageHelp from './ImageHelp'
 import constant from '../util/constant';
 import notification from '../util/notification';
 
-var editor;
+var htmlEditor;
 
 class InputHtml extends Component {
   constructor(props) {
@@ -25,22 +25,22 @@ class InputHtml extends Component {
         html += '<img src="' + constant.host + data[i].file_path + '" />';
       }
 
-      this.editor.insertContent(html);
+      htmlEditor.insertContent(html);
     });
   }
 
   componentWillUnmount() {
     notification.remove('notification_image_help_' + this.props.name + '_Submit', this);
 
-    this.editor.remove();
+    htmlEditor.remove();
   }
 
   handleSetValue(content) {
-    this.editor.setContent(content);
+    htmlEditor.setContent(content);
   }
 
   handleGetValue() {
-    return this.editor.getContent();
+    return htmlEditor.getContent();
   }
 
   handleReset() {
@@ -66,7 +66,7 @@ class InputHtml extends Component {
             imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
             toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough removeformat | alignleft aligncenter alignright | media | mybutton image | code | preview',
             setup: function (editor) {
-              this.editor = editor;
+              htmlEditor = editor;
 
               editor.addButton('mybutton', {
                 icon: 'mce-ico mce-i-browse',

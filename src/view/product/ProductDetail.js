@@ -37,7 +37,7 @@ class ProductDetail extends Component {
             }, function () {
                 setTimeout(function () {
                     this.handleLoad();
-                }.bind(this), 200);
+                }.bind(this), 300);
             });
         });
     }
@@ -117,7 +117,7 @@ class ProductDetail extends Component {
 
             values.product_content = this.refs.product_content.handleGetValue();
 
-            //设置sku
+            //设置价格
             var product_sku_price_list = [{
                 member_level_id: '',
                 member_level_name: '',
@@ -132,11 +132,6 @@ class ProductDetail extends Component {
                 });
                 delete values['product_sku_price_' + this.props.product.member_level_list[i].member_level_id];
             }
-            var product_sku_list = [{
-                product_sku_is_default: true,
-                product_sku_price_list: product_sku_price_list
-            }];
-            values.product_sku_list = product_sku_list;
 
             //设置佣金
             var product_sku_commission_list = [];
@@ -148,7 +143,14 @@ class ProductDetail extends Component {
                 });
                 delete values['product_sku_commission_' + this.props.product.member_level_list[i].member_level_id];
             }
-            values.product_sku_commission_list = product_sku_commission_list;
+
+            var product_sku_list = [{
+                product_sku_is_default: true,
+                product_sku_attribute_list: [],
+                product_sku_price_list: product_sku_price_list,
+                product_sku_commission_list: product_sku_commission_list
+            }];
+            values.product_sku_list = product_sku_list;
 
             this.setState({
                 is_load: true
