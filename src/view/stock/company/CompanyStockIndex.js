@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import StockDetail from './StockDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import CompanyStockDetail from './CompanyStockDetail';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import validate from '../../../util/validate';
+import http from '../../../util/http';
 
-class StockIndex extends Component {
+class CompanyStockIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class StockIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.stock.app_id
+            app_id: this.props.company_stock.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            stock_name: this.props.stock.stock_name
+            stock_name: this.props.company_stock.stock_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_stock_index_load', this, function (data) {
+        notification.on('notification_company_stock_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_stock_index_load', this);
+        notification.remove('notification_company_stock_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class StockIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'stock/fetch',
+                    type: 'company_stock/fetch',
                     data: {
                         app_list: data
                     }
@@ -70,7 +70,7 @@ class StockIndex extends Component {
             var stock_name = this.props.form.getFieldValue('stock_name');
 
             this.props.dispatch({
-                type: 'stock/fetch',
+                type: 'company_stock/fetch',
                 data: {
                     app_id: app_id,
                     stock_name: stock_name,
@@ -92,14 +92,14 @@ class StockIndex extends Component {
         http.request({
             url: '/stock/' + constant.action + '/list',
             data: {
-                app_id: this.props.stock.app_id,
-                stock_name: this.props.stock.stock_name,
-                page_index: this.props.stock.page_index,
-                page_size: this.props.stock.page_size
+                app_id: this.props.company_stock.app_id,
+                stock_name: this.props.company_stock.stock_name,
+                page_index: this.props.company_stock.page_index,
+                page_size: this.props.company_stock.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'stock/fetch',
+                    type: 'company_stock/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class StockIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'stock/fetch',
+                type: 'company_stock/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class StockIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'stock/fetch',
+                type: 'company_stock/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,11 +146,11 @@ class StockIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_stock_detail_add', {});
+        notification.emit('notification_company_stock_detail_add', {});
     }
 
     handleEdit(stock_id) {
-        notification.emit('notification_stock_detail_edit', {
+        notification.emit('notification_company_stock_detail_edit', {
             stock_id: stock_id
         });
     }
@@ -206,12 +206,12 @@ class StockIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.stock.total,
+            total: this.props.company_stock.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.stock.page_index,
-            pageSize: this.props.stock.page_size,
+            current: this.props.company_stock.page_index,
+            pageSize: this.props.company_stock.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -246,7 +246,7 @@ class StockIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.stock.app_list.map(function (item) {
+                                                        this.props.company_stock.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -283,18 +283,18 @@ class StockIndex extends Component {
                        rowKey="stock_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.stock.list} pagination={pagination}
+                       dataSource={this.props.company_stock.list} pagination={pagination}
                        bordered/>
-                <StockDetail/>
+                <CompanyStockDetail/>
             </QueueAnim>
         );
     }
 }
 
-StockIndex.propTypes = {};
+CompanyStockIndex.propTypes = {};
 
-StockIndex = Form.create({})(StockIndex);
+CompanyStockIndex = Form.create({})(CompanyStockIndex);
 
-export default connect(({stock}) => ({
-    stock
-}))(StockIndex);
+export default connect(({company_stock}) => ({
+    company_stock
+}))(CompanyStockIndex);
