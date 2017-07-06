@@ -93,7 +93,10 @@ class MemberStockDetail extends Component {
 
             values.stock_id = this.state.stock_id;
             values.system_version = this.state.system_version;
-
+            values.product_name = this.props.member_stock.product_list[values.product_index].product.product_name;
+            values.product_image = this.props.member_stock.product_list[values.product_index].product.product_image;
+            values.product_sku_id = this.props.member_stock.product_list[values.product_index].productSkuList[0].product_sku_id;
+            values.stock_type = '会员';
             this.setState({
                 is_load: true
             });
@@ -186,27 +189,7 @@ class MemberStockDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('product_sku_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="公司id或会员id">
+                                }} className="content-search-item" label="会员">
                                     {
                                         getFieldDecorator('object_id', {
                                             rules: [{
@@ -215,7 +198,16 @@ class MemberStockDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '公司id或会员id'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择会员">
+                                                {
+                                                    this.props.member_stock.member_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.member_id}
+                                                                    value={item.member_id}>{item.user_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -226,56 +218,25 @@ class MemberStockDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="产品名称">
+                                }} className="content-search-item" label="商品">
                                     {
-                                        getFieldDecorator('product_name', {
+                                        getFieldDecorator('product_index', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '产品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="产品图片">
-                                    {
-                                        getFieldDecorator('product_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '产品图片'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="公司或会员">
-                                    {
-                                        getFieldDecorator('stock_type', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '公司或会员'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择商品">
+                                                {
+                                                    this.props.member_stock.product_list.map(function (item, index) {
+                                                        return (
+                                                            <Option key={index}
+                                                                    value={index}>{item.product.product_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -315,27 +276,10 @@ class MemberStockDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '出库或入库'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="状态">
-                                    {
-                                        getFieldDecorator('stock_status', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '状态'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="出库或入库">
+                                                <Option key={'出库'} value={'出库'}>出库</Option>
+                                                <Option key={'入库'} value={'入库'}>入库</Option>
+                                            </Select>
                                         )
                                     }
                                 </FormItem>

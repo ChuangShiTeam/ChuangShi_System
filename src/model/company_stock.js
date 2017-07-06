@@ -11,9 +11,10 @@ export default {
 		page_index: 1,
 		page_size: constant.page_size,
 		list: [],
-		stock_type: '',
-		stock_action: '',
-		product_name: ''
+        stock_type: '公司',
+        stock_action: '',
+        product_name: '',
+        product_list: [],
 	},
 
 	reducers: {

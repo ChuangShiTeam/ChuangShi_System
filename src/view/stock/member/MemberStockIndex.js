@@ -34,9 +34,13 @@ class MemberStockIndex extends Component {
         });
 
         this.handleLoad();
+        this.handleLoadMember();
+        this.handleLoadProduct();
 
         notification.on('notification_member_stock_index_load', this, function (data) {
             this.handleLoad();
+            this.handleLoadMember();
+            this.handleLoadProduct();
         });
     }
 
@@ -53,6 +57,42 @@ class MemberStockIndex extends Component {
                     type: 'member_stock/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadMember() {
+        http.request({
+            url: '/member/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'member_stock/fetch',
+                    data: {
+                        member_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadProduct() {
+        http.request({
+            url: '/product/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'member_stock/fetch',
+                    data: {
+                        product_list: data
                     }
                 });
             }.bind(this),

@@ -14,7 +14,9 @@ export default {
         stock_type: '会员',
         stock_action: '',
         product_name: '',
-        member_name: ''
+        member_name: '',
+        member_list: [],
+        product_list: []
     },
 
     reducers: {

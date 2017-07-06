@@ -20,14 +20,14 @@ class CompanyStockDetail extends Component {
     }
 
     componentDidMount() {
-        notification.on('notification_stock_detail_add', this, function (data) {
+        notification.on('notification_company_stock_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_stock_detail_edit', this, function (data) {
+        notification.on('notification_company_stock_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
@@ -39,9 +39,9 @@ class CompanyStockDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_stock_detail_add', this);
+        notification.remove('notification_company_stock_detail_add', this);
 
-        notification.remove('notification_stock_detail_edit', this);
+        notification.remove('notification_company_stock_detail_edit', this);
     }
 
     handleLoad() {
@@ -69,7 +69,7 @@ class CompanyStockDetail extends Component {
                     stock_type: data.stock_type,
                     stock_quantity: data.stock_quantity,
                     stock_action: data.stock_action,
-                    stock_status: data.stock_status,
+                    stock_status: data.stock_status
                 });
 
                 this.setState({
@@ -93,7 +93,10 @@ class CompanyStockDetail extends Component {
 
             values.stock_id = this.state.stock_id;
             values.system_version = this.state.system_version;
-
+            values.product_name = this.props.company_stock.product_list[values.product_index].product.product_name;
+            values.product_image = this.props.company_stock.product_list[values.product_index].product.product_image;
+            values.product_sku_id = this.props.company_stock.product_list[values.product_index].productSkuList[0].product_sku_id;
+            values.stock_type = '公司';
             this.setState({
                 is_load: true
             });
@@ -104,7 +107,7 @@ class CompanyStockDetail extends Component {
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_stock_index_load', {});
+                    notification.emit('notification_company_stock_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -135,7 +138,7 @@ class CompanyStockDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'公司出库入库详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -165,7 +168,7 @@ class CompanyStockDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.stock.app_list.map(function (item) {
+                                                            this.props.company_stock.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -186,96 +189,25 @@ class CompanyStockDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="content-search-item" label="商品">
                                     {
-                                        getFieldDecorator('product_sku_id', {
+                                        getFieldDecorator('product_index', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="公司id或会员id">
-                                    {
-                                        getFieldDecorator('object_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '公司id或会员id'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="产品名称">
-                                    {
-                                        getFieldDecorator('product_name', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '产品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="产品图片">
-                                    {
-                                        getFieldDecorator('product_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '产品图片'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="公司或会员">
-                                    {
-                                        getFieldDecorator('stock_type', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '公司或会员'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择商品">
+                                                {
+                                                    this.props.company_stock.product_list.map(function (item, index) {
+                                                        return (
+                                                            <Option key={index}
+                                                                    value={index}>{item.product.product_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -315,27 +247,10 @@ class CompanyStockDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '出库或入库'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="状态">
-                                    {
-                                        getFieldDecorator('stock_status', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '状态'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="出库或入库">
+                                                <Option key={'出库'} value={'出库'}>出库</Option>
+                                                <Option key={'入库'} value={'入库'}>入库</Option>
+                                            </Select>
                                         )
                                     }
                                 </FormItem>

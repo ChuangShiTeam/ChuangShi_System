@@ -21,20 +21,23 @@ class CompanyStockIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.company_stock.app_id
+                app_id: this.props.company_stock.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            stock_name: this.props.company_stock.stock_name
+            stock_action: this.props.company_stock.stock_action,
+            product_name: this.props.company_stock.product_name
         });
 
         this.handleLoad();
+        this.handleLoadProduct();
 
         notification.on('notification_company_stock_index_load', this, function (data) {
             this.handleLoad();
+            this.handleLoadProduct();
         });
     }
 
@@ -60,6 +63,24 @@ class CompanyStockIndex extends Component {
         });
     }
 
+    handleLoadProduct() {
+        http.request({
+            url: '/product/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'company_stock/fetch',
+                    data: {
+                        product_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleSearch() {
         new Promise(function (resolve, reject) {
             var app_id = this.props.form.getFieldValue('app_id');
@@ -67,13 +88,15 @@ class CompanyStockIndex extends Component {
                 app_id = '';
             }
 
-            var stock_name = this.props.form.getFieldValue('stock_name');
+            var stock_action = this.props.form.getFieldValue('stock_action');
+            var product_name = this.props.form.getFieldValue('product_name');
 
             this.props.dispatch({
                 type: 'company_stock/fetch',
                 data: {
                     app_id: app_id,
-                    stock_name: stock_name,
+                    stock_action: stock_action,
+                    product_name: product_name,
                     page_index: 1
                 }
             });
@@ -93,7 +116,9 @@ class CompanyStockIndex extends Component {
             url: '/stock/' + constant.action + '/list',
             data: {
                 app_id: this.props.company_stock.app_id,
-                stock_name: this.props.company_stock.stock_name,
+                stock_type: this.props.company_stock.stock_type,
+                stock_action: this.props.company_stock.stock_action,
+                product_name: this.props.company_stock.product_name,
                 page_index: this.props.company_stock.page_index,
                 page_size: this.props.company_stock.page_size
             },
@@ -185,8 +210,17 @@ class CompanyStockIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'stock_name'
+            width: 150,
+            title: '产品名称',
+            dataIndex: 'product_name'
+        }, {
+            width: 150,
+            title: '数量',
+            dataIndex: 'stock_quantity'
+        }, {
+            width: 150,
+            title: '出库/入库',
+            dataIndex: 'stock_action'
         }, {
             width: 100,
             title: constant.operation,
@@ -221,7 +255,7 @@ class CompanyStockIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">会员出库入库信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -246,7 +280,7 @@ class CompanyStockIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.company_stock.app_list.map(function (item) {
+                                                        this.props.stock.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -265,17 +299,15 @@ class CompanyStockIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="产品名称">
                                 {
-                                    getFieldDecorator('stock_name', {
+                                    getFieldDecorator('product_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入产品名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={8}>
                         </Col>
                     </Row>
                 </Form>
