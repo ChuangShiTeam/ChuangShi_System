@@ -23,8 +23,8 @@ import MemberStockIndex from './view/stock/member/MemberStockIndex';
 import CompanyStockIndex from './view/stock/company/CompanyStockIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 
-
 import CustomerIndex from './view/customer/CustomerIndex';
+import CustomerAttributeIndex from './view/customer_attribute/CustomerAttributeIndex';
 
 import GuangqiCustomerIndex from './view/guangqi_customer/GuangqiCustomerIndex';
 import GuangqiPrizeIndex from './view/guangqi_prize/GuangqiPrizeIndex';
@@ -75,6 +75,7 @@ function RouterConfig({history}) {
                     <Route path="express/index" component={ExpressIndex}/>
 
                     <Route path="customer/list" component={CustomerIndex}/>
+                    <Route path="customer/attribute/index" component={CustomerAttributeIndex}/>
 
                     <Route path="guangqi/customer/index" component={GuangqiCustomerIndex}/>
                     <Route path="guangqi/prize/index" component={GuangqiPrizeIndex}/>
