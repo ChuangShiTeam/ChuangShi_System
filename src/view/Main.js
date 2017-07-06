@@ -38,11 +38,11 @@ class Main extends Component {
             url: '/' + constant.action + '/menu/list',
             data: {},
             success: function (data) {
-                var open_key = [];
-                var selected_key = [];
+                let open_key = [];
+                let selected_key = [];
 
                 for (let i = 0; i < data.length; i++) {
-                    for (var k = 0; k < data[i].children.length; k++) {
+                    for (let k = 0; k < data[i].children.length; k++) {
                         if (data[i].children[k].menu_url === '/' + this.props.routes[2].path) {
                             open_key = [data[i].menu_id];
                             selected_key = [data[i].children[k].menu_id];
@@ -71,7 +71,7 @@ class Main extends Component {
         const latestOpenKey = openKeys.find(key => !(state.openKeys.indexOf(key) > -1));
         const latestCloseKey = state.openKeys.find(key => !(openKeys.indexOf(key) > -1));
 
-        var nextOpenKeys = [];
+        let nextOpenKeys = [];
         if (latestOpenKey) {
             nextOpenKeys = this.getAncestorKeys(latestOpenKey).concat(latestOpenKey);
         }

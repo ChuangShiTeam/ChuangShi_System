@@ -62,12 +62,12 @@ class MenuIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var menu_name = this.props.form.getFieldValue('menu_name');
+            let menu_name = this.props.form.getFieldValue('menu_name');
 
             this.props.dispatch({
                 type: 'menu/fetch',
@@ -96,7 +96,7 @@ class MenuIndex extends Component {
                 menu_name: this.props.menu.menu_name
             },
             success: function (data) {
-                var expandedRowKeys = this.setExpandedRowKeys(data);
+                let expandedRowKeys = this.setExpandedRowKeys(data);
 
                 this.props.dispatch({
                     type: 'menu/fetch',
@@ -115,9 +115,9 @@ class MenuIndex extends Component {
     }
 
     setExpandedRowKeys(list) {
-        var expandedRowKeys = [];
+        let expandedRowKeys = [];
 
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             expandedRowKeys.push(list[i].menu_id);
 
             if (list[i].children) {

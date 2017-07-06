@@ -65,8 +65,8 @@ app.model(feijiu_recommend_product);
 
 app.router(Router);
 
-var rule = document.styleSheets[document.styleSheets.length - 1].cssRules;
-for (var i = 0 ; i < rule.length; i++) {
+let rule = document.styleSheets[document.styleSheets.length - 1].cssRules;
+for (let i = 0 ; i < rule.length; i++) {
     if (rule[i].selectorText === '.ant-modal-body') {
         rule[i].style.height= document.documentElement.clientHeight - 290 + 'px';
         break;

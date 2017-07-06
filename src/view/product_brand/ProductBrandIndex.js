@@ -62,12 +62,12 @@ class ProductBrandIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var product_brand_name = this.props.form.getFieldValue('product_brand_name');
+            let product_brand_name = this.props.form.getFieldValue('product_brand_name');
 
             this.props.dispatch({
                 type: 'product_brand/fetch',

@@ -65,7 +65,7 @@ class ProductDetail extends Component {
                     });
                 }
 
-                var product_image = [];
+                let product_image = [];
                 if (data.product_image_file !== '') {
                     product_image.push(data.product_image_file);
                 }
@@ -74,8 +74,8 @@ class ProductDetail extends Component {
                 this.refs.product_content.handleSetValue(data.product_content);
 
                 this.props.form.setFieldsValue({
-                    category_id: data.category_id,
-                    brand_id: data.brand_id,
+                    product_category_id: data.product_category_id,
+                    product_brand_id: data.product_brand_id,
                     product_name: data.product_name,
                     product_is_new: data.product_is_new,
                     product_is_recommend: data.product_is_recommend,
@@ -83,8 +83,39 @@ class ProductDetail extends Component {
                     product_is_hot: data.product_is_hot,
                     product_is_sold_out: data.product_is_sold_out,
                     product_is_virtual: data.product_is_virtual,
-                    product_status: data.product_status,
+                    product_status: data.product_status
                 });
+
+                let product_sku_list = data.product_sku_list;
+                for (let i = 0; i < product_sku_list.length; i++) {
+                    let product_sku = product_sku_list[i];
+
+                    if (product_sku.product_sku_is_default) {
+                        let product_sku_price_list = product_sku.product_sku_price_list;
+                        for (let j = 0; j < product_sku_price_list.length; j++) {
+                            let product_sku_price = product_sku_price_list[j];
+
+                            let object = {};
+                            if (product_sku_price.member_level_id === '') {
+                                object['product_sku_price'] = product_sku_price.product_sku_price;
+                            } else {
+                                object['product_sku_price_' + product_sku_price.member_level_id] = product_sku_price.product_sku_price;
+                            }
+
+                            this.props.form.setFieldsValue(object);
+                        }
+
+                        let product_sku_commission_list = product_sku.product_sku_commission_list;
+                        for (let j = 0; j < product_sku_commission_list.length; j++) {
+                            let product_sku_commission = product_sku_commission_list[j];
+
+                            let object = {};
+                            object['product_sku_commission_' + product_sku_commission.member_level_id] = product_sku_commission.product_sku_commission;
+
+                            this.props.form.setFieldsValue(object);
+                        }
+                    }
+                }
 
                 this.setState({
                     system_version: data.system_version
@@ -108,7 +139,7 @@ class ProductDetail extends Component {
             values.product_id = this.state.product_id;
             values.system_version = this.state.system_version;
 
-            var file_list = this.refs.product_image.handleGetValue();
+            let file_list = this.refs.product_image.handleGetValue();
             if (file_list.length === 0) {
                 values.product_image = '';
             } else {
@@ -118,7 +149,7 @@ class ProductDetail extends Component {
             values.product_content = this.refs.product_content.handleGetValue();
 
             //设置价格
-            var product_sku_price_list = [{
+            let product_sku_price_list = [{
                 member_level_id: '',
                 member_level_name: '',
                 product_sku_price: values.product_sku_price
@@ -134,7 +165,7 @@ class ProductDetail extends Component {
             }
 
             //设置佣金
-            var product_sku_commission_list = [];
+            let product_sku_commission_list = [];
             for (let i = 0; i < this.props.product.member_level_list.length; i++) {
                 product_sku_commission_list.push({
                     member_level_id: this.props.product.member_level_list[i].member_level_id,
@@ -144,7 +175,7 @@ class ProductDetail extends Component {
                 delete values['product_sku_commission_' + this.props.product.member_level_list[i].member_level_id];
             }
 
-            var product_sku_list = [{
+            let product_sku_list = [{
                 product_sku_is_default: true,
                 product_sku_attribute_list: [],
                 product_sku_price_list: product_sku_price_list,
@@ -197,7 +228,8 @@ class ProductDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'商品详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'商品详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+                   className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -257,7 +289,8 @@ class ProductDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '商品名称'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -270,10 +303,19 @@ class ProductDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="分类编号">
                                     {
-                                        getFieldDecorator('category_id', {
+                                        getFieldDecorator('product_category_id', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类编号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择分类">
+                                                {
+                                                    this.props.product.product_category_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.product_category_id}
+                                                                    value={item.product_category_name}>{item.product_category_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -286,10 +328,19 @@ class ProductDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="品牌编号">
                                     {
-                                        getFieldDecorator('brand_id', {
+                                        getFieldDecorator('product_brand_id', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '品牌编号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择品牌">
+                                                {
+                                                    this.props.product.product_brand_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.product_brand_id}
+                                                                    value={item.product_brand_name}>{item.product_brand_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -417,7 +468,8 @@ class ProductDetail extends Component {
                                                                 }],
                                                                 initialValue: 0.00
                                                             })(
-                                                                <InputNumber min={0} max={99999} step={0.01} placeholder={constant.placeholder + '价格'}/>
+                                                                <InputNumber min={0} max={99999} step={0.01}
+                                                                             placeholder={constant.placeholder + '价格'}/>
                                                             )
                                                         }
                                                     </FormItem>
@@ -439,7 +491,8 @@ class ProductDetail extends Component {
                                                     }],
                                                     initialValue: 0.00
                                                 })(
-                                                    <InputNumber min={0} max={99999} step={0.01} placeholder={constant.placeholder + '价格'}/>
+                                                    <InputNumber min={0} max={99999} step={0.01}
+                                                                 placeholder={constant.placeholder + '价格'}/>
                                                 )
                                             }
                                         </FormItem>
@@ -470,7 +523,8 @@ class ProductDetail extends Component {
                                                                 }],
                                                                 initialValue: 0.00
                                                             })(
-                                                                <InputNumber min={0} max={100} step={1} placeholder={constant.placeholder + '佣金'}/>
+                                                                <InputNumber min={0} max={100} step={1}
+                                                                             placeholder={constant.placeholder + '佣金'}/>
                                                             )
                                                         }
                                                     </FormItem>

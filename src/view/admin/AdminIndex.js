@@ -62,12 +62,12 @@ class AdminIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var user_name = this.props.form.getFieldValue('user_name');
+            let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
                 type: 'admin/fetch',
