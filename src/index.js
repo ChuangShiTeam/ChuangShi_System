@@ -25,6 +25,7 @@ import stock from './model/stock';
 import express from './model/express';
 
 import customer from './model/customer';
+import customer_attribute from './model/customer_attribute';
 
 import guangqi_customer from './model/guangqi_customer';
 import guangqi_prize from './model/guangqi_prize';
@@ -56,6 +57,7 @@ app.model(stock);
 app.model(express);
 
 app.model(customer);
+app.model(customer_attribute);
 
 app.model(guangqi_customer);
 app.model(guangqi_prize);
