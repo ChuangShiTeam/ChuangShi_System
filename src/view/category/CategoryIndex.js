@@ -64,13 +64,13 @@ class CategoryIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var category_name = this.props.form.getFieldValue('category_name');
-            var category_type = this.props.form.getFieldValue('category_type');
+            let category_name = this.props.form.getFieldValue('category_name');
+            let category_type = this.props.form.getFieldValue('category_type');
             if (validate.isUndefined(category_type)) {
                 category_type = '';
             }

@@ -1,8 +1,8 @@
-var events = {};
+let events = {};
 
 function on(name, self, callback) {
-    var tuple = [self, callback];
-    var callbacks = events[name];
+    let tuple = [self, callback];
+    let callbacks = events[name];
     if (Array.isArray(callbacks)) {
         callbacks.push(tuple);
     }
@@ -12,7 +12,7 @@ function on(name, self, callback) {
 }
 
 function remove(name, self) {
-    var callbacks = events[name];
+    let callbacks = events[name];
     if (Array.isArray(callbacks)) {
         events[name] = callbacks.filter((tuple) => {
             return tuple[0] !== self;
@@ -21,11 +21,11 @@ function remove(name, self) {
 }
 
 function emit(name, data) {
-    var callbacks = events[name];
+    let callbacks = events[name];
     if (Array.isArray(callbacks)) {
         callbacks.map((tuple) => {
-            var self = tuple[0];
-            var callback = tuple[1];
+            let self = tuple[0];
+            let callback = tuple[1];
             callback.call(self, data);
             return true;
         })

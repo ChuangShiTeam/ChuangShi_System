@@ -58,7 +58,7 @@ class CategoryChirldren extends Component {
                 category_id: this.state.category_id
             },
             success: function (data) {
-                var expandedRowKeys = this.checkChildren(data.children);
+                let expandedRowKeys = this.checkChildren(data.children);
 
                 this.setState({
                     app_id: data.app_id,
@@ -78,9 +78,9 @@ class CategoryChirldren extends Component {
     }
 
     checkChildren(list) {
-        var expandedRowKeys = [];
+        let expandedRowKeys = [];
 
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             expandedRowKeys.push(list[i].category_id);
 
             if (list[i].children) {

@@ -6,7 +6,7 @@ import ImageHelp from './ImageHelp'
 import constant from '../util/constant';
 import notification from '../util/notification';
 
-var htmlEditor;
+let htmlEditor;
 
 class InputHtml extends Component {
   constructor(props) {
@@ -19,9 +19,9 @@ class InputHtml extends Component {
 
   componentDidMount() {
     notification.on('notification_image_help_' + this.props.name + '_Submit', this, function (data) {
-      var html = '';
+      let html = '';
 
-      for (var i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i++) {
         html += '<img src="' + constant.host + data[i].file_path + '" />';
       }
 

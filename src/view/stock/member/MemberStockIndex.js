@@ -104,14 +104,14 @@ class MemberStockIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var stock_action = this.props.form.getFieldValue('stock_action');
-            var product_name = this.props.form.getFieldValue('product_name');
-            var member_name = this.props.form.getFieldValue('member_name');
+            let stock_action = this.props.form.getFieldValue('stock_action');
+            let product_name = this.props.form.getFieldValue('product_name');
+            let member_name = this.props.form.getFieldValue('member_name');
 
             this.props.dispatch({
                 type: 'member_stock/fetch',

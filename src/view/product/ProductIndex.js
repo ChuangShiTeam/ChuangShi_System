@@ -27,6 +27,8 @@ class ProductIndex extends Component {
             this.handleLoadApp();
         }
 
+        this.handleLoadProductBrand();
+        this.handleLoadProductCategory();
         this.handleLoadMemberLevel();
 
         this.props.form.setFieldsValue({
@@ -62,6 +64,42 @@ class ProductIndex extends Component {
         });
     }
 
+    handleLoadProductBrand() {
+        http.request({
+            url: '/product/brand/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'product/fetch',
+                    data: {
+                        product_brand_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadProductCategory() {
+        http.request({
+            url: '/product/category/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'product/fetch',
+                    data: {
+                        product_category_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleLoadMemberLevel() {
         http.request({
             url: '/member/level/' + constant.action + '/all/list',
@@ -82,12 +120,12 @@ class ProductIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var product_name = this.props.form.getFieldValue('product_name');
+            let product_name = this.props.form.getFieldValue('product_name');
 
             this.props.dispatch({
                 type: 'product/fetch',

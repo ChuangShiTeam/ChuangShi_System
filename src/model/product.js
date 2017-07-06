@@ -12,6 +12,8 @@ export default {
         page_index: 1,
         page_size: constant.page_size,
         list: [],
+        product_brand_list: [],
+        product_category_list: [],
         member_level_list: []
     },
 

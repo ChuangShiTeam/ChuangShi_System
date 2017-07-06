@@ -62,12 +62,12 @@ class ProductCategoryIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var product_category_name = this.props.form.getFieldValue('product_category_name');
+            let product_category_name = this.props.form.getFieldValue('product_category_name');
 
             this.props.dispatch({
                 type: 'product_category/fetch',
@@ -95,7 +95,7 @@ class ProductCategoryIndex extends Component {
                 product_category_name: this.props.product_category.product_category_name
             },
             success: function (data) {
-                var expandedRowKeys = this.setExpandedRowKeys(data);
+                let expandedRowKeys = this.setExpandedRowKeys(data);
 
                 this.props.dispatch({
                     type: 'product_category/fetch',
@@ -114,9 +114,9 @@ class ProductCategoryIndex extends Component {
     }
 
     setExpandedRowKeys(list) {
-        var expandedRowKeys = [];
+        let expandedRowKeys = [];
 
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             expandedRowKeys.push(list[i].product_category_id);
 
             if (list[i].children) {

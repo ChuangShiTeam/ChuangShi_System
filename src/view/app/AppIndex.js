@@ -62,12 +62,12 @@ class AppIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var app_name = this.props.form.getFieldValue('app_name');
+            let app_name = this.props.form.getFieldValue('app_name');
 
             this.props.dispatch({
                 type: 'app/fetch',

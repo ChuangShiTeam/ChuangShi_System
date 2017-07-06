@@ -62,12 +62,12 @@ class MemberLevelIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var member_level_name = this.props.form.getFieldValue('member_level_name');
+            let member_level_name = this.props.form.getFieldValue('member_level_name');
 
             this.props.dispatch({
                 type: 'member_level/fetch',

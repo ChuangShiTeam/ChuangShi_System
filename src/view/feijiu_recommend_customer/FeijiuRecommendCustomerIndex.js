@@ -36,7 +36,7 @@ class FeijiuRecommendCustomerIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var customer_name = this.props.form.getFieldValue('customer_name');
+            let customer_name = this.props.form.getFieldValue('customer_name');
             if (validate.isUndefined(customer_name)) {
                 customer_name = '';
             }
