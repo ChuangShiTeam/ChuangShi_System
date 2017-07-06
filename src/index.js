@@ -20,11 +20,12 @@ import product_category from './model/product_category';
 import member from './model/member';
 import member_address from './model/member_address';
 import member_level from './model/member_level';
-import member_stock_action from './model/member_stock_action';
-import stock from './model/stock';
+import member_stock from './model/member_stock';
+import company_stock from './model/company_stock';
 import express from './model/express';
 
 import customer from './model/customer';
+import customer_attribute from './model/customer_attribute';
 
 import guangqi_customer from './model/guangqi_customer';
 import guangqi_prize from './model/guangqi_prize';
@@ -51,11 +52,12 @@ app.model(product_category);
 app.model(member);
 app.model(member_address);
 app.model(member_level);
-app.model(member_stock_action);
-app.model(stock);
+app.model(member_stock);
+app.model(company_stock);
 app.model(express);
 
 app.model(customer);
+app.model(customer_attribute);
 
 app.model(guangqi_customer);
 app.model(guangqi_prize);

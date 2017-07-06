@@ -19,12 +19,12 @@ import ProductCategoryIndex from './view/product_category/ProductCategoryIndex';
 import MemberIndex from './view/member/MemberIndex';
 import MemberAddressIndex from './view/member_address/MemberAddressIndex';
 import MemberLevelIndex from './view/member_level/MemberLevelIndex';
-import MemberStockActionIndex from './view/member_stock_action/MemberStockActionIndex';
-import StockIndex from './view/stock/StockIndex';
+import MemberStockIndex from './view/stock/member/MemberStockIndex';
+import CompanyStockIndex from './view/stock/company/CompanyStockIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 
-
 import CustomerIndex from './view/customer/CustomerIndex';
+import CustomerAttributeIndex from './view/customer_attribute/CustomerAttributeIndex';
 
 import GuangqiCustomerIndex from './view/guangqi_customer/GuangqiCustomerIndex';
 import GuangqiPrizeIndex from './view/guangqi_prize/GuangqiPrizeIndex';
@@ -70,11 +70,12 @@ function RouterConfig({history}) {
                     <Route path="member/index" component={MemberIndex}/>
                     <Route path="member/address/index" component={MemberAddressIndex}/>
                     <Route path="member/level/index" component={MemberLevelIndex}/>
-                    <Route path="member/stock/action/index" component={MemberStockActionIndex}/>
-                    <Route path="stock/index" component={StockIndex}/>
+                    <Route path="stock/member/index" component={MemberStockIndex}/>
+                    <Route path="stock/company/index" component={CompanyStockIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
 
                     <Route path="customer/list" component={CustomerIndex}/>
+                    <Route path="customer/attribute/index" component={CustomerAttributeIndex}/>
 
                     <Route path="guangqi/customer/index" component={GuangqiCustomerIndex}/>
                     <Route path="guangqi/prize/index" component={GuangqiPrizeIndex}/>

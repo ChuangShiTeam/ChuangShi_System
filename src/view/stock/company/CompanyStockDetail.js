@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import http from '../../../util/http';
 
-class StockDetail extends Component {
+class CompanyStockDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -64,8 +64,12 @@ class StockDetail extends Component {
                 this.props.form.setFieldsValue({
                     product_sku_id: data.product_sku_id,
                     object_id: data.object_id,
+                    product_name: data.product_name,
+                    product_image: data.product_image,
                     stock_type: data.stock_type,
                     stock_quantity: data.stock_quantity,
+                    stock_action: data.stock_action,
+                    stock_status: data.stock_status,
                 });
 
                 this.setState({
@@ -202,7 +206,7 @@ class StockDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="公司id或会员id">
                                     {
                                         getFieldDecorator('object_id', {
                                             rules: [{
@@ -211,7 +215,7 @@ class StockDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '公司id或会员id'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -222,7 +226,47 @@ class StockDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="产品名称">
+                                    {
+                                        getFieldDecorator('product_name', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '产品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="产品图片">
+                                    {
+                                        getFieldDecorator('product_image', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '产品图片'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="公司或会员">
                                     {
                                         getFieldDecorator('stock_type', {
                                             rules: [{
@@ -231,7 +275,7 @@ class StockDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '公司或会员'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -242,7 +286,7 @@ class StockDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="数量">
                                     {
                                         getFieldDecorator('stock_quantity', {
                                             rules: [{
@@ -251,7 +295,47 @@ class StockDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '数量'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="出库或入库">
+                                    {
+                                        getFieldDecorator('stock_action', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '出库或入库'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="状态">
+                                    {
+                                        getFieldDecorator('stock_status', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '状态'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -264,8 +348,8 @@ class StockDetail extends Component {
     }
 }
 
-StockDetail.propTypes = {};
+CompanyStockDetail.propTypes = {};
 
-StockDetail = Form.create({})(StockDetail);
+CompanyStockDetail = Form.create({})(CompanyStockDetail);
 
-export default connect(({stock}) => ({stock}))(StockDetail);
+export default connect(({company_stock}) => ({company_stock}))(CompanyStockDetail);

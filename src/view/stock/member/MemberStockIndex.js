@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import StockDetail from './StockDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import MemberStockDetail from './MemberStockDetail';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import validate from '../../../util/validate';
+import http from '../../../util/http';
 
-class StockIndex extends Component {
+class MemberStockIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,27 @@ class StockIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.stock.app_id
+                app_id: this.props.member_stock.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            stock_name: this.props.stock.stock_name
+            member_name: this.props.member_stock.member_name,
+            stock_action: this.props.member_stock.stock_action,
+            product_name: this.props.member_stock.product_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_stock_index_load', this, function (data) {
+        notification.on('notification_member_stock_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_stock_index_load', this);
+        notification.remove('notification_member_stock_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +50,7 @@ class StockIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'stock/fetch',
+                    type: 'member_stock/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +64,22 @@ class StockIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let stock_name = this.props.form.getFieldValue('stock_name');
+            var stock_action = this.props.form.getFieldValue('stock_action');
+            var product_name = this.props.form.getFieldValue('product_name');
+            var member_name = this.props.form.getFieldValue('member_name');
 
             this.props.dispatch({
-                type: 'stock/fetch',
+                type: 'member_stock/fetch',
                 data: {
                     app_id: app_id,
-                    stock_name: stock_name,
+                    member_name: member_name,
+                    stock_action: stock_action,
+                    product_name: product_name,
                     page_index: 1
                 }
             });
@@ -92,14 +98,17 @@ class StockIndex extends Component {
         http.request({
             url: '/stock/' + constant.action + '/list',
             data: {
-                app_id: this.props.stock.app_id,
-                stock_name: this.props.stock.stock_name,
-                page_index: this.props.stock.page_index,
-                page_size: this.props.stock.page_size
+                app_id: this.props.member_stock.app_id,
+                stock_type: this.props.member_stock.stock_type,
+                member_name: this.props.member_stock.member_name,
+                stock_action: this.props.member_stock.stock_action,
+                product_name: this.props.member_stock.product_name,
+                page_index: this.props.member_stock.page_index,
+                page_size: this.props.member_stock.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'stock/fetch',
+                    type: 'member_stock/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +126,7 @@ class StockIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'stock/fetch',
+                type: 'member_stock/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +141,7 @@ class StockIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'stock/fetch',
+                type: 'member_stock/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,11 +155,11 @@ class StockIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_stock_detail_add', {});
+        notification.emit('notification_member_stock_detail_add', {});
     }
 
     handleEdit(stock_id) {
-        notification.emit('notification_stock_detail_edit', {
+        notification.emit('notification_member_stock_detail_edit', {
             stock_id: stock_id
         });
     }
@@ -185,8 +194,21 @@ class StockIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'stock_name'
+            width: 150,
+            title: '会员名称',
+            dataIndex: 'member_name'
+        }, {
+            width: 150,
+            title: '产品名称',
+            dataIndex: 'product_name'
+        }, {
+            width: 150,
+            title: '数量',
+            dataIndex: 'stock_quantity'
+        }, {
+            width: 150,
+            title: '出库/入库',
+            dataIndex: 'stock_action'
         }, {
             width: 100,
             title: constant.operation,
@@ -206,12 +228,12 @@ class StockIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.stock.total,
+            total: this.props.member_stock.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.stock.page_index,
-            pageSize: this.props.stock.page_size,
+            current: this.props.member_stock.page_index,
+            pageSize: this.props.member_stock.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -221,7 +243,7 @@ class StockIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">会员出库入库信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -265,17 +287,29 @@ class StockIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="会员名称">
                                 {
-                                    getFieldDecorator('stock_name', {
+                                    getFieldDecorator('member_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入会员名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="产品名称">
+                                {
+                                    getFieldDecorator('product_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入产品名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
@@ -283,18 +317,18 @@ class StockIndex extends Component {
                        rowKey="stock_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.stock.list} pagination={pagination}
+                       dataSource={this.props.member_stock.list} pagination={pagination}
                        bordered/>
-                <StockDetail/>
+                <MemberStockDetail/>
             </QueueAnim>
         );
     }
 }
 
-StockIndex.propTypes = {};
+MemberStockIndex.propTypes = {};
 
-StockIndex = Form.create({})(StockIndex);
+MemberStockIndex = Form.create({})(MemberStockIndex);
 
-export default connect(({stock}) => ({
-    stock
-}))(StockIndex);
+export default connect(({member_stock}) => ({
+    member_stock
+}))(MemberStockIndex);

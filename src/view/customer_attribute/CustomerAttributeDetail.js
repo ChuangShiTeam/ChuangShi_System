@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
+import React, {Component} from "react";
+import {connect} from "dva";
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, InputNumber} from "antd";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import http from "../../util/http";
 
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
-
-class MemberStockActionDetail extends Component {
+class CustomerAttributeDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,24 +13,24 @@ class MemberStockActionDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            member_stock_action_id: '',
+            customer_attribute_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_member_stock_action_detail_add', this, function (data) {
+        notification.on('notification_customer_attribute_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_member_stock_action_detail_edit', this, function (data) {
+        notification.on('notification_customer_attribute_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                member_stock_action_id: data.member_stock_action_id
+                customer_attribute_id: data.customer_attribute_id
             }, function () {
                 this.handleLoad();
             });
@@ -39,9 +38,9 @@ class MemberStockActionDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_member_stock_action_detail_add', this);
+        notification.remove('notification_customer_attribute_detail_add', this);
 
-        notification.remove('notification_member_stock_action_detail_edit', this);
+        notification.remove('notification_customer_attribute_detail_edit', this);
     }
 
     handleLoad() {
@@ -50,9 +49,9 @@ class MemberStockActionDetail extends Component {
         });
 
         http.request({
-            url: '/member/stock/action/' + constant.action + '/find',
+            url: '/customer/attribute/' + constant.action + '/find',
             data: {
-                member_stock_action_id: this.state.member_stock_action_id
+                customer_attribute_id: this.state.customer_attribute_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -62,11 +61,12 @@ class MemberStockActionDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    member_id: data.member_id,
-                    user_id: data.user_id,
-                    product_sku_id: data.product_sku_id,
-                    member_stock_action_name: data.member_stock_action_name,
-                    member_stock_quantity: data.member_stock_quantity,
+                    customer_attribute_name: data.customer_attribute_name,
+                    customer_attribute_key: data.customer_attribute_key,
+                    customer_attribute_input_type: data.customer_attribute_input_type,
+                    customer_attribute_data_type: data.customer_attribute_data_type,
+                    customer_attribute_default_value: data.customer_attribute_default_value,
+                    customer_attribute_sort: data.customer_attribute_sort,
                 });
 
                 this.setState({
@@ -88,7 +88,7 @@ class MemberStockActionDetail extends Component {
                 return;
             }
 
-            values.member_stock_action_id = this.state.member_stock_action_id;
+            values.customer_attribute_id = this.state.customer_attribute_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -96,12 +96,12 @@ class MemberStockActionDetail extends Component {
             });
 
             http.request({
-                url: '/member/stock/action/' + constant.action + '/' + this.state.action,
+                url: '/customer/attribute/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_member_stock_action_index_load', {});
+                    notification.emit('notification_customer_attribute_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -119,7 +119,7 @@ class MemberStockActionDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            member_stock_action_id: '',
+            customer_attribute_id: '',
             system_version: ''
         });
 
@@ -132,7 +132,8 @@ class MemberStockActionDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+                   className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -162,7 +163,7 @@ class MemberStockActionDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.member_stock_action.app_list.map(function (item) {
+                                                            this.props.customer_attribute.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -183,16 +184,17 @@ class MemberStockActionDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="模板数据名称">
                                     {
-                                        getFieldDecorator('member_id', {
+                                        getFieldDecorator('customer_attribute_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '模板数据名称'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -203,16 +205,17 @@ class MemberStockActionDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="模板数据key">
                                     {
-                                        getFieldDecorator('user_id', {
+                                        getFieldDecorator('customer_attribute_key', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '模板数据key'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -223,16 +226,17 @@ class MemberStockActionDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="模板数据输入类型">
                                     {
-                                        getFieldDecorator('product_sku_id', {
+                                        getFieldDecorator('customer_attribute_input_type', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '模板数据输入类型'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -243,16 +247,17 @@ class MemberStockActionDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="入库或出库">
+                                }} className="form-item" label="模板数据类型">
                                     {
-                                        getFieldDecorator('member_stock_action_name', {
+                                        getFieldDecorator('customer_attribute_data_type', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '入库或出库'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '模板数据类型'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -263,16 +268,38 @@ class MemberStockActionDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="数量">
+                                }} className="form-item" label="模板数据默认值">
                                     {
-                                        getFieldDecorator('member_stock_quantity', {
+                                        getFieldDecorator('customer_attribute_default_value', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '模板数据默认值'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="模板数据排序">
+                                    {
+                                        getFieldDecorator('customer_attribute_sort', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '数量'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '模板数据排序'}
+                                                         onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -285,8 +312,8 @@ class MemberStockActionDetail extends Component {
     }
 }
 
-MemberStockActionDetail.propTypes = {};
+CustomerAttributeDetail.propTypes = {};
 
-MemberStockActionDetail = Form.create({})(MemberStockActionDetail);
+CustomerAttributeDetail = Form.create({})(CustomerAttributeDetail);
 
-export default connect(({member_stock_action}) => ({member_stock_action}))(MemberStockActionDetail);
+export default connect(({customer_attribute}) => ({customer_attribute}))(CustomerAttributeDetail);

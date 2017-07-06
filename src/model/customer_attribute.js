@@ -2,12 +2,12 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'stock',
+    namespace: 'customer_attribute',
 
     state: {
         app_id: '',
         app_list: [],
-        stock_name: '',
+        customer_attribute_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

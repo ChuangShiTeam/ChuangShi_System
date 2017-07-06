@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MemberStockActionDetail from './MemberStockActionDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import CompanyStockDetail from './CompanyStockDetail';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import validate from '../../../util/validate';
+import http from '../../../util/http';
 
-class MemberStockActionIndex extends Component {
+class CompanyStockIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class MemberStockActionIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.member_stock_action.app_id
+            app_id: this.props.company_stock.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            member_stock_action_name: this.props.member_stock_action.member_stock_action_name
+            stock_name: this.props.company_stock.stock_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_member_stock_action_index_load', this, function (data) {
+        notification.on('notification_company_stock_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_member_stock_action_index_load', this);
+        notification.remove('notification_company_stock_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class MemberStockActionIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member_stock_action/fetch',
+                    type: 'company_stock/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +67,13 @@ class MemberStockActionIndex extends Component {
                 app_id = '';
             }
 
-            let member_stock_action_name = this.props.form.getFieldValue('member_stock_action_name');
+            let stock_name = this.props.form.getFieldValue('stock_name');
 
             this.props.dispatch({
-                type: 'member_stock_action/fetch',
+                type: 'company_stock/fetch',
                 data: {
                     app_id: app_id,
-                    member_stock_action_name: member_stock_action_name,
+                    stock_name: stock_name,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class MemberStockActionIndex extends Component {
         });
 
         http.request({
-            url: '/member/stock/action/' + constant.action + '/list',
+            url: '/stock/' + constant.action + '/list',
             data: {
-                app_id: this.props.member_stock_action.app_id,
-                member_stock_action_name: this.props.member_stock_action.member_stock_action_name,
-                page_index: this.props.member_stock_action.page_index,
-                page_size: this.props.member_stock_action.page_size
+                app_id: this.props.company_stock.app_id,
+                stock_name: this.props.company_stock.stock_name,
+                page_index: this.props.company_stock.page_index,
+                page_size: this.props.company_stock.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member_stock_action/fetch',
+                    type: 'company_stock/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class MemberStockActionIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member_stock_action/fetch',
+                type: 'company_stock/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class MemberStockActionIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member_stock_action/fetch',
+                type: 'company_stock/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +146,24 @@ class MemberStockActionIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_member_stock_action_detail_add', {});
+        notification.emit('notification_company_stock_detail_add', {});
     }
 
-    handleEdit(member_stock_action_id) {
-        notification.emit('notification_member_stock_action_detail_edit', {
-            member_stock_action_id: member_stock_action_id
+    handleEdit(stock_id) {
+        notification.emit('notification_company_stock_detail_edit', {
+            stock_id: stock_id
         });
     }
 
-    handleDel(member_stock_action_id, system_version) {
+    handleDel(stock_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/member/stock/action/' + constant.action + '/delete',
+            url: '/stock/' + constant.action + '/delete',
             data: {
-                member_stock_action_id: member_stock_action_id,
+                stock_id: stock_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -186,18 +186,18 @@ class MemberStockActionIndex extends Component {
 
         const columns = [{
             title: '名称',
-            dataIndex: 'member_stock_action_name'
+            dataIndex: 'stock_name'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.member_stock_action_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.stock_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.member_stock_action_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.stock_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -206,12 +206,12 @@ class MemberStockActionIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.member_stock_action.total,
+            total: this.props.company_stock.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.member_stock_action.page_index,
-            pageSize: this.props.member_stock_action.page_size,
+            current: this.props.company_stock.page_index,
+            pageSize: this.props.company_stock.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -246,7 +246,7 @@ class MemberStockActionIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.member_stock_action.app_list.map(function (item) {
+                                                        this.props.company_stock.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -267,7 +267,7 @@ class MemberStockActionIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('member_stock_action_name', {
+                                    getFieldDecorator('stock_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
@@ -280,21 +280,21 @@ class MemberStockActionIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="member_stock_action_id"
+                       rowKey="stock_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.member_stock_action.list} pagination={pagination}
+                       dataSource={this.props.company_stock.list} pagination={pagination}
                        bordered/>
-                <MemberStockActionDetail/>
+                <CompanyStockDetail/>
             </QueueAnim>
         );
     }
 }
 
-MemberStockActionIndex.propTypes = {};
+CompanyStockIndex.propTypes = {};
 
-MemberStockActionIndex = Form.create({})(MemberStockActionIndex);
+CompanyStockIndex = Form.create({})(CompanyStockIndex);
 
-export default connect(({member_stock_action}) => ({
-    member_stock_action
-}))(MemberStockActionIndex);
+export default connect(({company_stock}) => ({
+    company_stock
+}))(CompanyStockIndex);
