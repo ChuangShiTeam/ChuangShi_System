@@ -3,7 +3,7 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MemberStockActionDetail from './MemberStockActionDetail';
+import CustomerAttributeDetail from './CustomerAttributeDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -21,7 +21,7 @@ class MemberStockActionIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.member_stock_action.app_id
+                app_id: this.props.member_stock_action.app_id
             });
 
             this.handleLoadApp();
@@ -62,12 +62,12 @@ class MemberStockActionIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var member_stock_action_name = this.props.form.getFieldValue('member_stock_action_name');
+            let member_stock_action_name = this.props.form.getFieldValue('member_stock_action_name');
 
             this.props.dispatch({
                 type: 'member_stock_action/fetch',
@@ -270,7 +270,8 @@ class MemberStockActionIndex extends Component {
                                     getFieldDecorator('member_stock_action_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -285,7 +286,7 @@ class MemberStockActionIndex extends Component {
                        loading={this.state.is_load} columns={columns}
                        dataSource={this.props.member_stock_action.list} pagination={pagination}
                        bordered/>
-                <MemberStockActionDetail/>
+                <CustomerAttributeDetail/>
             </QueueAnim>
         );
     }
