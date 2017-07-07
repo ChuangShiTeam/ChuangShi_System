@@ -32,6 +32,7 @@ import guangqi_prize from './model/guangqi_prize';
 import feijiu_fast_customer from './model/feijiu_fast_customer';
 import feijiu_recommend_customer from './model/feijiu_recommend_customer';
 import feijiu_recommend_product from './model/feijiu_recommend_product';
+import bill from './model/bill';
 
 const app = dva();
 
@@ -64,6 +65,7 @@ app.model(guangqi_prize);
 app.model(feijiu_fast_customer);
 app.model(feijiu_recommend_customer);
 app.model(feijiu_recommend_product);
+app.model(bill);
 
 app.router(Router);
 
