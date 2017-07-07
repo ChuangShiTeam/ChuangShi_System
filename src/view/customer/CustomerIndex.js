@@ -187,22 +187,37 @@ class CustomerIndex extends Component {
         const columns = [{
             title: '客户名称',
             dataIndex: 'customer_name'
-        }, {
-            title: '手机号码',
-            dataIndex: 'customer_phone'
-        },{
-            title: '出生日期',
-            dataIndex: 'customer_birthday'
-        },{
-            title: '所在城市',
-            dataIndex: 'customer_city'
         },{
             title: '性别',
             dataIndex: 'customer_sex'
         },{
+            title: '出生日期',
+            dataIndex: 'customer_birthday'
+        },{
+            title: '客户电话号码',
+            dataIndex: 'customer_tel'
+        },{
+            title: '客户手机号码',
+            dataIndex: 'customer_mobile'
+        },{
+            title: '客户邮编',
+            dataIndex: 'customer_postcode'
+        },{
             title: '身份证号',
             dataIndex: 'customer_id_card'
         },{
+            title: '省份',
+            dataIndex: 'customer_province'
+        },{
+            title: '城市',
+            dataIndex: 'customer_city'
+        },{
+            title: '区域',
+            dataIndex: 'customer_area'
+        },{
+            title: '详细地址',
+            dataIndex: 'customer_address'
+        }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',

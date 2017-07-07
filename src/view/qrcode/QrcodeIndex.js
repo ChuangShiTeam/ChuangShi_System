@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import CustomerAttributeDetail from './CustomerAttributeDetail';
+import QrcodeDetail from './QrcodeDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class CustomerAttributeIndex extends Component {
+class QrcodeIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class CustomerAttributeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.customer_attribute.app_id
+            app_id: this.props.qrcode.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            customer_attribute_name: this.props.customer_attribute.customer_attribute_name
+            qrcode_name: this.props.qrcode.qrcode_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_customer_attribute_index_load', this, function (data) {
+        notification.on('notification_qrcode_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_customer_attribute_index_load', this);
+        notification.remove('notification_qrcode_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class CustomerAttributeIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'customer_attribute/fetch',
+                    type: 'qrcode/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +62,18 @@ class CustomerAttributeIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            var app_id = this.props.form.getFieldValue('app_id');
+            let app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            var customer_attribute_name = this.props.form.getFieldValue('customer_attribute_name');
+            let qrcode_name = this.props.form.getFieldValue('qrcode_name');
 
             this.props.dispatch({
-                type: 'customer_attribute/fetch',
+                type: 'qrcode/fetch',
                 data: {
                     app_id: app_id,
-                    customer_attribute_name: customer_attribute_name,
+                    qrcode_name: qrcode_name,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class CustomerAttributeIndex extends Component {
         });
 
         http.request({
-            url: '/customer/attribute/' + constant.action + '/list',
+            url: '/qrcode/' + constant.action + '/list',
             data: {
-                app_id: this.props.customer_attribute.app_id,
-                customer_attribute_name: this.props.customer_attribute.customer_attribute_name,
-                page_index: this.props.customer_attribute.page_index,
-                page_size: this.props.customer_attribute.page_size
+                app_id: this.props.qrcode.app_id,
+                qrcode_name: this.props.qrcode.qrcode_name,
+                page_index: this.props.qrcode.page_index,
+                page_size: this.props.qrcode.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'customer_attribute/fetch',
+                    type: 'qrcode/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class CustomerAttributeIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'customer_attribute/fetch',
+                type: 'qrcode/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class CustomerAttributeIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'customer_attribute/fetch',
+                type: 'qrcode/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +146,24 @@ class CustomerAttributeIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_customer_attribute_detail_add', {});
+        notification.emit('notification_qrcode_detail_add', {});
     }
 
-    handleEdit(customer_attribute_id) {
-        notification.emit('notification_customer_attribute_detail_edit', {
-            customer_attribute_id: customer_attribute_id
+    handleEdit(qrcode_id) {
+        notification.emit('notification_qrcode_detail_edit', {
+            qrcode_id: qrcode_id
         });
     }
 
-    handleDel(customer_attribute_id, system_version) {
+    handleDel(qrcode_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/customer/attribute/' + constant.action + '/delete',
+            url: '/qrcode/' + constant.action + '/delete',
             data: {
-                customer_attribute_id: customer_attribute_id,
+                qrcode_id: qrcode_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,34 +185,19 @@ class CustomerAttributeIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '模板数据名称',
-            dataIndex: 'customer_attribute_name'
-        }, {
-            title: '模板数据key',
-            dataIndex: 'customer_attribute_key'
-        }, {
-            title: '模板数据输入类型',
-            dataIndex: 'customer_attribute_input_type'
-        }, {
-            title: '模板数据类型',
-            dataIndex: 'customer_attribute_data_type'
-        }, {
-            title: '模板数据默认值',
-            dataIndex: 'customer_attribute_default_value'
-        }, {
-            title: '模板数据排序',
-            dataIndex: 'customer_attribute_sort'
+            title: '名称',
+            dataIndex: 'qrcode_name'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.customer_attribute_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.qrcode_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.customer_attribute_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.qrcode_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -221,12 +206,12 @@ class CustomerAttributeIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.customer_attribute.total,
+            total: this.props.qrcode.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.customer_attribute.page_index,
-            pageSize: this.props.customer_attribute.page_size,
+            current: this.props.qrcode.page_index,
+            pageSize: this.props.qrcode.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -261,7 +246,7 @@ class CustomerAttributeIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.customer_attribute.app_list.map(function (item) {
+                                                        this.props.qrcode.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -282,11 +267,10 @@ class CustomerAttributeIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('customer_attribute_name', {
+                                    getFieldDecorator('qrcode_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -296,21 +280,21 @@ class CustomerAttributeIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="customer_attribute_id"
+                       rowKey="qrcode_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.customer_attribute.list} pagination={pagination}
+                       dataSource={this.props.qrcode.list} pagination={pagination}
                        bordered/>
-                <CustomerAttributeDetail/>
+                <QrcodeDetail/>
             </QueueAnim>
         );
     }
 }
 
-CustomerAttributeIndex.propTypes = {};
+QrcodeIndex.propTypes = {};
 
-CustomerAttributeIndex = Form.create({})(CustomerAttributeIndex);
+QrcodeIndex = Form.create({})(QrcodeIndex);
 
-export default connect(({customer_attribute}) => ({
-    customer_attribute
-}))(CustomerAttributeIndex);
+export default connect(({qrcode}) => ({
+    qrcode
+}))(QrcodeIndex);

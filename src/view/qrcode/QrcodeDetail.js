@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class CustomerDetail extends Component {
+class QrcodeDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,24 +14,24 @@ class CustomerDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            customer_id: '',
+            qrcode_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_customer_detail_add', this, function (data) {
+        notification.on('notification_qrcode_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_customer_detail_edit', this, function (data) {
+        notification.on('notification_qrcode_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                customer_id: data.customer_id
+                qrcode_id: data.qrcode_id
             }, function () {
                 this.handleLoad();
             });
@@ -39,9 +39,9 @@ class CustomerDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_customer_detail_add', this);
+        notification.remove('notification_qrcode_detail_add', this);
 
-        notification.remove('notification_customer_detail_edit', this);
+        notification.remove('notification_qrcode_detail_edit', this);
     }
 
     handleLoad() {
@@ -50,9 +50,9 @@ class CustomerDetail extends Component {
         });
 
         http.request({
-            url: '/customer/' + constant.action + '/find',
+            url: '/qrcode/' + constant.action + '/find',
             data: {
-                customer_id: this.state.customer_id
+                qrcode_id: this.state.qrcode_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -62,17 +62,12 @@ class CustomerDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    customer_name: data.customer_name,
-                    customer_sex: data.customer_sex,
-                    customer_birthday: data.customer_birthday,
-                    customer_tel: data.customer_tel,
-                    customer_mobile: data.customer_mobile,
-                    customer_postcode: data.customer_postcode,
-                    customer_id_card: data.customer_id_card,
-                    customer_province: data.customer_province,
-                    customer_city: data.customer_city,
-                    customer_area: data.customer_area,
-                    customer_address: data.customer_address,
+                    object_id: data.object_id,
+                    qrcode_type: data.qrcode_type,
+                    qrcode_url: data.qrcode_url,
+                    qrcode_add: data.qrcode_add,
+                    qrcode_cancel: data.qrcode_cancel,
+                    qrcode_status: data.qrcode_status,
                 });
 
                 this.setState({
@@ -94,7 +89,7 @@ class CustomerDetail extends Component {
                 return;
             }
 
-            values.customer_id = this.state.customer_id;
+            values.qrcode_id = this.state.qrcode_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -102,12 +97,12 @@ class CustomerDetail extends Component {
             });
 
             http.request({
-                url: '/customer/' + constant.action + '/' + this.state.action,
+                url: '/qrcode/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_customer_index_load', {});
+                    notification.emit('notification_qrcode_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -125,7 +120,7 @@ class CustomerDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            customer_id: '',
+            qrcode_id: '',
             system_version: ''
         });
 
@@ -168,7 +163,7 @@ class CustomerDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.customer.app_list.map(function (item) {
+                                                            this.props.qrcode.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -189,16 +184,16 @@ class CustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="客户名称">
+                                }} className="form-item" label="">
                                     {
-                                        getFieldDecorator('customer_name', {
+                                        getFieldDecorator('object_id', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -209,16 +204,16 @@ class CustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="性别">
+                                }} className="form-item" label="">
                                     {
-                                        getFieldDecorator('customer_sex', {
+                                        getFieldDecorator('qrcode_type', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '性别'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -229,16 +224,16 @@ class CustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="出生日期">
+                                }} className="form-item" label="">
                                     {
-                                        getFieldDecorator('customer_birthday', {
+                                        getFieldDecorator('qrcode_url', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '出生日期'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -249,16 +244,16 @@ class CustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="客户电话号码">
+                                }} className="form-item" label="">
                                     {
-                                        getFieldDecorator('customer_tel', {
+                                        getFieldDecorator('qrcode_add', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: ''
+                                            initialValue: 0
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户电话号码'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -269,16 +264,16 @@ class CustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="客户手机号码">
+                                }} className="form-item" label="">
                                     {
-                                        getFieldDecorator('customer_mobile', {
+                                        getFieldDecorator('qrcode_cancel', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: ''
+                                            initialValue: 0
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户手机号码'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -289,116 +284,13 @@ class CustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="客户邮编">
+                                }} className="form-item" label="">
                                     {
-                                        getFieldDecorator('customer_postcode', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                        getFieldDecorator('qrcode_status', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '客户邮编'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="身份证号">
-                                    {
-                                        getFieldDecorator('customer_id_card', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '身份证号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="省份">
-                                    {
-                                        getFieldDecorator('customer_province', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '省份'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="城市">
-                                    {
-                                        getFieldDecorator('customer_city', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '城市'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="区域">
-                                    {
-                                        getFieldDecorator('customer_area', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '区域'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="详细地址">
-                                    {
-                                        getFieldDecorator('customer_address', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '详细地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>
@@ -411,8 +303,8 @@ class CustomerDetail extends Component {
     }
 }
 
-CustomerDetail.propTypes = {};
+QrcodeDetail.propTypes = {};
 
-CustomerDetail = Form.create({})(CustomerDetail);
+QrcodeDetail = Form.create({})(QrcodeDetail);
 
-export default connect(({customer}) => ({customer}))(CustomerDetail);
+export default connect(({qrcode}) => ({qrcode}))(QrcodeDetail);

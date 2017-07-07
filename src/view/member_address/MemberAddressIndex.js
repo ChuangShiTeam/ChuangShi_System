@@ -20,7 +20,7 @@ class MemberAddressIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.member_address.app_id
+                app_id: this.props.member_address.app_id
             });
 
             this.handleLoadApp();
@@ -184,24 +184,36 @@ class MemberAddressIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
+            title: '会员编号',
+            dataIndex: 'member_id'
+        }, {
+            title: '用户编号',
+            dataIndex: 'user_id'
+        }, {
             title: '收货人',
             dataIndex: 'member_address_name'
-        },{
+        }, {
+            title: '电话号码',
+            dataIndex: 'member_address_tel'
+        }, {
             title: '手机号码',
-            dataIndex: 'member_address_phone'
-        },{
+            dataIndex: 'member_address_mobile'
+        }, {
+            title: '邮编',
+            dataIndex: 'member_address_postcode'
+        }, {
             title: '省份',
             dataIndex: 'member_address_province'
-        },{
+        }, {
             title: '城市',
             dataIndex: 'member_address_city'
-        },{
+        }, {
             title: '区域',
             dataIndex: 'member_address_area'
-        },{
+        }, {
             title: '详细地址',
-            dataIndex: 'member_address_street'
-        },{
+            dataIndex: 'member_address_address'
+        }, {
             title: '是否默认地址',
             dataIndex: 'member_delivery_is_default'
         }, {
@@ -287,7 +299,8 @@ class MemberAddressIndex extends Component {
                                     getFieldDecorator('member_address_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

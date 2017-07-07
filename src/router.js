@@ -22,6 +22,7 @@ import MemberLevelIndex from './view/member_level/MemberLevelIndex';
 import MemberStockIndex from './view/stock/member/MemberStockIndex';
 import CompanyStockIndex from './view/stock/company/CompanyStockIndex';
 import ExpressIndex from './view/express/ExpressIndex';
+import QrcodeIndex from './view/qrcode/QrcodeIndex';
 
 import TradeIndex from './view/trade/TradeIndex';
 
@@ -75,6 +76,7 @@ function RouterConfig({history}) {
                     <Route path="stock/member/index" component={MemberStockIndex}/>
                     <Route path="stock/company/index" component={CompanyStockIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
+                    <Route path="qrcode/index" component={QrcodeIndex}/>
 
                     <Route path="trade/index" component={TradeIndex}/>
 
