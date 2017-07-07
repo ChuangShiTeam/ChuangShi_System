@@ -23,6 +23,9 @@ import member_level from './model/member_level';
 import member_stock from './model/member_stock';
 import company_stock from './model/company_stock';
 import express from './model/express';
+import qrcode from './model/qrcode';
+
+import trade from './model/trade';
 
 import customer from './model/customer';
 import customer_attribute from './model/customer_attribute';
@@ -56,6 +59,9 @@ app.model(member_level);
 app.model(member_stock);
 app.model(company_stock);
 app.model(express);
+app.model(qrcode);
+
+app.model(trade);
 
 app.model(customer);
 app.model(customer_attribute);
