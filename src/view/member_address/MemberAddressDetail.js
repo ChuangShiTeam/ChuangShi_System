@@ -65,11 +65,13 @@ class MemberAddressDetail extends Component {
                     member_id: data.member_id,
                     user_id: data.user_id,
                     member_address_name: data.member_address_name,
-                    member_address_phone: data.member_address_phone,
+                    member_address_tel: data.member_address_tel,
+                    member_address_mobile: data.member_address_mobile,
+                    member_address_postcode: data.member_address_postcode,
                     member_address_province: data.member_address_province,
                     member_address_city: data.member_address_city,
                     member_address_area: data.member_address_area,
-                    member_address_street: data.member_address_street,
+                    member_address_address: data.member_address_address,
                     member_delivery_is_default: data.member_delivery_is_default,
                 });
 
@@ -209,7 +211,7 @@ class MemberAddressDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="会员编号">
+                                }} className="form-item" label="用户编号">
                                     {
                                         getFieldDecorator('user_id', {
                                             rules: [{
@@ -251,9 +253,30 @@ class MemberAddressDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="电话号码">
+                                    {
+                                        getFieldDecorator('member_address_tel', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '电话号码'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="手机号码">
                                     {
-                                        getFieldDecorator('member_address_phone', {
+                                        getFieldDecorator('member_address_mobile', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
@@ -261,6 +284,27 @@ class MemberAddressDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '手机号码'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="邮编">
+                                    {
+                                        getFieldDecorator('member_address_postcode', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '邮编'}
                                                    onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
@@ -337,7 +381,7 @@ class MemberAddressDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="详细地址">
                                     {
-                                        getFieldDecorator('member_address_street', {
+                                        getFieldDecorator('member_address_address', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required

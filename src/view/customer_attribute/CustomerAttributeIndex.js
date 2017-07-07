@@ -9,7 +9,7 @@ import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MemberStockActionIndex extends Component {
+class CustomerAttributeIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class MemberStockActionIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.member_stock_action.app_id
+                app_id: this.props.customer_attribute.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            member_stock_action_name: this.props.member_stock_action.member_stock_action_name
+            customer_attribute_name: this.props.customer_attribute.customer_attribute_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_member_stock_action_index_load', this, function (data) {
+        notification.on('notification_customer_attribute_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_member_stock_action_index_load', this);
+        notification.remove('notification_customer_attribute_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class MemberStockActionIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member_stock_action/fetch',
+                    type: 'customer_attribute/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +62,18 @@ class MemberStockActionIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let member_stock_action_name = this.props.form.getFieldValue('member_stock_action_name');
+            var customer_attribute_name = this.props.form.getFieldValue('customer_attribute_name');
 
             this.props.dispatch({
-                type: 'member_stock_action/fetch',
+                type: 'customer_attribute/fetch',
                 data: {
                     app_id: app_id,
-                    member_stock_action_name: member_stock_action_name,
+                    customer_attribute_name: customer_attribute_name,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class MemberStockActionIndex extends Component {
         });
 
         http.request({
-            url: '/member/stock/action/' + constant.action + '/list',
+            url: '/customer/attribute/' + constant.action + '/list',
             data: {
-                app_id: this.props.member_stock_action.app_id,
-                member_stock_action_name: this.props.member_stock_action.member_stock_action_name,
-                page_index: this.props.member_stock_action.page_index,
-                page_size: this.props.member_stock_action.page_size
+                app_id: this.props.customer_attribute.app_id,
+                customer_attribute_name: this.props.customer_attribute.customer_attribute_name,
+                page_index: this.props.customer_attribute.page_index,
+                page_size: this.props.customer_attribute.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member_stock_action/fetch',
+                    type: 'customer_attribute/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class MemberStockActionIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member_stock_action/fetch',
+                type: 'customer_attribute/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class MemberStockActionIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member_stock_action/fetch',
+                type: 'customer_attribute/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +146,24 @@ class MemberStockActionIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_member_stock_action_detail_add', {});
+        notification.emit('notification_customer_attribute_detail_add', {});
     }
 
-    handleEdit(member_stock_action_id) {
-        notification.emit('notification_member_stock_action_detail_edit', {
-            member_stock_action_id: member_stock_action_id
+    handleEdit(customer_attribute_id) {
+        notification.emit('notification_customer_attribute_detail_edit', {
+            customer_attribute_id: customer_attribute_id
         });
     }
 
-    handleDel(member_stock_action_id, system_version) {
+    handleDel(customer_attribute_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/member/stock/action/' + constant.action + '/delete',
+            url: '/customer/attribute/' + constant.action + '/delete',
             data: {
-                member_stock_action_id: member_stock_action_id,
+                customer_attribute_id: customer_attribute_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,19 +185,34 @@ class MemberStockActionIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'member_stock_action_name'
+            title: '模板数据名称',
+            dataIndex: 'customer_attribute_name'
+        }, {
+            title: '模板数据key',
+            dataIndex: 'customer_attribute_key'
+        }, {
+            title: '模板数据输入类型',
+            dataIndex: 'customer_attribute_input_type'
+        }, {
+            title: '模板数据类型',
+            dataIndex: 'customer_attribute_data_type'
+        }, {
+            title: '模板数据默认值',
+            dataIndex: 'customer_attribute_default_value'
+        }, {
+            title: '模板数据排序',
+            dataIndex: 'customer_attribute_sort'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.member_stock_action_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.customer_attribute_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.member_stock_action_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.customer_attribute_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -206,12 +221,12 @@ class MemberStockActionIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.member_stock_action.total,
+            total: this.props.customer_attribute.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.member_stock_action.page_index,
-            pageSize: this.props.member_stock_action.page_size,
+            current: this.props.customer_attribute.page_index,
+            pageSize: this.props.customer_attribute.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -246,7 +261,7 @@ class MemberStockActionIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.member_stock_action.app_list.map(function (item) {
+                                                        this.props.customer_attribute.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -267,7 +282,7 @@ class MemberStockActionIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('member_stock_action_name', {
+                                    getFieldDecorator('customer_attribute_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入名称"
@@ -281,10 +296,10 @@ class MemberStockActionIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="member_stock_action_id"
+                       rowKey="customer_attribute_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.member_stock_action.list} pagination={pagination}
+                       dataSource={this.props.customer_attribute.list} pagination={pagination}
                        bordered/>
                 <CustomerAttributeDetail/>
             </QueueAnim>
@@ -292,10 +307,10 @@ class MemberStockActionIndex extends Component {
     }
 }
 
-MemberStockActionIndex.propTypes = {};
+CustomerAttributeIndex.propTypes = {};
 
-MemberStockActionIndex = Form.create({})(MemberStockActionIndex);
+CustomerAttributeIndex = Form.create({})(CustomerAttributeIndex);
 
-export default connect(({member_stock_action}) => ({
-    member_stock_action
-}))(MemberStockActionIndex);
+export default connect(({customer_attribute}) => ({
+    customer_attribute
+}))(CustomerAttributeIndex);
