@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -61,7 +61,9 @@ class AppDetail extends Component {
                     wechat_app_id: data.wechat_app_id,
                     wechat_app_secret: data.wechat_app_secret,
                     wechat_mch_id: data.wechat_mch_id,
-                    wechat_mch_key: data.wechat_mch_key
+                    wechat_mch_key: data.wechat_mch_key,
+                    app_is_stock: data.app_is_stock,
+                    app_is_commission: data.app_is_commission
                 });
 
                 this.setState({
@@ -85,7 +87,7 @@ class AppDetail extends Component {
 
             values.app_id = this.state.app_id;
             values.system_version = this.state.system_version;
-
+            console.log('values', values);
             this.setState({
                 is_load: true
             });
@@ -233,6 +235,40 @@ class AppDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_mch_key'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否库存">
+                                    {
+                                        getFieldDecorator('app_is_stock', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
+                                        })(
+                                            <Switch />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否分成">
+                                    {
+                                        getFieldDecorator('app_is_commission', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
+                                        })(
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>
