@@ -215,7 +215,7 @@ class MemberAddressIndex extends Component {
             dataIndex: 'member_address_address'
         }, {
             title: '是否默认地址',
-            dataIndex: 'member_delivery_is_default'
+            dataIndex: 'address_is_default'
         }, {
             width: 100,
             title: constant.operation,

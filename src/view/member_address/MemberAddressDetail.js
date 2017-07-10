@@ -72,7 +72,7 @@ class MemberAddressDetail extends Component {
                     member_address_city: data.member_address_city,
                     member_address_area: data.member_address_area,
                     member_address_address: data.member_address_address,
-                    member_delivery_is_default: data.member_delivery_is_default,
+                    address_is_default: data.address_is_default,
                 });
 
                 this.setState({
@@ -402,7 +402,7 @@ class MemberAddressDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="是否默认地址">
                                     {
-                                        getFieldDecorator('member_delivery_is_default', {
+                                        getFieldDecorator('address_is_default', {
                                             valuePropName: 'checked',
                                             initialValue: false
                                         })(

@@ -179,6 +179,28 @@ class CustomerIndex extends Component {
         });
     }
 
+
+    handleTest() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/bill/test',
+            data: {},
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -254,6 +276,9 @@ class CustomerIndex extends Component {
                         <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
+                        <Button type="default" icon="search" size="default" className="margin-right"
+                                loading={this.state.is_load}
+                                onClick={this.handleTest.bind(this)}>批量测试</Button>
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
