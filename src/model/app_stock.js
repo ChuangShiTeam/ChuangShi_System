@@ -2,7 +2,7 @@ import constant from '../util/constant';
 
 export default {
 
-	namespace: 'company_stock',
+	namespace: 'app_stock',
 
 	state: {
 		app_id: '',
@@ -14,7 +14,7 @@ export default {
         stock_type: '公司',
         stock_action: '',
         product_name: '',
-        product_list: [],
+        product_list: []
 	},
 
 	reducers: {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Switch, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -63,7 +63,8 @@ class AppDetail extends Component {
                     wechat_mch_id: data.wechat_mch_id,
                     wechat_mch_key: data.wechat_mch_key,
                     app_is_stock: data.app_is_stock,
-                    app_is_commission: data.app_is_commission
+                    app_is_commission: data.app_is_commission,
+                    app_commission_level: data.app_commission_level
                 });
 
                 this.setState({
@@ -269,6 +270,26 @@ class AppDetail extends Component {
                                             initialValue: false
                                         })(
                                             <Switch />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="参与分成的上级层数">
+                                    {
+                                        getFieldDecorator('app_commission_level', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '参与分成的上级层数'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

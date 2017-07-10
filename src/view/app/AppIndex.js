@@ -192,7 +192,7 @@ class AppIndex extends Component {
             title: 'app_id',
             dataIndex: 'app_id'
         }, {
-            width: 100,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (

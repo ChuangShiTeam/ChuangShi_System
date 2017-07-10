@@ -11,12 +11,11 @@ export default {
         page_index: 1,
         page_size: constant.page_size,
         list: [],
-        stock_type: '会员',
         stock_action: '',
         product_name: '',
-        member_name: '',
-        member_list: [],
-        product_list: []
+        user_name: '',
+        product_list: [],
+        member_List: []
     },
 
     reducers: {

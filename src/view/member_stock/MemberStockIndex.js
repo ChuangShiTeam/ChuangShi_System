@@ -4,10 +4,11 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import MemberStockDetail from './MemberStockDetail';
-import constant from '../../../util/constant';
-import notification from '../../../util/notification';
-import validate from '../../../util/validate';
-import http from '../../../util/http';
+import MemberStockReplenish from './MemberStockReplenish';
+import constant from '../../util/constant';
+import notification from '../../util/notification';
+import validate from '../../util/validate';
+import http from '../../util/http';
 
 class MemberStockIndex extends Component {
     constructor(props) {
@@ -28,18 +29,16 @@ class MemberStockIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            member_name: this.props.member_stock.member_name,
+            user_name: this.props.member_stock.user_name,
             stock_action: this.props.member_stock.stock_action,
             product_name: this.props.member_stock.product_name
         });
 
         this.handleLoad();
-        this.handleLoadMember();
         this.handleLoadProduct();
 
         notification.on('notification_member_stock_index_load', this, function (data) {
             this.handleLoad();
-            this.handleLoadMember();
             this.handleLoadProduct();
         });
     }
@@ -57,24 +56,6 @@ class MemberStockIndex extends Component {
                     type: 'member_stock/fetch',
                     data: {
                         app_list: data
-                    }
-                });
-            }.bind(this),
-            complete: function () {
-
-            }
-        });
-    }
-
-    handleLoadMember() {
-        http.request({
-            url: '/member/' + constant.action + '/all/list',
-            data: {},
-            success: function (data) {
-                this.props.dispatch({
-                    type: 'member_stock/fetch',
-                    data: {
-                        member_list: data
                     }
                 });
             }.bind(this),
@@ -111,13 +92,13 @@ class MemberStockIndex extends Component {
 
             let stock_action = this.props.form.getFieldValue('stock_action');
             let product_name = this.props.form.getFieldValue('product_name');
-            let member_name = this.props.form.getFieldValue('member_name');
+            let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
                 type: 'member_stock/fetch',
                 data: {
                     app_id: app_id,
-                    member_name: member_name,
+                    user_name: user_name,
                     stock_action: stock_action,
                     product_name: product_name,
                     page_index: 1
@@ -136,11 +117,10 @@ class MemberStockIndex extends Component {
         });
 
         http.request({
-            url: '/stock/' + constant.action + '/list',
+            url: '/member/stock/' + constant.action + '/list',
             data: {
                 app_id: this.props.member_stock.app_id,
-                stock_type: this.props.member_stock.stock_type,
-                member_name: this.props.member_stock.member_name,
+                user_name: this.props.member_stock.user_name,
                 stock_action: this.props.member_stock.stock_action,
                 product_name: this.props.member_stock.product_name,
                 page_index: this.props.member_stock.page_index,
@@ -194,12 +174,8 @@ class MemberStockIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_member_stock_detail_add', {});
-    }
-
-    handleEdit(stock_id) {
-        notification.emit('notification_member_stock_detail_edit', {
+    handleView(stock_id) {
+        notification.emit('notification_member_stock_detail_view', {
             stock_id: stock_id
         });
     }
@@ -210,7 +186,7 @@ class MemberStockIndex extends Component {
         });
 
         http.request({
-            url: '/stock/' + constant.action + '/delete',
+            url: '/member/stock/' + constant.action + '/delete',
             data: {
                 stock_id: stock_id,
                 system_version: system_version
@@ -228,6 +204,10 @@ class MemberStockIndex extends Component {
         });
     }
 
+    handleReplenish() {
+        notification.emit('notification_member_stock_replenish', {});
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -236,7 +216,7 @@ class MemberStockIndex extends Component {
         const columns = [{
             width: 150,
             title: '会员名称',
-            dataIndex: 'member_name'
+            dataIndex: 'user_name'
         }, {
             width: 150,
             title: '产品名称',
@@ -255,7 +235,7 @@ class MemberStockIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.stock_id)}>{constant.edit}</a>
+                  <a onClick={this.handleView.bind(this, record.stock_id)}>查看</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -290,7 +270,7 @@ class MemberStockIndex extends Component {
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                onClick={this.handleReplenish.bind(this)}>平台补充</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -329,7 +309,7 @@ class MemberStockIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="会员名称">
                                 {
-                                    getFieldDecorator('member_name', {
+                                    getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入会员名称" onPressEnter={this.handleSearch.bind(this)}/>
@@ -360,6 +340,7 @@ class MemberStockIndex extends Component {
                        dataSource={this.props.member_stock.list} pagination={pagination}
                        bordered/>
                 <MemberStockDetail/>
+                <MemberStockReplenish/>
             </QueueAnim>
         );
     }
