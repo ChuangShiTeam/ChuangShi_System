@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import ExpressDetail from './ExpressDetail';
+import MemberSend from './MemberSend';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -28,7 +29,9 @@ class ExpressIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            express_name: this.props.express.express_name
+            express_no: this.props.express.express_no,
+            express_receiver_name: this.props.express.express_receiver_name,
+            express_sender_name: this.props.express.express_sender_name
         });
 
         this.handleLoad();
@@ -67,13 +70,15 @@ class ExpressIndex extends Component {
                 app_id = '';
             }
 
-            let express_name = this.props.form.getFieldValue('express_name');
+            let express_no = this.props.form.getFieldValue('express_no');
+            let express_receiver_name = this.props.form.getFieldValue('express_receiver_name');
+            let express_sender_name = this.props.form.getFieldValue('express_sender_name');
 
             this.props.dispatch({
                 type: 'express/fetch',
                 data: {
                     app_id: app_id,
-                    express_name: express_name,
+                    express_no: express_no,
                     page_index: 1
                 }
             });
@@ -93,7 +98,9 @@ class ExpressIndex extends Component {
             url: '/express/' + constant.action + '/list',
             data: {
                 app_id: this.props.express.app_id,
-                express_name: this.props.express.express_name,
+                express_no: this.props.express.express_no,
+                express_receiver_name: this.props.express.express_receiver_name,
+                express_sender_name: this.props.express.express_sender_name,
                 page_index: this.props.express.page_index,
                 page_size: this.props.express.page_size
             },
@@ -145,37 +152,19 @@ class ExpressIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_express_detail_add', {});
+    handleSend() {
+        notification.emit('notification_member_send', {});
+    }
+
+    handleView(express_id) {
+        notification.emit('notification_express_detail_view', {
+            express_id: express_id
+        });
     }
 
     handleEdit(express_id) {
         notification.emit('notification_express_detail_edit', {
             express_id: express_id
-        });
-    }
-
-    handleDel(express_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/express/' + constant.action + '/delete',
-            data: {
-                express_id: express_id,
-                system_version: system_version
-            },
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoad();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
         });
     }
 
@@ -185,21 +174,31 @@ class ExpressIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'express_name'
+            title: '快递单号',
+            dataIndex: 'express_no'
         }, {
-            width: 100,
+            title: '发货人',
+            dataIndex: 'express_sender_name'
+        }, {
+            title: '收货人',
+            dataIndex: 'express_receiver_name'
+        }, {
+            title: '状态',
+            dataIndex: 'express_status'
+        }, {
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.express_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                  <a onClick={this.handleView.bind(this, record.express_id)}>查看</a>
+                    {
+                        record.express_no?null:
+                        <span>
+                            <span className="divider"/>
+                            <a onClick={this.handleEdit.bind(this, record.express_id)}>填写快递单号</a>
+                        </span>
+                    }
                 </span>
             )
         }];
@@ -221,14 +220,14 @@ class ExpressIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">发货单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                onClick={this.handleSend.bind(this)}>发货</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -265,17 +264,43 @@ class ExpressIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="快递单号">
                                 {
-                                    getFieldDecorator('express_name', {
+                                    getFieldDecorator('express_no', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入快递单号" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="发货人">
+                                {
+                                    getFieldDecorator('express_sender_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入发货人" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="收货人">
+                                {
+                                    getFieldDecorator('express_receiver_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入收货人" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
@@ -286,6 +311,7 @@ class ExpressIndex extends Component {
                        dataSource={this.props.express.list} pagination={pagination}
                        bordered/>
                 <ExpressDetail/>
+                <MemberSend/>
             </QueueAnim>
         );
     }
