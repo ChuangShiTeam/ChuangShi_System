@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
-
-import QrcodeDetail from './QrcodeDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import React, {Component} from "react";
+import {connect} from "dva";
+import QueueAnim from "rc-queue-anim";
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from "antd";
+import QrcodeDetail from "./QrcodeDetail";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import validate from "../../util/validate";
+import http from "../../util/http";
 
 class QrcodeIndex extends Component {
     constructor(props) {
@@ -21,15 +20,15 @@ class QrcodeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.qrcode.app_id
+                app_id: this.props.qrcode.app_id
             });
 
             this.handleLoadApp();
         }
 
-        this.props.form.setFieldsValue({
-            qrcode_name: this.props.qrcode.qrcode_name
-        });
+        // this.props.form.setFieldsValue({
+        //     qrcode_type: this.props.qrcode.qrcode_type
+        // });
 
         this.handleLoad();
 
@@ -67,13 +66,13 @@ class QrcodeIndex extends Component {
                 app_id = '';
             }
 
-            let qrcode_name = this.props.form.getFieldValue('qrcode_name');
+            let qrcode_type = this.props.form.getFieldValue('qrcode_type');
 
             this.props.dispatch({
                 type: 'qrcode/fetch',
                 data: {
                     app_id: app_id,
-                    qrcode_name: qrcode_name,
+                    qrcode_type: qrcode_type,
                     page_index: 1
                 }
             });
@@ -93,7 +92,7 @@ class QrcodeIndex extends Component {
             url: '/qrcode/' + constant.action + '/list',
             data: {
                 app_id: this.props.qrcode.app_id,
-                qrcode_name: this.props.qrcode.qrcode_name,
+                qrcode_type: this.props.qrcode.qrcode_type,
                 page_index: this.props.qrcode.page_index,
                 page_size: this.props.qrcode.page_size
             },
@@ -185,8 +184,34 @@ class QrcodeIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'qrcode_name'
+            title: '会员名称',
+            dataIndex: 'object_id'
+        }, {
+            title: '二维码类型',
+            dataIndex: 'qrcode_type'
+        }, {
+            width: 100,
+            title: '二维码地址',
+            dataIndex: 'qrcode_url',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    <img alt="example" style={{ width: '100%' }} src={record.qrcode_url}/>
+                </div>
+            )
+        }, {
+            title: '关注人数',
+            dataIndex: 'qrcode_add'
+        }, {
+            title: '取消人数',
+            dataIndex: 'qrcode_cancel'
+        }, {
+            title: '二维码状态',
+            dataIndex: 'qrcode_status',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.qrcode_status ? '正常' : '暂停'}
+                </div>
+            )
         }, {
             width: 100,
             title: constant.operation,
@@ -227,8 +252,6 @@ class QrcodeIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -265,12 +288,13 @@ class QrcodeIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="类型">
                                 {
-                                    getFieldDecorator('qrcode_name', {
+                                    getFieldDecorator('qrcode_type', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入类型"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

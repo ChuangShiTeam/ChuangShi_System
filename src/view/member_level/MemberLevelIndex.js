@@ -188,6 +188,9 @@ class MemberLevelIndex extends Component {
             title: '名称',
             dataIndex: 'member_level_name'
         }, {
+            title: '等级数值',
+            dataIndex: 'member_level_value'
+        }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
