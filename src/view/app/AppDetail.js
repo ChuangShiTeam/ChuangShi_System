@@ -62,6 +62,8 @@ class AppDetail extends Component {
                     wechat_app_secret: data.wechat_app_secret,
                     wechat_mch_id: data.wechat_mch_id,
                     wechat_mch_key: data.wechat_mch_key,
+                    wechat_token: data.wechat_token,
+                    wechat_encoding_aes_key: data.wechat_encoding_aes_key,
                     app_is_stock: data.app_is_stock,
                     app_is_commission: data.app_is_commission,
                     app_commission_level: data.app_commission_level
@@ -236,6 +238,46 @@ class AppDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_mch_key'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="wechat_token">
+                                    {
+                                        getFieldDecorator('wechat_token', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + 'wechat_token'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="wechat_encoding_aes_key">
+                                    {
+                                        getFieldDecorator('wechat_encoding_aes_key', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + 'wechat_encoding_aes_key'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
