@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, Switch, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, InputNumber, Switch} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -15,7 +15,8 @@ class QrcodeDetail extends Component {
             is_show: false,
             action: '',
             qrcode_id: '',
-            system_version: ''
+            system_version: '',
+            qrcode: {}
         }
     }
 
@@ -71,6 +72,7 @@ class QrcodeDetail extends Component {
                 });
 
                 this.setState({
+                    qrcode: data,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -133,7 +135,8 @@ class QrcodeDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+                   className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -184,7 +187,8 @@ class QrcodeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="外键编号">
+
                                     {
                                         getFieldDecorator('object_id', {
                                             rules: [{
@@ -193,7 +197,7 @@ class QrcodeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input disabled/>
                                         )
                                     }
                                 </FormItem>
@@ -204,7 +208,7 @@ class QrcodeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="二维码类型">
                                     {
                                         getFieldDecorator('qrcode_type', {
                                             rules: [{
@@ -213,7 +217,7 @@ class QrcodeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input disabled/>
                                         )
                                     }
                                 </FormItem>
@@ -224,7 +228,19 @@ class QrcodeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="二维码图片">
+                                    <div className="clearfix">
+                                        <img alt="example" style={{ height: '200px' }} src={this.state.qrcode.qrcode_url}/>
+                                    </div>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="二维码地址">
                                     {
                                         getFieldDecorator('qrcode_url', {
                                             rules: [{
@@ -233,7 +249,8 @@ class QrcodeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '二维码地址'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -244,7 +261,7 @@ class QrcodeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="关注人数">
                                     {
                                         getFieldDecorator('qrcode_add', {
                                             rules: [{
@@ -253,7 +270,8 @@ class QrcodeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '关注人数'}
+                                                         onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -264,7 +282,7 @@ class QrcodeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="取消人数">
                                     {
                                         getFieldDecorator('qrcode_cancel', {
                                             rules: [{
@@ -273,7 +291,8 @@ class QrcodeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '取消人数'}
+                                                         onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -284,7 +303,7 @@ class QrcodeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="二维码状态">
                                     {
                                         getFieldDecorator('qrcode_status', {
                                             valuePropName: 'checked',
