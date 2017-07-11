@@ -39,7 +39,6 @@ class MemberStockIndex extends Component {
 
         notification.on('notification_member_stock_index_load', this, function (data) {
             this.handleLoad();
-            this.handleLoadProduct();
         });
     }
 

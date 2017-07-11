@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import AppStockDetail from './AppStockDetail';
+import AppStockReplenish from './AppStockReplenish';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -33,6 +34,7 @@ class AppStockIndex extends Component {
 		});
 
 		this.handleLoad();
+        this.handleLoadProduct();
 
 		notification.on('notification_app_stock_index_load', this, function (data) {
 			this.handleLoad();
@@ -61,7 +63,26 @@ class AppStockIndex extends Component {
 		});
 	}
 
-	handleSearch() {
+    handleLoadProduct() {
+        http.request({
+            url: '/product/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'app_stock/fetch',
+                    data: {
+                        product_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+
+    handleSearch() {
 		new Promise(function (resolve, reject) {
 			let app_id = this.props.form.getFieldValue('app_id');
 			if (validate.isUndefined(app_id)) {
@@ -298,6 +319,7 @@ class AppStockIndex extends Component {
 					   dataSource={this.props.app_stock.list} pagination={pagination}
 					   bordered/>
 				<AppStockDetail/>
+				<AppStockReplenish/>
 			</QueueAnim>
 		);
 	}

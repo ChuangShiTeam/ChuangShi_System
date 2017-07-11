@@ -280,26 +280,24 @@ class MemberStockReplenish extends Component {
 										onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
 							</Col>
 						</Row>
-						<Form key="1" className="content-search margin-top">
-							<Row>
-								<Col span={8}>
-									<FormItem hasFeedback {...{
-										labelCol: {span: 6},
-										wrapperCol: {span: 18}
-									}} className="content-search-item" label="名称">
-										{
-											getFieldDecorator('user_name', {
-												initialValue: ''
-											})(
-												<Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
-											)
-										}
-									</FormItem>
-								</Col>
-								<Col span={8}>
-								</Col>
-							</Row>
-						</Form>
+						<Row className="content-search margin-top">
+							<Col span={8}>
+								<FormItem hasFeedback {...{
+									labelCol: {span: 6},
+									wrapperCol: {span: 18}
+								}} className="content-search-item" label="名称">
+									{
+										getFieldDecorator('user_name', {
+											initialValue: ''
+										})(
+											<Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+										)
+									}
+								</FormItem>
+							</Col>
+							<Col span={8}>
+							</Col>
+						</Row>
 						<Table key="2"
 							   rowKey="member_id"
 							   className="margin-top"
