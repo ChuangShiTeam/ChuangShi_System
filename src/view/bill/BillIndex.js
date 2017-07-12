@@ -21,7 +21,7 @@ class BillIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.bill.app_id
+                app_id: this.props.bill.app_id
             });
 
             this.handleLoadApp();
@@ -183,10 +183,49 @@ class BillIndex extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-
         const columns = [{
-            title: '名称',
+            title: '用户',
+            dataIndex: 'user_id'
+        }, {
+            title: '账单类型',
+            dataIndex: 'bill_type'
+        }, {
+            width: 100,
+            title: '账单图片',
+            dataIndex: 'bill_image',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    <img alt="example" style={{ width: '100%' }} src={record.bill_image}/>
+                </div>
+            )
+        }, {
+            title: '账单名称',
             dataIndex: 'bill_name'
+        }, {
+            title: '账单金额',
+            dataIndex: 'bill_amount'
+        }, {
+            title: '是否收入',
+            dataIndex: 'bill_is_income',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.bill_is_income ? '收入' : '支出'}
+                </div>
+            )
+        }, {
+            title: '账单时间',
+            dataIndex: 'bill_time'
+        }, {
+            title: '账单流程',
+            dataIndex: 'bill_flow'
+        }, {
+            title: '账单状态',
+            dataIndex: 'bill_status',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.bill_status ? '正常' : '异常'}
+                </div>
+            )
         }, {
             width: 100,
             title: constant.operation,
@@ -265,12 +304,13 @@ class BillIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="账单名称">
                                 {
                                     getFieldDecorator('bill_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入账单名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

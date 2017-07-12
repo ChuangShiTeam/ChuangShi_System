@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Switch, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, InputNumber, Switch, Steps} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -15,7 +15,8 @@ class TradeDetail extends Component {
             is_show: false,
             action: '',
             trade_id: '',
-            system_version: ''
+            system_version: '',
+            trade: {}
         }
     }
 
@@ -84,6 +85,7 @@ class TradeDetail extends Component {
                 });
 
                 this.setState({
+                    trade: data,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -144,9 +146,11 @@ class TradeDetail extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+        const Step = Steps.Step;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+                   className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -157,6 +161,17 @@ class TradeDetail extends Component {
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
+                    <Steps current={1}>
+                        <Step status={this.state.trade.trade_flow=='待支付'?"process ":"wait"} title="付款"
+                              description=""/>
+                        <Step status={this.state.trade.trade_flow=='待发货'?"process ":"wait"} title="发货"
+                              description=""/>
+                        <Step status={this.state.trade.trade_flow=='已完成'?"process ":"wait"} title="收货"
+                              description=""/>
+                    </Steps>
+                    <br/>
+                    <br/>
+                    <br/>
                     <form>
                         {
                             constant.action === 'system' ?
@@ -206,7 +221,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -217,7 +233,7 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="订单号">
                                     {
                                         getFieldDecorator('trade_number', {
                                             rules: [{
@@ -226,7 +242,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '订单号'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -246,7 +263,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -266,7 +284,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -286,7 +305,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -306,7 +326,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -326,7 +347,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -346,7 +368,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -366,7 +389,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -386,7 +410,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''}
+                                                         onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -406,7 +431,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -426,7 +452,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -446,7 +473,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -517,7 +545,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -531,13 +560,10 @@ class TradeDetail extends Component {
                                 }} className="form-item" label="">
                                     {
                                         getFieldDecorator('trade_status', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>
@@ -557,7 +583,8 @@ class TradeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + ''}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

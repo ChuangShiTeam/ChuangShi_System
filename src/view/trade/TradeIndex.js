@@ -21,14 +21,14 @@ class TradeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.trade.app_id
+                app_id: this.props.trade.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            trade_name: this.props.trade.trade_name
+            trade_number: this.props.trade.trade_number
         });
 
         this.handleLoad();
@@ -67,13 +67,13 @@ class TradeIndex extends Component {
                 app_id = '';
             }
 
-            let trade_name = this.props.form.getFieldValue('trade_name');
+            let trade_number = this.props.form.getFieldValue('trade_number');
 
             this.props.dispatch({
                 type: 'trade/fetch',
                 data: {
                     app_id: app_id,
-                    trade_name: trade_name,
+                    trade_number: trade_number,
                     page_index: 1
                 }
             });
@@ -93,7 +93,7 @@ class TradeIndex extends Component {
             url: '/trade/' + constant.action + '/list',
             data: {
                 app_id: this.props.trade.app_id,
-                trade_name: this.props.trade.trade_name,
+                trade_number: this.props.trade.trade_number,
                 page_index: this.props.trade.page_index,
                 page_size: this.props.trade.page_size
             },
@@ -155,6 +155,29 @@ class TradeIndex extends Component {
         });
     }
 
+    handlePay(trade_number) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/wechat/pay/success',
+            data: {
+                trade_number: trade_number
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     handleDel(trade_id, system_version) {
         this.setState({
             is_load: true
@@ -183,16 +206,90 @@ class TradeIndex extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-
         const columns = [{
-            title: '名称',
-            dataIndex: 'trade_name'
+            title: '用户',
+            dataIndex: 'user_id'
         }, {
-            width: 100,
+            title: '订单编号',
+            dataIndex: 'trade_number'
+        }, {
+            title: '收货人',
+            dataIndex: 'trade_receiver_name',
+            render: (text, record, index) => (
+                <span>{record.trade_receiver_name}({record.trade_receiver_mobile})</span>
+            )
+        }, {
+            title: '收货人地址',
+            dataIndex: 'trade_receiver_address',
+            render: (text, record, index) => (
+                <span>
+                    {record.trade_receiver_province}-
+                    {record.trade_receiver_city}-
+                    {record.trade_receiver_area}-
+                    {record.trade_receiver_address}
+                </span>
+            )
+        }, {
+            title: '商品数量',
+            dataIndex: 'trade_product_quantity'
+        }, {
+            title: '订单金额',
+            dataIndex: 'trade_product_amount'
+        }, {
+            title: '快递金额',
+            dataIndex: 'trade_express_amount'
+        }, {
+            title: '折扣金额',
+            dataIndex: 'trade_discount_amount'
+        }, {
+            title: '是否分成',
+            dataIndex: 'trade_is_commission',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_is_commission ? '需分成' : '不需分成'}
+                </div>
+            )
+        }, {
+            title: '是否付款',
+            dataIndex: 'trade_is_pay',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_is_pay ? '已付款' : '未付款'}
+                </div>
+            )
+        }, {
+            title: '是否收货',
+            dataIndex: 'trade_is_confirm',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_is_confirm ? '已收货' : '未收货'}
+                </div>
+            )
+        }, {
+            title: '订单流程',
+            dataIndex: 'trade_flow'
+        }, {
+            title: '订单状态',
+            dataIndex: 'trade_status',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_status ? '正常' : '异常'}
+                </div>
+            )
+        }, {
+            title: '订单审计状态',
+            dataIndex: 'trade_audit_status'
+        }, {
+            title: '订单备注',
+            dataIndex: 'trade_message'
+        }, {
+            width: 150,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
+                  <a onClick={this.handlePay.bind(this, record.trade_number)}>付款</a>
+                  <span className="divider"/>
                   <a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
@@ -265,12 +362,13 @@ class TradeIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="订单编号">
                                 {
-                                    getFieldDecorator('trade_name', {
+                                    getFieldDecorator('trade_number', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入订单编号"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
