@@ -283,20 +283,14 @@ class TradeIndex extends Component {
             title: '订单备注',
             dataIndex: 'trade_message'
         }, {
-            width: 150,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handlePay.bind(this, record.trade_number)}>付款</a>
                   <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.trade_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                  <a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.find}</a>
                 </span>
             )
         }];

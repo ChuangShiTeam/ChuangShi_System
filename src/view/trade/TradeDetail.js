@@ -1,10 +1,26 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, InputNumber, Switch, Steps} from 'antd';
+import {
+    Modal,
+    Form,
+    Row,
+    Col,
+    Spin,
+    Button,
+    Input,
+    Select,
+    message,
+    InputNumber,
+    Switch,
+    Steps,
+    Table,
+    Popconfirm
+} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import ExpressDetail from './ExpressDetail';
 
 class TradeDetail extends Component {
     constructor(props) {
@@ -16,7 +32,10 @@ class TradeDetail extends Component {
             action: '',
             trade_id: '',
             system_version: '',
-            trade: {}
+            trade: {},
+            tradeProductSkuList: [],
+            tradeCommossionList: [],
+            expressList: []
         }
     }
 
@@ -58,35 +77,38 @@ class TradeDetail extends Component {
             success: function (data) {
                 if (constant.action === 'system') {
                     this.props.form.setFieldsValue({
-                        app_id: data.app_id
+                        app_id: data.trade.app_id
                     });
                 }
 
                 this.props.form.setFieldsValue({
-                    user_id: data.user_id,
-                    trade_number: data.trade_number,
-                    trade_receiver_name: data.trade_receiver_name,
-                    trade_receiver_mobile: data.trade_receiver_mobile,
-                    trade_receiver_province: data.trade_receiver_province,
-                    trade_receiver_city: data.trade_receiver_city,
-                    trade_receiver_area: data.trade_receiver_area,
-                    trade_receiver_address: data.trade_receiver_address,
-                    trade_message: data.trade_message,
-                    trade_product_quantity: data.trade_product_quantity,
-                    trade_product_amount: data.trade_product_amount,
-                    trade_express_amount: data.trade_express_amount,
-                    trade_discount_amount: data.trade_discount_amount,
-                    trade_is_commission: data.trade_is_commission,
-                    trade_is_confirm: data.trade_is_confirm,
-                    trade_is_pay: data.trade_is_pay,
-                    trade_flow: data.trade_flow,
-                    trade_status: data.trade_status,
-                    trade_audit_status: data.trade_audit_status,
+                    user_id: data.trade.user_id,
+                    trade_number: data.trade.trade_number,
+                    trade_receiver_name: data.trade.trade_receiver_name,
+                    trade_receiver_mobile: data.trade.trade_receiver_mobile,
+                    trade_receiver_province: data.trade.trade_receiver_province,
+                    trade_receiver_city: data.trade.trade_receiver_city,
+                    trade_receiver_area: data.trade.trade_receiver_area,
+                    trade_receiver_address: data.trade.trade_receiver_address,
+                    trade_message: data.trade.trade_message,
+                    trade_product_quantity: data.trade.trade_product_quantity,
+                    trade_product_amount: data.trade.trade_product_amount,
+                    trade_express_amount: data.trade.trade_express_amount,
+                    trade_discount_amount: data.trade.trade_discount_amount,
+                    trade_is_commission: data.trade.trade_is_commission,
+                    trade_is_confirm: data.trade.trade_is_confirm,
+                    trade_is_pay: data.trade.trade_is_pay,
+                    trade_flow: data.trade.trade_flow,
+                    trade_status: data.trade.trade_status,
+                    trade_audit_status: data.trade.trade_audit_status,
                 });
 
                 this.setState({
-                    trade: data,
-                    system_version: data.system_version
+                    trade: data.trade,
+                    tradeProductSkuList: data.tradeProductSkuList,
+                    tradeCommossionList: data.tradeCommossionList,
+                    expressList: data.expressList,
+                    system_version: data.trade.system_version
                 });
             }.bind(this),
             complete: function () {
@@ -98,35 +120,55 @@ class TradeDetail extends Component {
         });
     }
 
-    handleSubmit() {
-        this.props.form.validateFieldsAndScroll((errors, values) => {
-            if (!!errors) {
-                return;
-            }
+    handleAdd() {
+        notification.emit('notification_express_detail_add', {});
+    }
 
-            values.trade_id = this.state.trade_id;
-            values.system_version = this.state.system_version;
+    handleDel(express_id, system_version) {
+        this.setState({
+            is_load: true
+        });
 
-            this.setState({
-                is_load: true
-            });
+        http.request({
+            url: '/trade/' + constant.action + '/delete',
+            data: {
+                express_id: express_id,
+                system_version: system_version
+            },
+            success: function (data) {
+                message.success(constant.success);
 
-            http.request({
-                url: '/trade/' + constant.action + '/' + this.state.action,
-                data: values,
-                success: function (data) {
-                    message.success(constant.success);
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
 
-                    notification.emit('notification_trade_index_load', {});
+    handleDelivery() {
+        this.setState({
+            is_load: true
+        });
 
-                    this.handleCancel();
-                }.bind(this),
-                complete: function () {
-                    this.setState({
-                        is_load: false
-                    });
-                }.bind(this)
-            });
+        http.request({
+            url: '/trade/admin/delivery',
+            data: {
+                trade_id: this.state.trade_id,
+                system_version: this.state.system_version
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
         });
     }
 
@@ -148,6 +190,136 @@ class TradeDetail extends Component {
         const {getFieldDecorator} = this.props.form;
         const Step = Steps.Step;
 
+        const columnsProductSku = [{
+            title: '商品名称',
+            dataIndex: 'product_sku_id'
+        }, {
+            title: '商品数量',
+            dataIndex: 'product_sku_quantity'
+        }, {
+            title: '商品金额',
+            dataIndex: 'product_sku_amount'
+        }];
+
+        const columnsCommossion = [{
+            title: '商品名称',
+            dataIndex: 'product_sku_id'
+        }, {
+            title: '用户名称',
+            dataIndex: 'member_name'
+        }, {
+            title: '用户等级',
+            dataIndex: 'member_level_name'
+        }, {
+            title: '商品分成比例',
+            dataIndex: 'product_sku_commission'
+        }, {
+            title: '分成金额',
+            dataIndex: 'product_sku_commission_amount'
+        }];
+
+        const columnsExpress = [{
+            title: '快递公司编码',
+            dataIndex: 'express_shipper_code'
+        }, {
+            title: '快递单号',
+            dataIndex: 'express_no'
+        }, {
+            title: '快递类型',
+            dataIndex: 'express_type'
+        }, {
+            title: '收货公司',
+            dataIndex: 'express_receiver_company'
+        }, {
+            title: '收货人',
+            dataIndex: 'express_receiver_name',
+            render: (text, record, index) => (
+                <span>
+                    {record.express_receiver_name}
+                    ({record.express_receiver_tel}/
+                    {record.express_receiver_mobile})
+                </span>
+            )
+        }, {
+            title: '收货人邮编',
+            dataIndex: 'express_receiver_postcode'
+        }, {
+            title: '收货详细地址',
+            dataIndex: '',
+            render: (text, record, index) => (
+                <span>
+                {record.express_receiver_province}-
+                    {record.express_receiver_city}-
+                    {record.express_receiver_area}-
+                    {record.express_receiver_address}
+            </span>
+            )
+        }, {
+            title: '发货人公司',
+            dataIndex: 'express_sender_company'
+        }, {
+            title: '发货人',
+            dataIndex: 'express_sender_name',
+            render: (text, record, index) => (
+                <span>
+                    {record.express_sender_name}
+                    ({record.express_sender_tel}/
+                    {record.express_sender_mobile})
+                </span>
+            )
+        }, {
+            title: '发货人邮编',
+            dataIndex: 'express_sender_postcode'
+        }, {
+            title: '发货人详细地址',
+            dataIndex: '',
+            render: (text, record, index) => (
+                <span>
+                {record.express_sender_province}-
+                    {record.express_sender_city}-
+                    {record.express_sender_area}-
+                    {record.express_sender_address}
+            </span>
+            )
+        }, {
+            title: '寄件费（运费）',
+            dataIndex: 'express_cost'
+        }, {
+            title: '运费是否支付',
+            dataIndex: 'express_is_pay'
+        }, {
+            title: '运费支付方式',
+            dataIndex: 'express_pay_way'
+        }, {
+            title: '快递发货时间',
+            dataIndex: 'express_start_date'
+        }, {
+            title: '快递取货时间',
+            dataIndex: 'express_end_date'
+        }, {
+            title: '物流信息',
+            dataIndex: 'express_logistics'
+        }, {
+            title: '状态',
+            dataIndex: 'express_status'
+        }, {
+            title: '备注',
+            dataIndex: 'express_remark'
+        }, {
+            width: 50,
+            title: constant.operation,
+            dataIndex: '',
+            render: (text, record, index) => (
+                <span>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
+                </span>
+            )
+        }];
+
         return (
             <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
@@ -157,7 +329,7 @@ class TradeDetail extends Component {
                                onClick={this.handleCancel.bind(this)}>关闭</Button>,
                        <Button key="submit" type="primary" size="default" icon="check-circle"
                                loading={this.state.is_load}
-                               onClick={this.handleSubmit.bind(this)}>确定</Button>
+                               onClick={this.handleCancel.bind(this)}>确定</Button>
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
@@ -170,7 +342,7 @@ class TradeDetail extends Component {
                               description=""/>
                     </Steps>
                     <br/>
-                    <br/>
+                    <h2>订单基本信息</h2>
                     <br/>
                     <form>
                         {
@@ -212,40 +384,24 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('user_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="用户">
+                                    <span>{this.state.trade.user_id}</span>
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单号">
-                                    {
-                                        getFieldDecorator('trade_number', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '订单号'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                    <span>{this.state.trade.trade_number}</span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="订单流程">
+                                    <span>{this.state.trade.trade_flow}</span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -254,19 +410,29 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_receiver_name', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="收货人">
+                                    <span>{this.state.trade.trade_receiver_name}</span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="收货电话">
+                                    <span>{this.state.trade.trade_receiver_mobile}</span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="收货地址">
+                                    <span>
+                                        {this.state.trade.trade_receiver_province}-
+                                        {this.state.trade.trade_receiver_city}-
+                                        {this.state.trade.trade_receiver_area}-
+                                        {this.state.trade.trade_receiver_address}
+                                    </span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -275,19 +441,18 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_receiver_mobile', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="订单商品数量">
+                                    <span>
+                                        {this.state.trade.trade_product_quantity}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="订单备注">
+                                    <span>{this.state.trade.trade_message}</span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -296,19 +461,26 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_receiver_province', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="订单金额">
+                                    <span>{this.state.trade.trade_product_amount}</span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="运费金额">
+                                    <span>
+                                        {this.state.trade.trade_express_amount}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="折扣金额">
+                                    <span>{this.state.trade.trade_discount_amount}</span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -317,19 +489,30 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_receiver_city', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="是否分成">
+                                    <span>
+                                        {this.state.trade.trade_is_commission ? "需分成" : "不分成"}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否支付">
+                                    <span>
+                                        {this.state.trade.trade_is_pay ? "已支付" : "未支付"}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否收货">
+                                    <span>
+                                        {this.state.trade.trade_is_confirm ? "已收货" : "未收货"}
+                                    </span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -338,259 +521,58 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_receiver_area', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="订单状态">
+                                    <span>
+                                        {this.state.trade.trade_status ? "正常" : "异常"}
+                                    </span>
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_receiver_address', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_message', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_product_quantity', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: 0
-                                        })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + ''}
-                                                         onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_product_amount', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_express_amount', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_discount_amount', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_is_commission', {
-                                            valuePropName: 'checked',
-                                            initialValue: false
-                                        })(
-                                            <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_is_confirm', {
-                                            valuePropName: 'checked',
-                                            initialValue: false
-                                        })(
-                                            <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_is_pay', {
-                                            valuePropName: 'checked',
-                                            initialValue: false
-                                        })(
-                                            <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_flow', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_status', {
-                                            valuePropName: 'checked',
-                                            initialValue: false
-                                        })(
-                                            <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('trade_audit_status', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="订单审计状态">
+                                    <span>
+                                        {this.state.trade.trade_audit_status ? "正常" : "异常"}
+                                    </span>
                                 </FormItem>
                             </Col>
                         </Row>
                     </form>
+                    <br/>
+                    <h2>订单商品列表</h2>
+                    <Table rowKey=""
+                           className="margin-top"
+                           columns={columnsProductSku}
+                           dataSource={this.state.tradeProductSkuList} pagination={false}
+                           bordered/>
+                    <br/>
+                    <h2>订单分成列表</h2>
+                    <Table rowKey=""
+                           className="margin-top"
+                           columns={columnsCommossion}
+                           dataSource={this.state.tradeCommossionList} pagination={false}
+                           bordered/>
+                    <br/>
+                    <br/>
+                    <Row>
+                        <Col span={8}>
+                            <h2>订单快递地址</h2>
+                        </Col>
+                        <Col span={16} className="content-button">
+                            <Button type="primary" icon="plus-circle" size="default" className="margin-right"
+                                    onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                            <Button type="primary" icon="plus-circle" size="default"
+                                    loading={this.state.is_load}
+                                    onClick={this.handleDelivery.bind(this)}>发货</Button>
+                        </Col>
+                    </Row>
+                    <Table rowKey=""
+                           className="margin-top"
+                           columns={columnsExpress}
+                           dataSource={this.state.expressList} pagination={false}
+                           bordered/>
+                    <ExpressDetail/>
                 </Spin>
             </Modal>
         );
