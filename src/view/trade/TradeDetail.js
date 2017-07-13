@@ -121,7 +121,7 @@ class TradeDetail extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_express_detail_add', {});
+        notification.emit('notification_express_detail_add', {trade: this.state.trade});
     }
 
     handleDel(express_id, system_version) {
@@ -192,7 +192,7 @@ class TradeDetail extends Component {
 
         const columnsProductSku = [{
             title: '商品名称',
-            dataIndex: 'product_sku_id'
+            dataIndex: 'product_name'
         }, {
             title: '商品数量',
             dataIndex: 'product_sku_quantity'
@@ -203,7 +203,7 @@ class TradeDetail extends Component {
 
         const columnsCommossion = [{
             title: '商品名称',
-            dataIndex: 'product_sku_id'
+            dataIndex: 'product_name'
         }, {
             title: '用户名称',
             dataIndex: 'member_name'
@@ -212,7 +212,12 @@ class TradeDetail extends Component {
             dataIndex: 'member_level_name'
         }, {
             title: '商品分成比例',
-            dataIndex: 'product_sku_commission'
+            dataIndex: 'product_sku_commission',
+            render: (text, record, index) => (
+                <span>
+                    {record.product_sku_commission}%
+                </span>
+            )
         }, {
             title: '分成金额',
             dataIndex: 'product_sku_commission_amount'
@@ -321,7 +326,8 @@ class TradeDetail extends Component {
         }];
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+            <Modal title={<h3>订单详情</h3>}
+                   maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
@@ -338,7 +344,9 @@ class TradeDetail extends Component {
                               description=""/>
                         <Step status={this.state.trade.trade_flow=='待发货'?"process ":"wait"} title="发货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='已完成'?"process ":"wait"} title="收货"
+                        <Step status={this.state.trade.trade_flow=='待收货'?"process ":"wait"} title="收货"
+                              description=""/>
+                        <Step status={this.state.trade.trade_flow=='已完成'?"process ":"wait"} title="完成"
                               description=""/>
                     </Steps>
                     <br/>
@@ -385,7 +393,7 @@ class TradeDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="用户">
-                                    <span>{this.state.trade.user_id}</span>
+                                    <span>{this.state.trade.user_name}</span>
                                 </FormItem>
                             </Col>
                             <Col span={8}>
@@ -451,8 +459,20 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="订单备注">
-                                    <span>{this.state.trade.trade_message}</span>
+                                }} className="form-item" label="订单状态">
+                                    <span>
+                                        {this.state.trade.trade_status ? "正常" : "异常"}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="订单审计状态">
+                                    <span>
+                                        {this.state.trade.trade_audit_status ? "正常" : "异常"}
+                                    </span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -521,20 +541,8 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="订单状态">
-                                    <span>
-                                        {this.state.trade.trade_status ? "正常" : "异常"}
-                                    </span>
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="订单审计状态">
-                                    <span>
-                                        {this.state.trade.trade_audit_status ? "正常" : "异常"}
-                                    </span>
+                                }} className="form-item" label="订单备注">
+                                    <span>{this.state.trade.trade_message}</span>
                                 </FormItem>
                             </Col>
                         </Row>
