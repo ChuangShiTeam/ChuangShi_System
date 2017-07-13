@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message, Checkbox, Table} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message, Checkbox, Table, Cascader} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
+import china from "../../util/china";
 
 class MemberSend extends Component {
 	constructor(props) {
@@ -23,7 +24,9 @@ class MemberSend extends Component {
 			page_index: 1,
 			page_size: 7,
 			list: [],
-			product_list: []
+			product_list: [],
+			selectChina: [],
+			selectedOptions: []
 		}
 	}
 
@@ -41,8 +44,8 @@ class MemberSend extends Component {
 				this.handleLoadApp();
 			}
 			this.handleLoad();
+			this.handleLoadProduct();
 		});
-		this.handleLoadProduct();
 	}
 
 	componentWillUnmount() {
@@ -158,8 +161,16 @@ class MemberSend extends Component {
 				message.warn('请选择会员');
 				return;
 			}
+			let china = this.state.selectedOptions;
+			if (china.length < 3) {
+				message.error('请选择省市区');
+				return;
+			}
+			values.express_receiver_province = china[0].label;
+			values.express_receiver_city = china[1].label;
+			values.express_receiver_area = china[2].label;
 			values.member_id = this.state.member_id;
-			values.product_sku_id = this.state.product_list.length === 0 ?'123456':this.state.product_list[0].productSkuList[0].product_sku_id;
+			values.product_sku_id = this.state.product_list[0].productSkuList[0].product_sku_id;
 			this.setState({
 				is_load: true
 			});
@@ -187,11 +198,30 @@ class MemberSend extends Component {
 		this.setState({
 			is_load: false,
 			is_show: false,
-			action: ''
+			action: '',
+			member_id: '',
+			selectedRowKeys: [],
+			app_id: '',
+			app_list: [],
+			user_name: '',
+			total: 0,
+			page_index: 1,
+			page_size: 7,
+			list: [],
+			product_list: [],
+			selectChina: []
 		});
 
 		this.props.form.resetFields();
 	}
+	onChangeChina(value, selectedOptions) {
+		console.log(selectedOptions);
+		this.setState({
+			selectChina: value,
+			selectedOptions: selectedOptions
+		})
+	}
+
 
 	render() {
 		const FormItem = Form.Item;
@@ -346,22 +376,6 @@ class MemberSend extends Component {
 								<FormItem hasFeedback {...{
 									labelCol: {span: 6},
 									wrapperCol: {span: 18}
-								}} className="form-item" label="收货公司">
-									{
-										getFieldDecorator('express_receiver_company', {
-											initialValue: ''
-										})(
-											<Input type="text" placeholder={constant.placeholder + '收货公司'} onPressEnter={this.handleSubmit.bind(this)}/>
-										)
-									}
-								</FormItem>
-							</Col>
-						</Row>
-						<Row>
-							<Col span={8}>
-								<FormItem hasFeedback {...{
-									labelCol: {span: 6},
-									wrapperCol: {span: 18}
 								}} className="form-item" label="收货人">
 									{
 										getFieldDecorator('express_receiver_name', {
@@ -372,22 +386,6 @@ class MemberSend extends Component {
 											initialValue: ''
 										})(
 											<Input type="text" placeholder={constant.placeholder + '收货人'} onPressEnter={this.handleSubmit.bind(this)}/>
-										)
-									}
-								</FormItem>
-							</Col>
-						</Row>
-						<Row>
-							<Col span={8}>
-								<FormItem hasFeedback {...{
-									labelCol: {span: 6},
-									wrapperCol: {span: 18}
-								}} className="form-item" label="收货人电话">
-									{
-										getFieldDecorator('express_receiver_tel', {
-											initialValue: ''
-										})(
-											<Input type="text" placeholder={constant.placeholder + '收货人电话'} onPressEnter={this.handleSubmit.bind(this)}/>
 										)
 									}
 								</FormItem>
@@ -418,74 +416,13 @@ class MemberSend extends Component {
 								<FormItem hasFeedback {...{
 									labelCol: {span: 6},
 									wrapperCol: {span: 18}
-								}} className="form-item" label="收货人邮编">
-									{
-										getFieldDecorator('express_receiver_postcode', {
-											initialValue: ''
-										})(
-											<Input type="text" placeholder={constant.placeholder + '收货人邮编'} onPressEnter={this.handleSubmit.bind(this)}/>
-										)
-									}
-								</FormItem>
-							</Col>
-						</Row>
-						<Row>
-							<Col span={8}>
-								<FormItem hasFeedback {...{
-									labelCol: {span: 6},
-									wrapperCol: {span: 18}
-								}} className="form-item" label="收货人省">
-									{
-										getFieldDecorator('express_receiver_province', {
-											rules: [{
-												required: true,
-												message: constant.required
-											}],
-											initialValue: ''
-										})(
-											<Input type="text" placeholder={constant.placeholder + '收货人省'} onPressEnter={this.handleSubmit.bind(this)}/>
-										)
-									}
-								</FormItem>
-							</Col>
-						</Row>
-						<Row>
-							<Col span={8}>
-								<FormItem hasFeedback {...{
-									labelCol: {span: 6},
-									wrapperCol: {span: 18}
-								}} className="form-item" label="收货人市">
-									{
-										getFieldDecorator('express_receiver_city', {
-											rules: [{
-												required: true,
-												message: constant.required
-											}],
-											initialValue: ''
-										})(
-											<Input type="text" placeholder={constant.placeholder + '收货人市'} onPressEnter={this.handleSubmit.bind(this)}/>
-										)
-									}
-								</FormItem>
-							</Col>
-						</Row>
-						<Row>
-							<Col span={8}>
-								<FormItem hasFeedback {...{
-									labelCol: {span: 6},
-									wrapperCol: {span: 18}
-								}} className="form-item" label="收货人区">
-									{
-										getFieldDecorator('express_receiver_area', {
-											rules: [{
-												required: true,
-												message: constant.required
-											}],
-											initialValue: ''
-										})(
-											<Input type="text" placeholder={constant.placeholder + '收货人区'} onPressEnter={this.handleSubmit.bind(this)}/>
-										)
-									}
+								}} className="form-item" label="收货人省市区">
+									<Cascader style={{width: 360}}
+											  value={this.state.selectChina}
+											  options={china}
+											  
+											  placeholder={'请选择省市区'}
+											  onChange={this.onChangeChina.bind(this)}/>
 								</FormItem>
 							</Col>
 						</Row>
