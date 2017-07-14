@@ -569,10 +569,10 @@ class TradeDetail extends Component {
                         </Col>
                         <Col span={16} className="content-button">
                             <Button type="primary" icon="plus-circle" size="default" className="margin-right"
-                                    onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                    onClick={this.handleAdd.bind(this)}>填写快递单</Button>
                             <Button type="primary" icon="plus-circle" size="default"
                                     loading={this.state.is_load}
-                                    onClick={this.handleDelivery.bind(this)}>发货</Button>
+                                    onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
                         </Col>
                     </Row>
                     <Table rowKey=""
