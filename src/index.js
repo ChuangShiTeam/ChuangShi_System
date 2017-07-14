@@ -1,6 +1,7 @@
 import dva from 'dva';
 import Router from './router';
 
+import constant from './util/constant';
 import './view/Style.css';
 
 import code from './model/code';
@@ -36,6 +37,8 @@ import feijiu_fast_customer from './model/feijiu_fast_customer';
 import feijiu_recommend_customer from './model/feijiu_recommend_customer';
 import feijiu_recommend_product from './model/feijiu_recommend_product';
 import bill from './model/bill';
+
+document.title = constant.name;
 
 const app = dva();
 

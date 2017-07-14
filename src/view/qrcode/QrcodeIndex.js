@@ -26,9 +26,9 @@ class QrcodeIndex extends Component {
             this.handleLoadApp();
         }
 
-        // this.props.form.setFieldsValue({
-        //     qrcode_type: this.props.qrcode.qrcode_type
-        // });
+        this.props.form.setFieldsValue({
+            qrcode_type: this.props.qrcode.qrcode_type
+        });
 
         this.handleLoad();
 
@@ -145,7 +145,24 @@ class QrcodeIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_qrcode_detail_add', {});
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/qrcode/' + constant.action + '/save',
+            data: {},
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
     }
 
     handleEdit(qrcode_id) {
@@ -218,13 +235,7 @@ class QrcodeIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.qrcode_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.qrcode_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                  <a onClick={this.handleEdit.bind(this, record.qrcode_id)}>{constant.find}</a>
                 </span>
             )
         }];
@@ -252,6 +263,8 @@ class QrcodeIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -293,8 +306,10 @@ class QrcodeIndex extends Component {
                                     getFieldDecorator('qrcode_type', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入类型"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Select placeholder="请选择类型">
+                                            <Option value="MEMBER">会员</Option>
+                                            <Option value="PLATFORM">平台</Option>
+                                        </Select>
                                     )
                                 }
                             </FormItem>

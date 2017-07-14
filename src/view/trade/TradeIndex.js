@@ -208,7 +208,7 @@ class TradeIndex extends Component {
         const {getFieldDecorator} = this.props.form;
         const columns = [{
             title: '用户',
-            dataIndex: 'user_id'
+            dataIndex: 'user_name'
         }, {
             title: '订单编号',
             dataIndex: 'trade_number'
@@ -234,13 +234,28 @@ class TradeIndex extends Component {
             dataIndex: 'trade_product_quantity'
         }, {
             title: '订单金额',
-            dataIndex: 'trade_product_amount'
+            dataIndex: 'trade_product_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.trade_product_amount}
+                </span>
+            )
         }, {
             title: '快递金额',
-            dataIndex: 'trade_express_amount'
+            dataIndex: 'trade_express_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.trade_express_amount}
+                </span>
+            )
         }, {
             title: '折扣金额',
-            dataIndex: 'trade_discount_amount'
+            dataIndex: 'trade_discount_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.trade_discount_amount}
+                </span>
+            )
         }, {
             title: '是否分成',
             dataIndex: 'trade_is_commission',
@@ -267,7 +282,15 @@ class TradeIndex extends Component {
             )
         }, {
             title: '订单流程',
-            dataIndex: 'trade_flow'
+            dataIndex: 'trade_flow',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_flow == "WAIT_PAY" ? "待付款" :
+                        record.trade_flow == "WAIT_SEND" ? "待发货" :
+                            record.trade_flow == "WAIT_RECEIVE" ? "待收货" :
+                                record.trade_flow == "COMPLETE" ? "已完成" : ""}
+                </div>
+            )
         }, {
             title: '订单状态',
             dataIndex: 'trade_status',
@@ -312,14 +335,12 @@ class TradeIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">订单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
