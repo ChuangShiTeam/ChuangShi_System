@@ -234,13 +234,28 @@ class TradeIndex extends Component {
             dataIndex: 'trade_product_quantity'
         }, {
             title: '订单金额',
-            dataIndex: 'trade_product_amount'
+            dataIndex: 'trade_product_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.trade_product_amount}
+                </span>
+            )
         }, {
             title: '快递金额',
-            dataIndex: 'trade_express_amount'
+            dataIndex: 'trade_express_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.trade_express_amount}
+                </span>
+            )
         }, {
             title: '折扣金额',
-            dataIndex: 'trade_discount_amount'
+            dataIndex: 'trade_discount_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.trade_discount_amount}
+                </span>
+            )
         }, {
             title: '是否分成',
             dataIndex: 'trade_is_commission',
@@ -326,8 +341,6 @@ class TradeIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

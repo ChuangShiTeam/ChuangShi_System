@@ -138,13 +138,8 @@ class QrcodeDetail extends Component {
             <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
-                   footer={[
-                       <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>关闭</Button>,
-                       <Button key="submit" type="primary" size="default" icon="check-circle"
-                               loading={this.state.is_load}
-                               onClick={this.handleSubmit.bind(this)}>确定</Button>
-                   ]}
+                   footer={[<Button key="back" type="ghost" size="default" icon="cross-circle"
+                               onClick={this.handleCancel.bind(this)}>关闭</Button>]}
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
@@ -230,7 +225,8 @@ class QrcodeDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="二维码图片">
                                     <div className="clearfix">
-                                        <img alt="example" style={{ height: '200px' }} src={this.state.qrcode.qrcode_url}/>
+                                        <img alt="example" style={{ height: '200px' }}
+                                             src={this.state.qrcode.qrcode_url}/>
                                     </div>
                                 </FormItem>
                             </Col>

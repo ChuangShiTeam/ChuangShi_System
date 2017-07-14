@@ -73,7 +73,7 @@ class MemberAddressDetail extends Component {
                     member_address_city: data.member_address_city,
                     member_address_area: data.member_address_area,
                     member_address_address: data.member_address_address,
-                    address_is_default: data.address_is_default,
+                    address_is_default: data.address_is_default
                 });
 
                 this.setState({
