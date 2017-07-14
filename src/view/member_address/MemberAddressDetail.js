@@ -64,6 +64,7 @@ class MemberAddressDetail extends Component {
                 this.props.form.setFieldsValue({
                     member_id: data.member_id,
                     user_id: data.user_id,
+                    user_name: data.user_name,
                     member_address_name: data.member_address_name,
                     member_address_tel: data.member_address_tel,
                     member_address_mobile: data.member_address_mobile,
@@ -192,28 +193,7 @@ class MemberAddressDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="会员编号">
                                     {
-                                        getFieldDecorator('member_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '会员编号'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="用户编号">
-                                    {
-                                        getFieldDecorator('user_id', {
+                                        getFieldDecorator('user_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
