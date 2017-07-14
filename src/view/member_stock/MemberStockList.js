@@ -3,14 +3,12 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import AppStockDetail from './AppStockDetail';
-import AppStockReplenish from './AppStockReplenish';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class AppStockIndex extends Component {
+class MemberStockList extends Component {
 	constructor(props) {
 		super(props);
 
@@ -22,27 +20,26 @@ class AppStockIndex extends Component {
 	componentDidMount() {
 		if (constant.action === 'system') {
 			this.props.form.setFieldsValue({
-				app_id: this.props.app_stock.app_id
+				app_id: this.props.member_stock.app_id
 			});
 
 			this.handleLoadApp();
 		}
 
 		this.props.form.setFieldsValue({
-			stock_action: this.props.app_stock.stock_action,
-			product_name: this.props.app_stock.product_name
+			user_name: this.props.member_stock.user_name,
+			product_name: this.props.member_stock.product_name
 		});
 
 		this.handleLoad();
-        this.handleLoadProduct();
 
-		notification.on('notification_app_stock_index_load', this, function (data) {
+		notification.on('notification_member_stock_list_load', this, function (data) {
 			this.handleLoad();
 		});
 	}
 
 	componentWillUnmount() {
-		notification.remove('notification_app_stock_index_load', this);
+		notification.remove('notification_member_stock_list_load', this);
 	}
 
 	handleLoadApp() {
@@ -51,7 +48,7 @@ class AppStockIndex extends Component {
 			data: {},
 			success: function (data) {
 				this.props.dispatch({
-					type: 'app_stock/fetch',
+					type: 'member_stock/fetch',
 					data: {
 						app_list: data
 					}
@@ -63,40 +60,21 @@ class AppStockIndex extends Component {
 		});
 	}
 
-    handleLoadProduct() {
-        http.request({
-            url: '/product/' + constant.action + '/all/list',
-            data: {},
-            success: function (data) {
-                this.props.dispatch({
-                    type: 'app_stock/fetch',
-                    data: {
-                        product_list: data
-                    }
-                });
-            }.bind(this),
-            complete: function () {
-
-            }
-        });
-    }
-
-
-    handleSearch() {
+	handleSearch() {
 		new Promise(function (resolve, reject) {
 			let app_id = this.props.form.getFieldValue('app_id');
 			if (validate.isUndefined(app_id)) {
 				app_id = '';
 			}
 
-			var stock_action = this.props.form.getFieldValue('stock_action');
-			var product_name = this.props.form.getFieldValue('product_name');
+			let product_name = this.props.form.getFieldValue('product_name');
+			let user_name = this.props.form.getFieldValue('user_name');
 
 			this.props.dispatch({
-				type: 'app_stock/fetch',
+				type: 'member_stock/fetch',
 				data: {
 					app_id: app_id,
-					stock_action: stock_action,
+					user_name: user_name,
 					product_name: product_name,
 					page_index: 1
 				}
@@ -114,18 +92,17 @@ class AppStockIndex extends Component {
 		});
 
 		http.request({
-			url: '/app/stock/' + constant.action + '/list',
+			url: '/member/stock/' + constant.action + '/stock/list',
 			data: {
-				app_id: this.props.app_stock.app_id,
-				stock_type: this.props.app_stock.stock_type,
-				stock_action: this.props.app_stock.stock_action,
-				product_name: this.props.app_stock.product_name,
-				page_index: this.props.app_stock.page_index,
-				page_size: this.props.app_stock.page_size
+				app_id: this.props.member_stock.app_id,
+				user_name: this.props.member_stock.user_name,
+				product_name: this.props.member_stock.product_name,
+				page_index: this.props.member_stock.page_index,
+				page_size: this.props.member_stock.page_size
 			},
 			success: function (data) {
 				this.props.dispatch({
-					type: 'app_stock/fetch',
+					type: 'member_stock/fetch',
 					data: {
 						total: data.total,
 						list: data.list
@@ -143,7 +120,7 @@ class AppStockIndex extends Component {
 	handleChangeIndex(page_index) {
 		new Promise(function (resolve, reject) {
 			this.props.dispatch({
-				type: 'app_stock/fetch',
+				type: 'member_stock/fetch',
 				data: {
 					page_index: page_index
 				}
@@ -158,7 +135,7 @@ class AppStockIndex extends Component {
 	handleChangeSize(page_index, page_size) {
 		new Promise(function (resolve, reject) {
 			this.props.dispatch({
-				type: 'app_stock/fetch',
+				type: 'member_stock/fetch',
 				data: {
 					page_index: page_index,
 					page_size: page_size
@@ -171,40 +148,6 @@ class AppStockIndex extends Component {
 		}.bind(this));
 	}
 
-	handleView(stock_id) {
-		notification.emit('notification_app_stock_detail_view', {
-			stock_id: stock_id
-		});
-	}
-
-	handleDel(stock_id, system_version) {
-		this.setState({
-			is_load: true
-		});
-
-		http.request({
-			url: '/app/stock/' + constant.action + '/delete',
-			data: {
-				stock_id: stock_id,
-				system_version: system_version
-			},
-			success: function (data) {
-				message.success(constant.success);
-
-				this.handleLoad();
-			}.bind(this),
-			complete: function () {
-				this.setState({
-					is_load: false
-				});
-			}.bind(this)
-		});
-	}
-
-	handleReplenish() {
-		notification.emit('notification_app_stock_replenish', {});
-	}
-
 	render() {
 		const FormItem = Form.Item;
 		const Option = Select.Option;
@@ -212,48 +155,26 @@ class AppStockIndex extends Component {
 
 		const columns = [{
 			width: 150,
+			title: '会员名称',
+			dataIndex: 'user_name'
+		}, {
+			width: 150,
 			title: '产品名称',
 			dataIndex: 'product_name'
 		}, {
 			width: 150,
 			title: '数量',
 			dataIndex: 'stock_quantity'
-		}, {
-			width: 150,
-			title: '出库/入库/平台补充',
-			dataIndex: 'stock_action',
-			render: (text, record, index) => (
-				<span>
-					{
-						text === 'OUT'?'出库':text === 'IN'?'入库':text === 'REPLENISH'?'平台补充':null
-					}
-				</span>
-			)
-		}, {
-			width: 100,
-			title: constant.operation,
-			dataIndex: '',
-			render: (text, record, index) => (
-				<span>
-                  <a onClick={this.handleView.bind(this, record.stock_id)}>查看</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-							  cancelText={constant.popconfirm_cancel}
-							  onConfirm={this.handleDel.bind(this, record.stock_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
-                </span>
-			)
 		}];
 
 		const pagination = {
 			size: 'defalut',
-			total: this.props.app_stock.total,
+			total: this.props.member_stock.total,
 			showTotal: function (total, range) {
 				return '总共' + total + '条数据';
 			},
-			current: this.props.app_stock.page_index,
-			pageSize: this.props.app_stock.page_size,
+			current: this.props.member_stock.page_index,
+			pageSize: this.props.member_stock.page_size,
 			showSizeChanger: true,
 			onShowSizeChange: this.handleChangeSize.bind(this),
 			onChange: this.handleChangeIndex.bind(this)
@@ -263,14 +184,12 @@ class AppStockIndex extends Component {
 			<QueueAnim>
 				<Row key="0" className="content-title">
 					<Col span={8}>
-						<div className="">公司出库入库信息</div>
+						<div className="">会员库存信息</div>
 					</Col>
 					<Col span={16} className="content-button">
 						<Button type="default" icon="search" size="default" className="margin-right"
 								loading={this.state.is_load}
 								onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-						<Button type="primary" icon="plus-circle" size="default"
-								onClick={this.handleReplenish.bind(this)}>平台补充</Button>
 					</Col>
 				</Row>
 				<Form key="1" className="content-search margin-top">
@@ -307,6 +226,20 @@ class AppStockIndex extends Component {
 							<FormItem hasFeedback {...{
 								labelCol: {span: 6},
 								wrapperCol: {span: 18}
+							}} className="content-search-item" label="会员名称">
+								{
+									getFieldDecorator('user_name', {
+										initialValue: ''
+									})(
+										<Input type="text" placeholder="请输入会员名称" onPressEnter={this.handleSearch.bind(this)}/>
+									)
+								}
+							</FormItem>
+						</Col>
+						<Col span={8}>
+							<FormItem hasFeedback {...{
+								labelCol: {span: 6},
+								wrapperCol: {span: 18}
 							}} className="content-search-item" label="产品名称">
 								{
 									getFieldDecorator('product_name', {
@@ -320,22 +253,19 @@ class AppStockIndex extends Component {
 					</Row>
 				</Form>
 				<Table key="2"
-					   rowKey="stock_id"
 					   className="margin-top"
 					   loading={this.state.is_load} columns={columns}
-					   dataSource={this.props.app_stock.list} pagination={pagination}
+					   dataSource={this.props.member_stock.list} pagination={pagination}
 					   bordered/>
-				<AppStockDetail/>
-				<AppStockReplenish/>
 			</QueueAnim>
 		);
 	}
 }
 
-AppStockIndex.propTypes = {};
+MemberStockList.propTypes = {};
 
-AppStockIndex = Form.create({})(AppStockIndex);
+MemberStockList = Form.create({})(MemberStockList);
 
-export default connect(({app_stock}) => ({
-	app_stock
-}))(AppStockIndex);
+export default connect(({member_stock}) => ({
+	member_stock
+}))(MemberStockList);

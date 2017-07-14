@@ -184,8 +184,8 @@ class BillIndex extends Component {
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
         const columns = [{
-            title: '用户',
-            dataIndex: 'user_id'
+            title: '用户名称',
+            dataIndex: 'user_name'
         }, {
             title: '账单类型',
             dataIndex: 'bill_type'
@@ -217,7 +217,10 @@ class BillIndex extends Component {
             dataIndex: 'bill_time'
         }, {
             title: '账单流程',
-            dataIndex: 'bill_flow'
+            dataIndex: 'bill_flow',
+            render: (text, record, index) => (
+                <span>{record.bill_flow == "COMPLETE" ? '已完成' : ''}</span>
+            )
         }, {
             title: '账单状态',
             dataIndex: 'bill_status',
@@ -232,13 +235,7 @@ class BillIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.bill_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.bill_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                  <a onClick={this.handleEdit.bind(this, record.bill_id)}>{constant.find}</a>
                 </span>
             )
         }];
@@ -266,8 +263,6 @@ class BillIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

@@ -184,12 +184,9 @@ class MemberAddressIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '会员编号',
-            dataIndex: 'member_id'
-        }, {
-            title: '用户编号',
-            dataIndex: 'user_id'
-        }, {
+            title: '会员名称',
+            dataIndex: 'user_name'
+        },{
             title: '收货人',
             dataIndex: 'member_address_name'
         }, {

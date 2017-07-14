@@ -226,8 +226,15 @@ class MemberStockIndex extends Component {
             dataIndex: 'stock_quantity'
         }, {
             width: 150,
-            title: '出库/入库',
-            dataIndex: 'stock_action'
+            title: '出库/入库/平台补充',
+            dataIndex: 'stock_action',
+            render: (text, record, index) => (
+                <span>
+					{
+                        text === 'OUT'?'出库':text === 'IN'?'入库':text === 'REPLENISH'?'平台补充':null
+                    }
+				</span>
+            )
         }, {
             width: 100,
             title: constant.operation,

@@ -63,6 +63,7 @@ class BillDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     user_id: data.user_id,
+                    user_name: data.user_name,
                     bill_type: data.bill_type,
                     bill_image: data.bill_image,
                     bill_name: data.bill_name,
@@ -141,10 +142,7 @@ class BillDetail extends Component {
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>关闭</Button>,
-                       <Button key="submit" type="primary" size="default" icon="check-circle"
-                               loading={this.state.is_load}
-                               onClick={this.handleSubmit.bind(this)}>确定</Button>
+                               onClick={this.handleCancel.bind(this)}>关闭</Button>
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
@@ -188,16 +186,16 @@ class BillDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户编号">
+                                }} className="form-item" label="用户名称">
                                     {
-                                        getFieldDecorator('user_id', {
+                                        getFieldDecorator('user_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户编号'}
+                                            <Input type="text" placeholder={constant.placeholder + '用户名称'}
                                                    onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }

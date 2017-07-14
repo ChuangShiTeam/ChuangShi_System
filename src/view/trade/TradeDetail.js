@@ -154,7 +154,7 @@ class TradeDetail extends Component {
         });
 
         http.request({
-            url: '/trade/admin/delivery',
+            url: '/trade/delivery',
             data: {
                 trade_id: this.state.trade_id,
                 system_version: this.state.system_version
@@ -198,7 +198,12 @@ class TradeDetail extends Component {
             dataIndex: 'product_sku_quantity'
         }, {
             title: '商品金额',
-            dataIndex: 'product_sku_amount'
+            dataIndex: 'product_sku_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.product_sku_amount}
+                </span>
+            )
         }];
 
         const columnsCommossion = [{
@@ -220,7 +225,12 @@ class TradeDetail extends Component {
             )
         }, {
             title: '分成金额',
-            dataIndex: 'product_sku_commission_amount'
+            dataIndex: 'product_sku_commission_amount',
+            render: (text, record, index) => (
+                <span>
+                    ￥{record.product_sku_commission_amount}
+                </span>
+            )
         }];
 
         const columnsExpress = [{
@@ -408,8 +418,8 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="订单流程">
-                                    <span>{this.state.trade.trade_flow}</span>
+                                }} className="form-item" label="订单备注">
+                                    <span>{this.state.trade.trade_message}</span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -482,7 +492,7 @@ class TradeDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单金额">
-                                    <span>{this.state.trade.trade_product_amount}</span>
+                                    <span>￥{this.state.trade.trade_product_amount}</span>
                                 </FormItem>
                             </Col>
                             <Col span={8}>
@@ -491,7 +501,7 @@ class TradeDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="运费金额">
                                     <span>
-                                        {this.state.trade.trade_express_amount}
+                                      ￥{this.state.trade.trade_express_amount}
                                     </span>
                                 </FormItem>
                             </Col>
@@ -500,7 +510,7 @@ class TradeDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="折扣金额">
-                                    <span>{this.state.trade.trade_discount_amount}</span>
+                                    <span>￥{this.state.trade.trade_discount_amount}</span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -533,16 +543,6 @@ class TradeDetail extends Component {
                                     <span>
                                         {this.state.trade.trade_is_confirm ? "已收货" : "未收货"}
                                     </span>
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="订单备注">
-                                    <span>{this.state.trade.trade_message}</span>
                                 </FormItem>
                             </Col>
                         </Row>
