@@ -12,7 +12,6 @@ export default {
         page_size: constant.page_size,
         list: [],
         stock_action: '',
-        product_name: '',
         user_name: '',
         product_list: [],
         member_List: []

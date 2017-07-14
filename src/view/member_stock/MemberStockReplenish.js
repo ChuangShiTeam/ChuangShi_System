@@ -143,11 +143,11 @@ class MemberStockReplenish extends Component {
 				return;
 			}
 			values.member_id = this.state.member_id;
-			values.product_sku_list = [{
+			values.stock_product_sku_list = [{
 				product_sku_id: this.props.member_stock.product_list[0].productSkuList[0].product_sku_id,
-				stock_quantity: values.stock_quantity
+				product_sku_quantity: values.product_sku_quantity
 			}];
-			delete values.stock_quantity;
+			delete values.product_sku_quantity;
 			console.log('values', values);
 			this.setState({
 				is_load: true
@@ -176,7 +176,16 @@ class MemberStockReplenish extends Component {
 		this.setState({
 			is_load: false,
 			is_show: false,
-			action: ''
+			action: '',
+			member_id: '',
+			selectedRowKeys: [],
+			app_id: '',
+			app_list: [],
+			user_name: '',
+			total: 0,
+			page_index: 1,
+			page_size: 7,
+			list: []
 		});
 
 		this.props.form.resetFields();
@@ -312,7 +321,7 @@ class MemberStockReplenish extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="数量">
 									{
-										getFieldDecorator('stock_quantity', {
+										getFieldDecorator('product_sku_quantity', {
 											rules: [{
 												required: true,
 												message: constant.required

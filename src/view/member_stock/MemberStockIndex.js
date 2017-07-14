@@ -30,8 +30,7 @@ class MemberStockIndex extends Component {
 
         this.props.form.setFieldsValue({
             user_name: this.props.member_stock.user_name,
-            stock_action: this.props.member_stock.stock_action,
-            product_name: this.props.member_stock.product_name
+            stock_action: this.props.member_stock.stock_action
         });
 
         this.handleLoad();
@@ -90,7 +89,6 @@ class MemberStockIndex extends Component {
             }
 
             let stock_action = this.props.form.getFieldValue('stock_action');
-            let product_name = this.props.form.getFieldValue('product_name');
             let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
@@ -99,7 +97,6 @@ class MemberStockIndex extends Component {
                     app_id: app_id,
                     user_name: user_name,
                     stock_action: stock_action,
-                    product_name: product_name,
                     page_index: 1
                 }
             });
@@ -121,7 +118,6 @@ class MemberStockIndex extends Component {
                 app_id: this.props.member_stock.app_id,
                 user_name: this.props.member_stock.user_name,
                 stock_action: this.props.member_stock.stock_action,
-                product_name: this.props.member_stock.product_name,
                 page_index: this.props.member_stock.page_index,
                 page_size: this.props.member_stock.page_size
             },
@@ -218,10 +214,6 @@ class MemberStockIndex extends Component {
             dataIndex: 'user_name'
         }, {
             width: 150,
-            title: '产品名称',
-            dataIndex: 'product_name'
-        }, {
-            width: 150,
             title: '数量',
             dataIndex: 'stock_quantity'
         }, {
@@ -235,6 +227,10 @@ class MemberStockIndex extends Component {
                     }
 				</span>
             )
+        }, {
+            width: 150,
+            title: '操作时间',
+            dataIndex: 'system_create_time'
         }, {
             width: 100,
             title: constant.operation,
@@ -319,20 +315,6 @@ class MemberStockIndex extends Component {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入会员名称" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="产品名称">
-                                {
-                                    getFieldDecorator('product_name', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入产品名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
