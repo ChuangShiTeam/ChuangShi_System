@@ -150,7 +150,7 @@ class QrcodeIndex extends Component {
         });
 
         http.request({
-            url: '/qrcode/' + constant.action + '/add',
+            url: '/qrcode/' + constant.action + '/save',
             data: {},
             success: function (data) {
                 message.success(constant.success);
