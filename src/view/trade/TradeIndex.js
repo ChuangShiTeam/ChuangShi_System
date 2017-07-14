@@ -208,7 +208,7 @@ class TradeIndex extends Component {
         const {getFieldDecorator} = this.props.form;
         const columns = [{
             title: '用户',
-            dataIndex: 'user_id'
+            dataIndex: 'user_name'
         }, {
             title: '订单编号',
             dataIndex: 'trade_number'
@@ -267,7 +267,15 @@ class TradeIndex extends Component {
             )
         }, {
             title: '订单流程',
-            dataIndex: 'trade_flow'
+            dataIndex: 'trade_flow',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_flow == "WAIT_PAY" ? "待付款" :
+                        record.trade_flow == "WAIT_SEND" ? "待发货" :
+                            record.trade_flow == "WAIT_RECEIVE" ? "待收货" :
+                                record.trade_flow == "COMPLETE" ? "已完成" : ""}
+                </div>
+            )
         }, {
             title: '订单状态',
             dataIndex: 'trade_status',
