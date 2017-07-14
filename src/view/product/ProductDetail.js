@@ -66,7 +66,7 @@ class ProductDetail extends Component {
                 }
 
                 let product_image = [];
-                if (data.product_image_file !== '') {
+                if (data.product_image_file !== null) {
                     product_image.push(data.product_image_file);
                 }
                 this.refs.product_image.handleSetValue(product_image);

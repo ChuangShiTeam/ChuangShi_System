@@ -178,19 +178,23 @@ class HttpIndex extends Component {
             title: '地址',
             dataIndex: 'http_url'
         }, {
-            width: 90,
+            width: 100,
             title: '状态',
             dataIndex: 'http_code'
         }, {
-            width: 90,
+            width: 100,
             title: '平台',
             dataIndex: 'http_platform'
         }, {
-            width: 90,
+            width: 100,
             title: '版本',
             dataIndex: 'http_version'
         }, {
-            width: 90,
+            width: 120,
+            title: 'IP地址',
+            dataIndex: 'http_ip_address'
+        }, {
+            width: 100,
             title: '耗时(毫秒)',
             dataIndex: 'http_run_time'
         }, {
@@ -225,7 +229,7 @@ class HttpIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">请求信息</div>
+                        <div className="">请求日志信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="primary" icon="search" size="default"
