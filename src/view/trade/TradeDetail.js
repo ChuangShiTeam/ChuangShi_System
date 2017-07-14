@@ -340,13 +340,13 @@ class TradeDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <Steps current={1}>
-                        <Step status={this.state.trade.trade_flow=='待支付'?"process ":"wait"} title="付款"
+                        <Step status={this.state.trade.trade_flow=='WAIT_PAY'?"process ":"wait"} title="待付款"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='待发货'?"process ":"wait"} title="发货"
+                        <Step status={this.state.trade.trade_flow=='WAIT_SEND'?"process ":"wait"} title="待发货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='待收货'?"process ":"wait"} title="收货"
+                        <Step status={this.state.trade.trade_flow=='WAIT_RECEIVE'?"process ":"wait"} title="待收货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='已完成'?"process ":"wait"} title="完成"
+                        <Step status={this.state.trade.trade_flow=='COMPLETE'?"process ":"wait"} title="已完成"
                               description=""/>
                     </Steps>
                     <br/>
