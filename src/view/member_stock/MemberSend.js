@@ -6,6 +6,7 @@ import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 import china from "../../util/china";
+import express_code from "../../util/express_code";
 
 class MemberSend extends Component {
 	constructor(props) {
@@ -166,11 +167,16 @@ class MemberSend extends Component {
 				message.error('请选择省市区');
 				return;
 			}
-			values.express_receiver_province = china[0].label;
-			values.express_receiver_city = china[1].label;
-			values.express_receiver_area = china[2].label;
+			values.stock_receiver_province = china[0].label;
+			values.stock_receiver_city = china[1].label;
+			values.stock_receiver_area = china[2].label;
 			values.member_id = this.state.member_id;
-			values.product_sku_id = this.state.product_list[0].productSkuList[0].product_sku_id;
+			values.stock_product_sku_list = [{
+                	product_sku_id: this.state.product_list[0].productSkuList[0].product_sku_id,
+                	product_sku_quantity: values.product_sku_quantity
+				}
+			];
+            delete values.product_sku_quantity;
 			this.setState({
 				is_load: true
 			});
@@ -181,7 +187,7 @@ class MemberSend extends Component {
 				success: function (data) {
 					message.success(constant.success);
 
-					notification.emit('notification_express_index_load', {});
+					notification.emit('notification_member_stock_out_index_load', {});
 
 					this.handleCancel();
 				}.bind(this),
@@ -353,7 +359,7 @@ class MemberSend extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="数量">
 									{
-										getFieldDecorator('stock_quantity', {
+										getFieldDecorator('product_sku_quantity', {
 											rules: [{
 												required: true,
 												message: constant.required
@@ -374,11 +380,66 @@ class MemberSend extends Component {
 						<Row>
 							<Col span={8}>
 								<FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="快递支付类型">
+                                    {
+                                        getFieldDecorator('stock_express_pay_way', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+											<Select
+												showSearch
+												placeholder="选择快递支付类型"
+												optionFilterProp="children"
+												filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+											>
+												<Option value="现付">现付</Option>
+												<Option value="到付">到付</Option>
+												<Option value="月结">月结</Option>
+												<Option value="第三方支付">第三方支付</Option>
+											</Select>
+                                        )
+                                    }
+								</FormItem>
+							</Col>
+						</Row>
+						<Row>
+							<Col span={8}>
+								<FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="指定快递公司">
+                                    {
+                                        getFieldDecorator('stock_express_shipper_code', {
+                                            initialValue: ''
+                                        })(
+											<Select
+												showSearch
+												placeholder="选择快递公司"
+												optionFilterProp="children"
+												filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+											>
+												{
+                                                    express_code.map(item => <Option value={item.value}>{item.label}</Option>)
+												}
+											</Select>
+                                        )
+                                    }
+								</FormItem>
+							</Col>
+						</Row>
+						<Row>
+							<Col span={8}>
+								<FormItem hasFeedback {...{
 									labelCol: {span: 6},
 									wrapperCol: {span: 18}
 								}} className="form-item" label="收货人">
 									{
-										getFieldDecorator('express_receiver_name', {
+										getFieldDecorator('stock_receiver_name', {
 											rules: [{
 												required: true,
 												message: constant.required
@@ -398,7 +459,7 @@ class MemberSend extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="收货人手机">
 									{
-										getFieldDecorator('express_receiver_mobile', {
+										getFieldDecorator('stock_receiver_mobile', {
 											rules: [{
 												required: true,
 												message: constant.required
@@ -433,7 +494,7 @@ class MemberSend extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="收货详细地址">
 									{
-										getFieldDecorator('express_receiver_address', {
+										getFieldDecorator('stock_receiver_address', {
 											rules: [{
 												required: true,
 												message: constant.required

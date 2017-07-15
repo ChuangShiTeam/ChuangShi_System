@@ -4,7 +4,6 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import ExpressDetail from './ExpressDetail';
-import MemberSend from './MemberSend';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -152,10 +151,6 @@ class ExpressIndex extends Component {
         }.bind(this));
     }
 
-    handleSend() {
-        notification.emit('notification_member_send', {});
-    }
-
     handleView(express_id) {
         notification.emit('notification_express_detail_view', {
             express_id: express_id
@@ -226,8 +221,6 @@ class ExpressIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleSend.bind(this)}>发货</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -311,7 +304,6 @@ class ExpressIndex extends Component {
                        dataSource={this.props.express.list} pagination={pagination}
                        bordered/>
                 <ExpressDetail/>
-                <MemberSend/>
             </QueueAnim>
         );
     }
