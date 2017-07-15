@@ -97,7 +97,7 @@ class Login extends Component {
                         }}>
                             <Button type="primary" htmlType="submit" className="" size="default" style={{width: '100%'}}
                                     loading={this.state.is_load}
-                                    onClick={this.handleSubmit.bind(this)}>登录总控后台</Button>
+                                    onClick={this.handleSubmit.bind(this)}>{constant.name}</Button>
                         </FormItem>
                     </Spin>
                 </Card>
