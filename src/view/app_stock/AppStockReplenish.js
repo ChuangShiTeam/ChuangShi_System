@@ -37,11 +37,11 @@ class AppStockReplenish extends Component {
 				return;
 			}
 			values.app_id = this.state.app_id;
-			values.product_sku_list = [{
+			values.stock_product_sku_list = [{
 				product_sku_id: this.props.app_stock.product_list[0].productSkuList[0].product_sku_id,
-				stock_quantity: values.stock_quantity
+				product_sku_quantity: values.product_sku_quantity
 			}];
-			delete values.stock_quantity;
+			delete values.product_sku_quantity;
 			this.setState({
 				is_load: true
 			});
@@ -81,7 +81,7 @@ class AppStockReplenish extends Component {
 		const {getFieldDecorator} = this.props.form;
 
 		return (
-			<Modal title={'初始化公司库存'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+			<Modal title={'平台补充公司库存'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
 				   visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
 				   footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -134,7 +134,7 @@ class AppStockReplenish extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="数量">
 									{
-										getFieldDecorator('stock_quantity', {
+										getFieldDecorator('product_sku_quantity', {
 											rules: [{
 												required: true,
 												message: constant.required

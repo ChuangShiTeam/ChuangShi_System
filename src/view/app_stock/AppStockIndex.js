@@ -29,8 +29,7 @@ class AppStockIndex extends Component {
 		}
 
 		this.props.form.setFieldsValue({
-			stock_action: this.props.app_stock.stock_action,
-			product_name: this.props.app_stock.product_name
+			stock_action: this.props.app_stock.stock_action
 		});
 
 		this.handleLoad();
@@ -90,14 +89,12 @@ class AppStockIndex extends Component {
 			}
 
 			var stock_action = this.props.form.getFieldValue('stock_action');
-			var product_name = this.props.form.getFieldValue('product_name');
 
 			this.props.dispatch({
 				type: 'app_stock/fetch',
 				data: {
 					app_id: app_id,
 					stock_action: stock_action,
-					product_name: product_name,
 					page_index: 1
 				}
 			});
@@ -117,9 +114,7 @@ class AppStockIndex extends Component {
 			url: '/app/stock/' + constant.action + '/list',
 			data: {
 				app_id: this.props.app_stock.app_id,
-				stock_type: this.props.app_stock.stock_type,
 				stock_action: this.props.app_stock.stock_action,
-				product_name: this.props.app_stock.product_name,
 				page_index: this.props.app_stock.page_index,
 				page_size: this.props.app_stock.page_size
 			},
@@ -212,10 +207,6 @@ class AppStockIndex extends Component {
 
 		const columns = [{
 			width: 150,
-			title: '产品名称',
-			dataIndex: 'product_name'
-		}, {
-			width: 150,
 			title: '数量',
 			dataIndex: 'stock_quantity'
 		}, {
@@ -229,6 +220,10 @@ class AppStockIndex extends Component {
 					}
 				</span>
 			)
+		}, {
+			width: 150,
+			title: '操作时间',
+			dataIndex: 'system_create_time'
 		}, {
 			width: 100,
 			title: constant.operation,
@@ -273,52 +268,6 @@ class AppStockIndex extends Component {
 								onClick={this.handleReplenish.bind(this)}>平台补充</Button>
 					</Col>
 				</Row>
-				<Form key="1" className="content-search margin-top">
-					<Row>
-						{
-							constant.action === 'system' ?
-								<Col span={8}>
-									<FormItem hasFeedback {...{
-										labelCol: {span: 6},
-										wrapperCol: {span: 18}
-									}} className="content-search-item" label="应用名称">
-										{
-											getFieldDecorator('app_id', {
-												initialValue: ''
-											})(
-												<Select allowClear placeholder="请选择应用">
-													{
-														this.props.stock.app_list.map(function (item) {
-															return (
-																<Option key={item.app_id}
-																		value={item.app_id}>{item.app_name}</Option>
-															)
-														})
-													}
-												</Select>
-											)
-										}
-									</FormItem>
-								</Col>
-								:
-								''
-						}
-						<Col span={8}>
-							<FormItem hasFeedback {...{
-								labelCol: {span: 6},
-								wrapperCol: {span: 18}
-							}} className="content-search-item" label="产品名称">
-								{
-									getFieldDecorator('product_name', {
-										initialValue: ''
-									})(
-										<Input type="text" placeholder="请输入产品名称" onPressEnter={this.handleSearch.bind(this)}/>
-									)
-								}
-							</FormItem>
-						</Col>
-					</Row>
-				</Form>
 				<Table key="2"
 					   rowKey="stock_id"
 					   className="margin-top"
