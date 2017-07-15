@@ -27,7 +27,7 @@
 }
 
 .ant-modal-body {
-    height: 520px !important;
+    height: 520px;
     overflow: visible;
     overflow-y: auto;
     overflow-x: hidden;
