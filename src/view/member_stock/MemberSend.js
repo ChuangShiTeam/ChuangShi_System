@@ -392,10 +392,7 @@ class MemberSend extends Component {
                                             initialValue: ''
                                         })(
 											<Select
-												showSearch
 												placeholder="选择快递支付类型"
-												optionFilterProp="children"
-												filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 											>
 												<Option value="现付">现付</Option>
 												<Option value="到付">到付</Option>

@@ -353,9 +353,20 @@ class MemberStockOutExpress extends Component {
                                 }} className="form-item" label="快递支付类型">
                                     {
                                         getFieldDecorator('express_pay_way', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" disabled={true}/>
+                                            <Select
+                                                placeholder="选择快递支付类型"
+                                            >
+                                                <Option value="现付">现付</Option>
+                                                <Option value="到付">到付</Option>
+                                                <Option value="月结">月结</Option>
+                                                <Option value="第三方支付">第三方支付</Option>
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
