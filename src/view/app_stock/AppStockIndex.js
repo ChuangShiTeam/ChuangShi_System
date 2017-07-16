@@ -201,10 +201,6 @@ class AppStockIndex extends Component {
 	}
 
 	render() {
-		const FormItem = Form.Item;
-		const Option = Select.Option;
-		const {getFieldDecorator} = this.props.form;
-
 		const columns = [{
 			width: 150,
 			title: '数量',
