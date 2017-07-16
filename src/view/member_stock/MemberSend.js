@@ -424,7 +424,7 @@ class MemberSend extends Component {
 												filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 											>
 												{
-                                                    express_code.map(item => <Option value={item.value}>{item.label}</Option>)
+                                                    express_code.map((item, index) => <Option value={item.value} key={index}>{item.label}</Option>)
 												}
 											</Select>
                                         )
