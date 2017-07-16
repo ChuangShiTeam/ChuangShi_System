@@ -141,7 +141,7 @@ class AppStockReplenish extends Component {
 											}],
 											initialValue: 0
 										})(
-											<InputNumber min={0} max={99999} placeholder={constant.placeholder + '数量'} onPressEnter={this.handleSubmit.bind(this)}/>
+											<InputNumber max={99999} placeholder={constant.placeholder + '数量'} onPressEnter={this.handleSubmit.bind(this)}/>
 										)
 									}
 								</FormItem>

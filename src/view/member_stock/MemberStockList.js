@@ -164,7 +164,7 @@ class MemberStockList extends Component {
 		}, {
 			width: 150,
 			title: '数量',
-			dataIndex: 'stock_quantity'
+			dataIndex: 'sum_stock_quantity'
 		}];
 
 		const pagination = {
