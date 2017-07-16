@@ -80,7 +80,7 @@ class ExpressDetail extends Component {
                     express_start_date: data.express_start_date,
                     express_end_date: data.express_end_date,
                     express_logistics: data.express_logistics,
-                    express_status: data.express_status,
+                    express_flow: data.express_flow,
                     express_remark: data.express_remark
                 });
 
@@ -501,7 +501,7 @@ class ExpressDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="状态">
                                     {
-                                        getFieldDecorator('express_status', {
+                                        getFieldDecorator('express_flow', {
                                             initialValue: ''
                                         })(
                                             <Input type="text"/>
