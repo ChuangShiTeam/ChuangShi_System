@@ -157,12 +157,6 @@ class ExpressIndex extends Component {
         });
     }
 
-    handleEdit(express_id) {
-        notification.emit('notification_express_detail_edit', {
-            express_id: express_id
-        });
-    }
-
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -187,13 +181,6 @@ class ExpressIndex extends Component {
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleView.bind(this, record.express_id)}>查看</a>
-                    {
-                        record.express_no?null:
-                        <span>
-                            <span className="divider"/>
-                            <a onClick={this.handleEdit.bind(this, record.express_id)}>填写快递单号</a>
-                        </span>
-                    }
                 </span>
             )
         }];
@@ -215,7 +202,7 @@ class ExpressIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">发货单信息</div>
+                        <div className="">快递单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
