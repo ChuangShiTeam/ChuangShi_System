@@ -1,5 +1,5 @@
 export default {
-    host: 'http://localhost:8080',
+    host: 'http://114.215.47.235:8084',
     //host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',

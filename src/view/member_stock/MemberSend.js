@@ -364,7 +364,7 @@ class MemberSend extends Component {
 												required: true,
 												message: constant.required
 											}],
-											initialValue: 0
+											initialValue: 1
 										})(
 											<InputNumber min={1} max={99999} placeholder={constant.placeholder + '数量'} onPressEnter={this.handleSubmit.bind(this)}/>
 										)

@@ -212,7 +212,7 @@ class MemberStockOutIndex extends Component {
             render: (text, record, index) => (
                 <span>
                     {
-                        text === 'WAIT_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'WAIT_RECEIVE'?'已完成':text === 'WAIT_RECEIVE'?'已取消':null
+                        text === 'WAIT_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'COMPLETE'?'已完成':text === 'CANCEL'?'已取消':null
                     }
                 </span>
             )
