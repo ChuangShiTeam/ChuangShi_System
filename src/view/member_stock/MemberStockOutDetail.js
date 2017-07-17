@@ -83,24 +83,26 @@ class MemberStockOutDetail extends Component {
                 stock_id: this.state.stock_id,
             },
             success: function (data) {
-                this.props.form.setFieldsValue({
-                    express_shipper_code: data.express_shipper_code,
-                    express_no: data.express_no,
-                    express_pay_way: data.express_pay_way,
-                    express_cost: data.express_cost,
-                    express_is_pay: data.express_is_pay,
-                    express_start_date: data.express_start_date,
-                    express_end_date: data.express_end_code,
-                    express_logistics: data.express_logistics,
-                    express_flow: data.express_flow,
-                    express_receiver_name: data.express_receiver_name,
-                    express_receiver_mobile: data.express_receiver_mobile,
-                    express_receiver_province: data.express_receiver_province,
-                    express_receiver_city: data.express_receiver_city,
-                    express_receiver_area: data.express_receiver_area,
-                    express_receiver_address: data.express_receiver_address,
-                    express_remark: data.express_remark,
-                });
+                if (data) {
+                    this.props.form.setFieldsValue({
+                        express_shipper_code: data.express_shipper_code,
+                        express_no: data.express_no,
+                        express_pay_way: data.express_pay_way,
+                        express_cost: data.express_cost,
+                        express_is_pay: data.express_is_pay,
+                        express_start_date: data.express_start_date,
+                        express_end_date: data.express_end_code,
+                        express_logistics: data.express_logistics,
+                        express_flow: data.express_flow,
+                        express_receiver_name: data.express_receiver_name,
+                        express_receiver_mobile: data.express_receiver_mobile,
+                        express_receiver_province: data.express_receiver_province,
+                        express_receiver_city: data.express_receiver_city,
+                        express_receiver_area: data.express_receiver_area,
+                        express_receiver_address: data.express_receiver_address,
+                        express_remark: data.express_remark,
+                    });
+                }
             }.bind(this),
             complete: function () {
                 this.setState({
