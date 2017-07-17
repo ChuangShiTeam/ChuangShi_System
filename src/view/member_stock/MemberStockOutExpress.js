@@ -161,13 +161,9 @@ class MemberStockOutExpress extends Component {
                                 }} className="form-item" label="会员名称">
                                     {
                                         getFieldDecorator('user_name', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text"/>
+                                            <Input type="text" disabled={true}/>
                                         )
                                     }
                                 </FormItem>
@@ -181,13 +177,9 @@ class MemberStockOutExpress extends Component {
                                 }} className="form-item" label="数量">
                                     {
                                         getFieldDecorator('stock_quantity', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text"/>
+                                            <Input type="text" disabled={true}/>
                                         )
                                     }
                                 </FormItem>

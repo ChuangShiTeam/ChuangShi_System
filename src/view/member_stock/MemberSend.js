@@ -164,7 +164,11 @@ class MemberSend extends Component {
 			}
 			let china = this.state.selectedOptions;
 			if (china.length < 3) {
-				message.error('请选择省市区');
+				message.warn('请选择省市区');
+				return;
+			}
+			if (!validate.isMobile(values.stock_receiver_mobile)) {
+				message.warn('手机号码格式不对');
 				return;
 			}
 			values.stock_receiver_province = china[0].label;
@@ -176,6 +180,7 @@ class MemberSend extends Component {
                 	product_sku_quantity: values.product_sku_quantity
 				}
 			];
+			return;
             delete values.product_sku_quantity;
 			this.setState({
 				is_load: true
