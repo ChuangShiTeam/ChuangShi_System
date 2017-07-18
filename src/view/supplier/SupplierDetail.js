@@ -111,7 +111,7 @@ class SupplierDetail extends Component {
             values.product_list = [];
             for (let j = 0; j < product_name_list.length; j++) {
                 for (let i = 0; i < product_list.length; i++) {
-                    if (product_name_list[j].product_name == product_list[i].product_name ) {
+                    if (product_name_list[j].product_name === product_list[i].product_name ) {
                         values.product_list.push(product_list[i].product_id);
                         break;
                     }

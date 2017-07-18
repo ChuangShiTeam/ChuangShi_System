@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
 
-import MemberSend from './MemberSend';
 import MemberStockOutExpress from './MemberStockOutExpress';
 import MemberStockOutDetail from './MemberStockOutDetail';
 import constant from '../../util/constant';
@@ -155,11 +154,6 @@ class MemberStockOutIndex extends Component {
         }.bind(this));
     }
 
-    handleSend() {
-        notification.emit('notification_member_send', {
-        });
-    }
-
     handleView(stock_id) {
         notification.emit('notification_member_stock_out_detail_view', {
             stock_id: stock_id
@@ -205,7 +199,7 @@ class MemberStockOutIndex extends Component {
                     }
                 </span>
             )
-        }, , {
+        }, {
             width: 150,
             title: '状态',
             dataIndex: 'stock_flow',
@@ -257,8 +251,6 @@ class MemberStockOutIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleSend.bind(this)}>发货</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -276,7 +268,7 @@ class MemberStockOutIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.stock.app_list.map(function (item) {
+                                                        this.props.member_stock_out.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -341,7 +333,6 @@ class MemberStockOutIndex extends Component {
                        loading={this.state.is_load} columns={columns}
                        dataSource={this.props.member_stock_out.list} pagination={pagination}
                        bordered/>
-                <MemberSend/>
                 <MemberStockOutExpress/>
                 <MemberStockOutDetail/>
             </QueueAnim>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message, Checkbox, Table, Cascader} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message, Table, Cascader} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -180,7 +180,6 @@ class MemberSend extends Component {
                 	product_sku_quantity: values.product_sku_quantity
 				}
 			];
-			return;
             delete values.product_sku_quantity;
 			this.setState({
 				is_load: true
@@ -192,7 +191,7 @@ class MemberSend extends Component {
 				success: function (data) {
 					message.success(constant.success);
 
-					notification.emit('notification_member_stock_out_index_load', {});
+					notification.emit('notification_member_stock_index_load', {});
 
 					this.handleCancel();
 				}.bind(this),
@@ -226,7 +225,6 @@ class MemberSend extends Component {
 		this.props.form.resetFields();
 	}
 	onChangeChina(value, selectedOptions) {
-		console.log(selectedOptions);
 		this.setState({
 			selectChina: value,
 			selectedOptions: selectedOptions
@@ -387,7 +385,7 @@ class MemberSend extends Component {
 								<FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="快递支付类型">
+                                }} className="form-item" label="快递支付方式">
                                     {
                                         getFieldDecorator('stock_express_pay_way', {
                                             rules: [{
@@ -397,7 +395,7 @@ class MemberSend extends Component {
                                             initialValue: ''
                                         })(
 											<Select
-												placeholder="选择快递支付类型"
+												placeholder="选择快递支付方式"
 											>
 												<Option value="自己付">自己付</Option>
 												<Option value="到付">到付</Option>

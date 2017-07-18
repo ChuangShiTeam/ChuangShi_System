@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
 
 import ExpressDetail from './ExpressDetail';
 import constant from '../../util/constant';
@@ -78,6 +78,8 @@ class ExpressIndex extends Component {
                 data: {
                     app_id: app_id,
                     express_no: express_no,
+                    express_receiver_name: express_receiver_name,
+                    express_sender_name: express_sender_name,
                     page_index: 1
                 }
             });

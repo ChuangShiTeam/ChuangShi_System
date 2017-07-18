@@ -3,6 +3,7 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
+import MemberSend from './MemberSend';
 import MemberStockDetail from './MemberStockDetail';
 import MemberStockReplenish from './MemberStockReplenish';
 import constant from '../../util/constant';
@@ -203,6 +204,11 @@ class MemberStockIndex extends Component {
         notification.emit('notification_member_stock_replenish', {});
     }
 
+    handleSend() {
+        notification.emit('notification_member_send', {
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -271,8 +277,10 @@ class MemberStockIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
+                        <Button type="primary" icon="plus-circle" size="default" className="margin-right"
                                 onClick={this.handleReplenish.bind(this)}>平台补充</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleSend.bind(this)}>发货</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -329,6 +337,7 @@ class MemberStockIndex extends Component {
                        bordered/>
                 <MemberStockDetail/>
                 <MemberStockReplenish/>
+                <MemberSend/>
             </QueueAnim>
         );
     }
