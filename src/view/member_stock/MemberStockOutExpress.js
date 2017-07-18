@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Table} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Table, InputNumber} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -155,7 +155,7 @@ class MemberStockOutExpress extends Component {
                         <h3>发货信息</h3>
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="会员名称">
@@ -171,7 +171,7 @@ class MemberStockOutExpress extends Component {
                         </Row>
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="数量">
@@ -339,7 +339,7 @@ class MemberStockOutExpress extends Component {
                         </Row>
                         <Row>
                             <Col span={8}>
-                                <FormItem {...{
+                                <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="快递支付类型">
@@ -359,6 +359,26 @@ class MemberStockOutExpress extends Component {
                                                 <Option value="月结">月结</Option>
                                                 <Option value="第三方支付">第三方支付</Option>
                                             </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="寄件费（运费）">
+                                    {
+                                        getFieldDecorator('express_cost', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <InputNumber min={0} placeholder={constant.placeholder + '请输入寄件费（运费）'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

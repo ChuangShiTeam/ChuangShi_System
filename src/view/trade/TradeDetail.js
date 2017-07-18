@@ -7,11 +7,8 @@ import {
     Col,
     Spin,
     Button,
-    Input,
     Select,
     message,
-    InputNumber,
-    Switch,
     Steps,
     Table,
     Popconfirm
@@ -350,13 +347,13 @@ class TradeDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <Steps current={1}>
-                        <Step status={this.state.trade.trade_flow=='WAIT_PAY'?"process ":"wait"} title="待付款"
+                        <Step status={this.state.trade.trade_flow==='WAIT_PAY'?"process ":"wait"} title="待付款"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='WAIT_SEND'?"process ":"wait"} title="待发货"
+                        <Step status={this.state.trade.trade_flow==='WAIT_SEND'?"process ":"wait"} title="待发货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='WAIT_RECEIVE'?"process ":"wait"} title="待收货"
+                        <Step status={this.state.trade.trade_flow==='WAIT_RECEIVE'?"process ":"wait"} title="待收货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow=='COMPLETE'?"process ":"wait"} title="已完成"
+                        <Step status={this.state.trade.trade_flow==='COMPLETE'?"process ":"wait"} title="已完成"
                               description=""/>
                     </Steps>
                     <br/>

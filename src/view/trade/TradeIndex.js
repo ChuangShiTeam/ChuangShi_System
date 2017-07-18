@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
 
 import TradeDetail from './TradeDetail';
 import constant from '../../util/constant';
@@ -285,10 +285,10 @@ class TradeIndex extends Component {
             dataIndex: 'trade_flow',
             render: (text, record, index) => (
                 <div className="clearfix">
-                    {record.trade_flow == "WAIT_PAY" ? "待付款" :
-                        record.trade_flow == "WAIT_SEND" ? "待发货" :
-                            record.trade_flow == "WAIT_RECEIVE" ? "待收货" :
-                                record.trade_flow == "COMPLETE" ? "已完成" : ""}
+                    {record.trade_flow === "WAIT_PAY" ? "待付款" :
+                        record.trade_flow === "WAIT_SEND" ? "待发货" :
+                            record.trade_flow === "WAIT_RECEIVE" ? "待收货" :
+                                record.trade_flow === "COMPLETE" ? "已完成" : ""}
                 </div>
             )
         }, {

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Table, Switch, InputNumber} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Table, Switch, InputNumber} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -280,38 +280,6 @@ class MemberStockOutDetail extends Component {
                                             initialValue: false
                                         })(
                                             <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递发货时间">
-                                    {
-                                        getFieldDecorator('express_start_date', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递取货时间">
-                                    {
-                                        getFieldDecorator('express_end_date', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
                                         )
                                     }
                                 </FormItem>

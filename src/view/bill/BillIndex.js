@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
 
 import BillDetail from './BillDetail';
 import constant from '../../util/constant';
@@ -219,7 +219,7 @@ class BillIndex extends Component {
             title: '账单流程',
             dataIndex: 'bill_flow',
             render: (text, record, index) => (
-                <span>{record.bill_flow == "COMPLETE" ? '已完成' : ''}</span>
+                <span>{record.bill_flow === "COMPLETE" ? '已完成' : ''}</span>
             )
         }, {
             title: '账单状态',
