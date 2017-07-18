@@ -175,7 +175,7 @@ class ExpressIndex extends Component {
             dataIndex: 'express_receiver_name'
         }, {
             title: '状态',
-            dataIndex: 'express_status'
+            dataIndex: 'express_flow'
         }, {
             width: 200,
             title: constant.operation,

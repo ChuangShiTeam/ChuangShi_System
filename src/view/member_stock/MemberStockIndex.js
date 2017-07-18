@@ -205,8 +205,7 @@ class MemberStockIndex extends Component {
     }
 
     handleSend() {
-        notification.emit('notification_member_send', {
-        });
+        notification.emit('notification_member_send', {});
     }
 
     render() {

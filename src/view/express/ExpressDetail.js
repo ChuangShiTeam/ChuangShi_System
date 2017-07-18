@@ -15,7 +15,7 @@ class ExpressDetail extends Component {
             is_show: false,
             action: '',
             express_id: '',
-            system_version: '',
+            system_version: ''
         }
     }
 
@@ -55,31 +55,16 @@ class ExpressDetail extends Component {
                 this.props.form.setFieldsValue({
                     express_shipper_code: data.express_shipper_code,
                     express_no: data.express_no,
-                    express_type: data.express_type,
-                    express_receiver_company: data.express_receiver_company,
                     express_receiver_name: data.express_receiver_name,
-                    express_receiver_tel: data.express_receiver_tel,
                     express_receiver_mobile: data.express_receiver_mobile,
-                    express_receiver_postcode: data.express_receiver_postcode,
                     express_receiver_province: data.express_receiver_province,
                     express_receiver_city: data.express_receiver_city,
                     express_receiver_area: data.express_receiver_area,
                     express_receiver_address: data.express_receiver_address,
-                    express_sender_company: data.express_sender_company,
-                    express_sender_name: data.express_sender_name,
-                    express_sender_tel: data.express_sender_tel,
-                    express_sender_mobile: data.express_sender_mobile,
-                    express_sender_postcode: data.express_sender_postcode,
-                    express_sender_province: data.express_sender_province,
-                    express_sender_city: data.express_sender_city,
-                    express_sender_area: data.express_sender_area,
-                    express_sender_address: data.express_sender_address,
                     express_cost: data.express_cost,
                     express_is_pay: data.express_is_pay,
                     express_pay_way: data.express_pay_way,
-                    express_start_date: data.express_start_date,
-                    express_end_date: data.express_end_date,
-                    express_logistics: data.express_logistics,
+                    express_traces: data.express_traces,
                     express_flow: data.express_flow,
                     express_remark: data.express_remark
                 });
@@ -127,7 +112,7 @@ class ExpressDetail extends Component {
                             constant.action === 'system' ?
                                 <Row>
                                     <Col span={8}>
-                                        <FormItem hasFeedback {...{
+                                        <FormItem {...{
                                             labelCol: {span: 6},
                                             wrapperCol: {span: 18}
                                         }} className="content-search-item" label="应用名称">
@@ -175,28 +160,12 @@ class ExpressDetail extends Component {
                         </Row>
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="快递单号">
                                     {
                                         getFieldDecorator('express_no', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递类型">
-                                    {
-                                        getFieldDecorator('express_type', {
                                             initialValue: ''
                                         })(
                                             <Input type="text"/>
@@ -306,102 +275,6 @@ class ExpressDetail extends Component {
                                 <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="发货人">
-                                    {
-                                        getFieldDecorator('express_sender_name', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="发货人手机">
-                                    {
-                                        getFieldDecorator('express_sender_mobile', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="发货人省">
-                                    {
-                                        getFieldDecorator('express_sender_province', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="发货人市">
-                                    {
-                                        getFieldDecorator('express_sender_city', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="发货人区">
-                                    {
-                                        getFieldDecorator('express_sender_area', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="发货人详细地址">
-                                    {
-                                        getFieldDecorator('express_sender_address', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="寄件费（运费）">
                                     {
                                         getFieldDecorator('express_cost', {
@@ -451,41 +324,9 @@ class ExpressDetail extends Component {
                                 <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="快递发货时间">
-                                    {
-                                        getFieldDecorator('express_start_date', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递取货时间">
-                                    {
-                                        getFieldDecorator('express_end_date', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="物流信息">
                                     {
-                                        getFieldDecorator('express_logistics', {
+                                        getFieldDecorator('express_traces', {
                                             initialValue: ''
                                         })(
                                             <Input type="textarea" rows={4}/>
@@ -512,7 +353,7 @@ class ExpressDetail extends Component {
                         </Row>
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="备注">
