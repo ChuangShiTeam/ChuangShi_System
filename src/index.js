@@ -82,11 +82,13 @@ app.model(supplier);
 
 app.router(Router);
 
-let rule = document.styleSheets[document.styleSheets.length - 1].cssRules;
-for (let i = 0 ; i < rule.length; i++) {
-    if (rule[i].selectorText === '.ant-modal-body') {
-        rule[i].style.height= document.documentElement.clientHeight - 290 + 'px';
-        break;
+for (let i = 0; i < document.styleSheets.length; i++) {
+    let rule = document.styleSheets[i].cssRules;
+    for (let j = 0 ; j < rule.length; j++) {
+        if (rule[j].selectorText === '.ant-modal-body') {
+            rule[j].style.height= document.documentElement.clientHeight - 290 + 'px';
+            break;
+        }
     }
 }
 
