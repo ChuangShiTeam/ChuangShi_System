@@ -311,7 +311,7 @@ class ProductDetail extends Component {
                                                     this.props.product.product_category_list.map(function (item) {
                                                         return (
                                                             <Option key={item.product_category_id}
-                                                                    value={item.product_category_name}>{item.product_category_name}</Option>
+                                                                    value={item.product_category_id}>{item.product_category_name}</Option>
                                                         )
                                                     })
                                                 }
@@ -336,7 +336,7 @@ class ProductDetail extends Component {
                                                     this.props.product.product_brand_list.map(function (item) {
                                                         return (
                                                             <Option key={item.product_brand_id}
-                                                                    value={item.product_brand_name}>{item.product_brand_name}</Option>
+                                                                    value={item.product_brand_id}>{item.product_brand_name}</Option>
                                                         )
                                                     })
                                                 }
