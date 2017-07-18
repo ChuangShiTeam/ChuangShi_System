@@ -18,7 +18,7 @@ class ImageHelp extends Component {
             image: '',
             list: [],
             page_index: 1,
-            page_size: 36,
+            page_size: 44,
             total: 0
         }
     }
