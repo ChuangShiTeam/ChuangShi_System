@@ -39,6 +39,7 @@ import feijiu_recommend_customer from './model/feijiu_recommend_customer';
 import feijiu_recommend_product from './model/feijiu_recommend_product';
 import bill from './model/bill';
 import supplier from './model/supplier';
+import supplier_stock_out from './model/supplier_stock_out';
 
 document.title = constant.name;
 
@@ -79,6 +80,7 @@ app.model(feijiu_recommend_customer);
 app.model(feijiu_recommend_product);
 app.model(bill);
 app.model(supplier);
+app.model(supplier_stock_out);
 
 app.router(Router);
 

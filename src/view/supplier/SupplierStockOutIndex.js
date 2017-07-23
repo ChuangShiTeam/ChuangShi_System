@@ -1,14 +1,16 @@
-import React, {Component} from "react";
-import {connect} from "dva";
-import QueueAnim from "rc-queue-anim";
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from "antd";
-import SupplierDetail from "./SupplierDetail";
-import constant from "../../util/constant";
-import notification from "../../util/notification";
-import validate from "../../util/validate";
-import http from "../../util/http";
+import React, {Component} from 'react';
+import {connect} from 'dva';
+import QueueAnim from 'rc-queue-anim';
+import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
 
-class SupplierIndex extends Component {
+import MemberStockOutExpress from './MemberStockOutExpress';
+import MemberStockOutDetail from './MemberStockOutDetail';
+import constant from '../../util/constant';
+import notification from '../../util/notification';
+import validate from '../../util/validate';
+import http from '../../util/http';
+
+class SupplierStockOutIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -20,25 +22,27 @@ class SupplierIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.supplier.app_id
+                app_id: this.props.supplier_stock_out.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            user_name: this.props.supplier.user_name
+            express_no: this.props.supplier_stock_out.express_no,
+            stock_receiver_name: this.props.supplier_stock_out.stock_receiver_name,
+            express_sender_name: this.props.supplier_stock_out.express_sender_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_supplier_index_load', this, function (data) {
+        notification.on('notification_member_stock_out_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_supplier_index_load', this);
+        notification.remove('notification_member_stock_out_index_load', this);
     }
 
     handleLoadApp() {
@@ -47,7 +51,7 @@ class SupplierIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'supplier/fetch',
+                    type: 'supplier_stock_out/fetch',
                     data: {
                         app_list: data
                     }
@@ -66,13 +70,17 @@ class SupplierIndex extends Component {
                 app_id = '';
             }
 
-            let user_name = this.props.form.getFieldValue('user_name');
+            let stock_receiver_name = this.props.form.getFieldValue('stock_receiver_name');
+            let express_no = this.props.form.getFieldValue('express_no');
+            let express_sender_name = this.props.form.getFieldValue('express_sender_name');
 
             this.props.dispatch({
-                type: 'supplier/fetch',
+                type: 'supplier_stock_out/fetch',
                 data: {
                     app_id: app_id,
-                    user_name: user_name,
+                    express_no: express_no,
+                    stock_receiver_name: stock_receiver_name,
+                    express_sender_name: express_sender_name,
                     page_index: 1
                 }
             });
@@ -89,16 +97,18 @@ class SupplierIndex extends Component {
         });
 
         http.request({
-            url: '/supplier/' + constant.action + '/list',
+            url: '/member/stock/' + constant.action + '/out/list',
             data: {
-                app_id: this.props.supplier.app_id,
-                user_name: this.props.supplier.user_name,
-                page_index: this.props.supplier.page_index,
-                page_size: this.props.supplier.page_size
+                app_id: this.props.supplier_stock_out.app_id,
+                express_no: this.props.supplier_stock_out.express_no,
+                stock_receiver_name: this.props.supplier_stock_out.stock_receiver_name,
+                express_sender_name: this.props.supplier_stock_out.express_sender_name,
+                page_index: this.props.supplier_stock_out.page_index,
+                page_size: this.props.supplier_stock_out.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'supplier/fetch',
+                    type: 'supplier_stock_out/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -116,7 +126,7 @@ class SupplierIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'supplier/fetch',
+                type: 'supplier_stock_out/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -131,7 +141,7 @@ class SupplierIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'supplier/fetch',
+                type: 'supplier_stock_out/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -144,37 +154,16 @@ class SupplierIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_supplier_detail_add', {});
-    }
-
-    handleEdit(supplier_id) {
-        notification.emit('notification_supplier_detail_edit', {
-            supplier_id: supplier_id
+    handleView(stock_id) {
+        notification.emit('notification_member_stock_out_detail_view', {
+            stock_id: stock_id
         });
     }
 
-    handleDel(supplier_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/supplier/' + constant.action + '/delete',
-            data: {
-                supplier_id: supplier_id,
-                system_version: system_version
-            },
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoad();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
+    handleExpress(stock_id, stock_type) {
+        notification.emit('notification_member_stock_out_express', {
+            stock_id: stock_id,
+            stock_type: stock_type
         });
     }
 
@@ -184,45 +173,69 @@ class SupplierIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '供应商名称',
-            dataIndex: 'user_name'
+            width: 150,
+            title: '收货人',
+            dataIndex: 'stock_receiver_name'
         }, {
-            title: '供应商账号',
-            dataIndex: 'user_account'
+            width: 150,
+            title: '发货数量',
+            dataIndex: 'stock_quantity'
         }, {
-            title: '创建时间',
-            dataIndex: 'system_create_time'
+            width: 150,
+            title: '快递单号',
+            dataIndex: 'express_no'
         }, {
-            title: '状态',
-            dataIndex: 'supplier_status',
+            width: 150,
+            title: '发货人',
+            dataIndex: 'express_sender_name'
+        }, {
+            width: 150,
+            title: '来源',
+            dataIndex: 'stock_type',
             render: (text, record, index) => (
-                <span>{record.supplier_status ? "正常" : "暂停"}</span>
+                <span>
+                    {
+                        text === 'MEMBER'?'会员发货':text === 'TRADE'?'会员下订单':null
+                    }
+                </span>
             )
         }, {
             width: 150,
+            title: '状态',
+            dataIndex: 'stock_flow',
+            render: (text, record, index) => (
+                <span>
+                    {
+                        text === 'WAIT_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'COMPLETE'?'已完成':text === 'CANCEL'?'已取消':null
+                    }
+                </span>
+            )
+        }, {
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.supplier_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.supplier_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                  <a onClick={this.handleView.bind(this, record.stock_id)}>查看</a>
+                    {
+                        record.stock_flow === 'WAIT_SEND'?<span>
+                            <span className="divider"/>
+                            <a onClick={this.handleExpress.bind(this, record.stock_id, record.stock_type)}>填写快递单</a>
+                        </span>:null
+                    }
+
                 </span>
             )
         }];
 
         const pagination = {
             size: 'defalut',
-            total: this.props.supplier.total,
+            total: this.props.supplier_stock_out.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.supplier.page_index,
-            pageSize: this.props.supplier.page_size,
+            current: this.props.supplier_stock_out.page_index,
+            pageSize: this.props.supplier_stock_out.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -232,14 +245,12 @@ class SupplierIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">发货单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -257,7 +268,7 @@ class SupplierIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.supplier.app_list.map(function (item) {
+                                                        this.props.supplier_stock_out.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -276,37 +287,63 @@ class SupplierIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="收货人">
                                 {
-                                    getFieldDecorator('user_name', {
+                                    getFieldDecorator('stock_receiver_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入收货人" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="发货人">
+                                {
+                                    getFieldDecorator('express_sender_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入发货人" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="快递单号">
+                                {
+                                    getFieldDecorator('express_no', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入快递单号" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="supplier_id"
+                       rowKey="stock_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.supplier.list} pagination={pagination}
+                       dataSource={this.props.supplier_stock_out.list} pagination={pagination}
                        bordered/>
-                <SupplierDetail/>
+                <MemberStockOutExpress/>
+                <MemberStockOutDetail/>
             </QueueAnim>
         );
     }
 }
 
-SupplierIndex.propTypes = {};
+SupplierStockOutIndex.propTypes = {};
 
-SupplierIndex = Form.create({})(SupplierIndex);
+SupplierStockOutIndex = Form.create({})(SupplierStockOutIndex);
 
-export default connect(({supplier}) => ({
-    supplier
-}))(SupplierIndex);
+export default connect(({supplier_stock_out}) => ({
+    supplier_stock_out
+}))(SupplierStockOutIndex);
