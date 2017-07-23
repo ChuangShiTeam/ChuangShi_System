@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "dva";
 import QueueAnim from "rc-queue-anim";
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from "antd";
+import {Button, Col, Form, Icon, Input, message, Popconfirm, Row, Select, Table} from "antd";
 import MemberAddressDetail from "./MemberAddressDetail";
 import constant from "../../util/constant";
 import notification from "../../util/notification";
@@ -186,7 +186,7 @@ class MemberAddressIndex extends Component {
         const columns = [{
             title: '会员名称',
             dataIndex: 'user_name'
-        },{
+        }, {
             title: '收货人',
             dataIndex: 'member_address_name'
         }, {
@@ -212,7 +212,16 @@ class MemberAddressIndex extends Component {
             dataIndex: 'member_address_address'
         }, {
             title: '是否默认地址',
-            dataIndex: 'address_is_default'
+            dataIndex: 'address_is_default',
+            render: (text, record, index) => (
+                <div>
+                    {record.address_is_default ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+            )
         }, {
             width: 100,
             title: constant.operation,

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "dva";
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Switch, Table} from "antd";
+import {Button, Col, Form, Input, message, Modal, Row, Select, Spin, Switch, Table} from "antd";
 import constant from "../../util/constant";
 import notification from "../../util/notification";
 import http from "../../util/http";
@@ -79,8 +79,8 @@ class SupplierDetail extends Component {
                         }
                     }
                     this.setState({
-                        supplier_id : data.supplier_id,
-                        system_version : data.system_version
+                        supplier_id: data.supplier_id,
+                        system_version: data.system_version
                     });
                 }
 
@@ -153,13 +153,17 @@ class SupplierDetail extends Component {
         const columns = [{
             title: '名称',
             dataIndex: 'product_name',
-            render: text => <a href="#">{text}</a>,
+            render: (text, record, index) => (
+                <span>
+                    {record.product_name}
+                </span>
+            )
         }, {
             title: '图片',
             dataIndex: 'product_image',
             render: (text, record, index) => (
                 <div className="clearfix">
-                    <img alt="example" style={{ width: '100%' }} src={constant.host+record.product_image}/>
+                    <img alt="example" style={{width: '100%'}} src={constant.host + record.product_image}/>
                 </div>
             )
         }];
@@ -173,7 +177,7 @@ class SupplierDetail extends Component {
         };
 
         return (
-            <Modal title={this.state.action === 'save'?'添加':this.state.action === 'update'?'修改':"详情"}
+            <Modal title={this.state.action === 'save' ? '添加' : this.state.action === 'update' ? '修改' : "详情"}
                    maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}

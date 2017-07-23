@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
+import React, {Component} from "react";
+import {connect} from "dva";
+import QueueAnim from "rc-queue-anim";
+import {Button, Col, Form, Icon, Input, Row, Select, Table} from "antd";
 
-import MemberStockOutExpress from './MemberStockOutExpress';
-import MemberStockOutDetail from './MemberStockOutDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import validate from "../../util/validate";
+import http from "../../util/http";
+
+import SupplierStockOutDetail from "./SupplierStockOutDetail";
 
 class SupplierStockOutIndex extends Component {
     constructor(props) {
@@ -29,20 +29,18 @@ class SupplierStockOutIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            express_no: this.props.supplier_stock_out.express_no,
-            stock_receiver_name: this.props.supplier_stock_out.stock_receiver_name,
-            express_sender_name: this.props.supplier_stock_out.express_sender_name
+            trade_number: this.props.supplier_stock_out.trade_number
         });
 
         this.handleLoad();
 
-        notification.on('notification_member_stock_out_index_load', this, function (data) {
+        notification.on('notification_trade_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_member_stock_out_index_load', this);
+        notification.remove('notification_trade_index_load', this);
     }
 
     handleLoadApp() {
@@ -51,7 +49,7 @@ class SupplierStockOutIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'supplier_stock_out/fetch',
+                    type: 'trade/fetch',
                     data: {
                         app_list: data
                     }
@@ -70,17 +68,12 @@ class SupplierStockOutIndex extends Component {
                 app_id = '';
             }
 
-            let stock_receiver_name = this.props.form.getFieldValue('stock_receiver_name');
-            let express_no = this.props.form.getFieldValue('express_no');
-            let express_sender_name = this.props.form.getFieldValue('express_sender_name');
+            let trade_number = this.props.form.getFieldValue('trade_number');
 
             this.props.dispatch({
                 type: 'supplier_stock_out/fetch',
                 data: {
-                    app_id: app_id,
-                    express_no: express_no,
-                    stock_receiver_name: stock_receiver_name,
-                    express_sender_name: express_sender_name,
+                    trade_number: trade_number,
                     page_index: 1
                 }
             });
@@ -97,12 +90,9 @@ class SupplierStockOutIndex extends Component {
         });
 
         http.request({
-            url: '/member/stock/' + constant.action + '/out/list',
+            url: '/trade/' + constant.action + '/list',
             data: {
-                app_id: this.props.supplier_stock_out.app_id,
-                express_no: this.props.supplier_stock_out.express_no,
-                stock_receiver_name: this.props.supplier_stock_out.stock_receiver_name,
-                express_sender_name: this.props.supplier_stock_out.express_sender_name,
+                trade_number: this.props.supplier_stock_out.trade_number,
                 page_index: this.props.supplier_stock_out.page_index,
                 page_size: this.props.supplier_stock_out.page_size
             },
@@ -154,16 +144,13 @@ class SupplierStockOutIndex extends Component {
         }.bind(this));
     }
 
-    handleView(stock_id) {
-        notification.emit('notification_member_stock_out_detail_view', {
-            stock_id: stock_id
-        });
+    handleAdd() {
+        notification.emit('notification_trade_detail_add', {});
     }
 
-    handleExpress(stock_id, stock_type) {
-        notification.emit('notification_member_stock_out_express', {
-            stock_id: stock_id,
-            stock_type: stock_type
+    handleEdit(trade_id) {
+        notification.emit('notification_trade_detail_edit', {
+            trade_id: trade_id
         });
     }
 
@@ -171,60 +158,108 @@ class SupplierStockOutIndex extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-
         const columns = [{
-            width: 150,
+            title: '用户',
+            dataIndex: 'user_name'
+        }, {
+            title: '订单编号',
+            dataIndex: 'trade_number'
+        }, {
             title: '收货人',
-            dataIndex: 'stock_receiver_name'
-        }, {
-            width: 150,
-            title: '发货数量',
-            dataIndex: 'stock_quantity'
-        }, {
-            width: 150,
-            title: '快递单号',
-            dataIndex: 'express_no'
-        }, {
-            width: 150,
-            title: '发货人',
-            dataIndex: 'express_sender_name'
-        }, {
-            width: 150,
-            title: '来源',
-            dataIndex: 'stock_type',
+            dataIndex: 'trade_receiver_name',
             render: (text, record, index) => (
-                <span>
-                    {
-                        text === 'MEMBER'?'会员发货':text === 'TRADE'?'会员下订单':null
-                    }
-                </span>
+                <span>{record.trade_receiver_name}({record.trade_receiver_mobile})</span>
             )
         }, {
-            width: 150,
-            title: '状态',
-            dataIndex: 'stock_flow',
+            title: '收货人地址',
+            dataIndex: 'trade_receiver_address',
             render: (text, record, index) => (
                 <span>
-                    {
-                        text === 'WAIT_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'COMPLETE'?'已完成':text === 'CANCEL'?'已取消':null
-                    }
-                </span>
+            {record.trade_receiver_province}-
+                    {record.trade_receiver_city}-
+                    {record.trade_receiver_area}-
+                    {record.trade_receiver_address}
+        </span>
             )
         }, {
-            width: 100,
+            title: '商品数量',
+            dataIndex: 'trade_product_quantity'
+        }, {
+            title: '订单金额',
+            dataIndex: 'trade_product_amount',
+            render: (text, record, index) => (
+                <span>
+            ￥{record.trade_product_amount}
+        </span>
+            )
+        }, {
+            title: '快递金额',
+            dataIndex: 'trade_express_amount',
+            render: (text, record, index) => (
+                <span>
+            ￥{record.trade_express_amount}
+        </span>
+            )
+        }, {
+            title: '折扣金额',
+            dataIndex: 'trade_discount_amount',
+            render: (text, record, index) => (
+                <span>
+            ￥{record.trade_discount_amount}
+        </span>
+            )
+        }, {
+            title: '付款',
+            dataIndex: 'trade_is_pay',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_is_pay ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+            )
+        }, {
+            title: '收货',
+            dataIndex: 'trade_is_confirm',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_is_confirm ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+            )
+        }, {
+            title: '订单当前流程',
+            dataIndex: 'trade_flow',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_flow === "WAIT_PAY" ? "待付款" :
+                        record.trade_flow === "WAIT_SEND" ? "待发货" :
+                            record.trade_flow === "WAIT_RECEIVE" ? "待收货" :
+                                record.trade_flow === "COMPLETE" ? "已完成" : ""}
+                </div>
+            )
+        }, {
+            title: '订单状态',
+            dataIndex: 'trade_status',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_status ? '正常' : '异常'}
+                </div>
+            )
+        }, {
+            title: '订单备注',
+            dataIndex: 'trade_message'
+        }, {
+            width: 50,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
-                <span>
-                  <a onClick={this.handleView.bind(this, record.stock_id)}>查看</a>
-                    {
-                        record.stock_flow === 'WAIT_SEND'?<span>
-                            <span className="divider"/>
-                            <a onClick={this.handleExpress.bind(this, record.stock_id, record.stock_type)}>填写快递单</a>
-                        </span>:null
-                    }
-
-                </span>
+                <sapn><a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.find}</a></sapn>
             )
         }];
 
@@ -245,7 +280,7 @@ class SupplierStockOutIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">发货单信息</div>
+                        <div className="">订单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -287,54 +322,29 @@ class SupplierStockOutIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="收货人">
+                            }} className="content-search-item" label="订单编号">
                                 {
-                                    getFieldDecorator('stock_receiver_name', {
+                                    getFieldDecorator('trade_number', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入收货人" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入订单编号"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="发货人">
-                                {
-                                    getFieldDecorator('express_sender_name', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入发货人" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="快递单号">
-                                {
-                                    getFieldDecorator('express_no', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入快递单号" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="stock_id"
+                       rowKey="trade_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.supplier_stock_out.list} pagination={pagination}
+                       dataSource={this.props.supplier_stock_out.list}
+                       pagination={pagination}
                        bordered/>
-                <MemberStockOutExpress/>
-                <MemberStockOutDetail/>
+                <SupplierStockOutDetail/>
             </QueueAnim>
         );
     }

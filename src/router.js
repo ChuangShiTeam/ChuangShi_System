@@ -39,7 +39,7 @@ import FeijiuRecommendCustomerIndex from './view/feijiu_recommend_customer/Feiji
 import FeijiuRecommendProductIndex from './view/feijiu_recommend_product/FeijiuRecommendProductIndex';
 import BillIndex from './view/bill/BillIndex';
 import SupplierIndex from './view/supplier/SupplierIndex';
-import SupplierStockOutIndex from './view/supplier/SupplierStockOutIndex';
+import SupplierStockOutIndex from './view/supplier_stock/SupplierStockOutIndex';
 
 import storage from './util/storage';
 

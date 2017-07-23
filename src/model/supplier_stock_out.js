@@ -7,13 +7,11 @@ export default {
     state: {
         app_id: '',
         app_list: [],
+        trade_number: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: [],
-        express_no: '',
-        stock_receiver_name: '',
-        express_sender_name: '',
+        list: []
     },
 
     reducers: {
