@@ -35,7 +35,7 @@ class Login extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/login',
+                url: constant.login,
                 data: values,
                 success: function (data) {
                     message.success("登录成功");

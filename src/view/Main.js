@@ -119,36 +119,40 @@ class Main extends Component {
                     <Link onClick={this.handleLogout.bind(this)}><Icon type="poweroff" className="logout"/></Link>
                 </Header>
                 <Layout>
-                    <Sider className="sider">
-                        <Spin spinning={this.state.is_load}>
-                            <Menu
-                                mode="inline"
-                                className="menu"
-                                openKeys={this.state.openKeys}
-                                selectedKeys={this.state.selectedKeys}
-                                onOpenChange={this.handleOpenChange.bind(this)}
-                                onClick={this.handleClick.bind(this)}
-                                style={{height: document.documentElement.clientHeight - 64}}
-                            >
-                                {
-                                    this.state.menu.map(function (item) {
-                                        return (
-                                            <SubMenu key={item.menu_id}
-                                                     title={<span><Icon type={item.menu_image}/><span className="nav-text">{item.menu_name}</span></span>}>
-                                                {
-                                                    item.children.map(function (children) {
-                                                        return (
-                                                            <Menu.Item key={children.menu_id}><Link to={children.menu_url}><Icon type="database"/>{children.menu_name}</Link></Menu.Item>
-                                                        )
-                                                    })
-                                                }
-                                            </SubMenu>
-                                        )
-                                    })
-                                }
-                            </Menu>
-                        </Spin>
-                    </Sider>
+                    {constant.is_menu ?
+                        <Sider className="sider">
+                            <Spin spinning={this.state.is_load}>
+                                <Menu
+                                    mode="inline"
+                                    className="menu"
+                                    openKeys={this.state.openKeys}
+                                    selectedKeys={this.state.selectedKeys}
+                                    onOpenChange={this.handleOpenChange.bind(this)}
+                                    onClick={this.handleClick.bind(this)}
+                                    style={{height: document.documentElement.clientHeight - 64}}
+                                >
+                                    {
+                                        this.state.menu.map(function (item) {
+                                            return (
+                                                <SubMenu key={item.menu_id}
+                                                         title={<span><Icon type={item.menu_image}/><span className="nav-text">{item.menu_name}</span></span>}>
+                                                    {
+                                                        item.children.map(function (children) {
+                                                            return (
+                                                                <Menu.Item key={children.menu_id}><Link to={children.menu_url}><Icon type="database"/>{children.menu_name}</Link></Menu.Item>
+                                                            )
+                                                        })
+                                                    }
+                                                </SubMenu>
+                                            )
+                                        })
+                                    }
+                                </Menu>
+                            </Spin>
+                        </Sider>
+                        :
+                        ""
+                    }
                     <Layout className="layout">
                         <Content style={{
                             background: '#ffffff',
