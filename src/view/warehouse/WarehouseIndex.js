@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MemberStockOutExpress from './MemberStockOutExpress';
-import MemberStockOutDetail from './MemberStockOutDetail';
+import WarehouseDetail from './WarehouseDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MemberStockOutIndex extends Component {
+class WarehouseIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -22,27 +21,25 @@ class MemberStockOutIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.member_stock_out.app_id
+            app_id: this.props.warehouse.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            express_no: this.props.member_stock_out.express_no,
-            stock_receiver_name: this.props.member_stock_out.stock_receiver_name,
-            express_sender_name: this.props.member_stock_out.express_sender_name
+            warehouse_name: this.props.warehouse.warehouse_name
         });
 
         this.handleLoad();
 
-        notification.on('notification_member_stock_out_index_load', this, function (data) {
+        notification.on('notification_warehouse_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_member_stock_out_index_load', this);
+        notification.remove('notification_warehouse_index_load', this);
     }
 
     handleLoadApp() {
@@ -51,7 +48,7 @@ class MemberStockOutIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member_stock_out/fetch',
+                    type: 'warehouse/fetch',
                     data: {
                         app_list: data
                     }
@@ -70,17 +67,13 @@ class MemberStockOutIndex extends Component {
                 app_id = '';
             }
 
-            let stock_receiver_name = this.props.form.getFieldValue('stock_receiver_name');
-            let express_no = this.props.form.getFieldValue('express_no');
-            let express_sender_name = this.props.form.getFieldValue('express_sender_name');
+            let warehouse_name = this.props.form.getFieldValue('warehouse_name');
 
             this.props.dispatch({
-                type: 'member_stock_out/fetch',
+                type: 'warehouse/fetch',
                 data: {
                     app_id: app_id,
-                    express_no: express_no,
-                    stock_receiver_name: stock_receiver_name,
-                    express_sender_name: express_sender_name,
+                    warehouse_name: warehouse_name,
                     page_index: 1
                 }
             });
@@ -97,18 +90,16 @@ class MemberStockOutIndex extends Component {
         });
 
         http.request({
-            url: '/member/stock/' + constant.action + '/out/list',
+            url: '/warehouse/' + constant.action + '/list',
             data: {
-                app_id: this.props.member_stock_out.app_id,
-                express_no: this.props.member_stock_out.express_no,
-                stock_receiver_name: this.props.member_stock_out.stock_receiver_name,
-                express_sender_name: this.props.member_stock_out.express_sender_name,
-                page_index: this.props.member_stock_out.page_index,
-                page_size: this.props.member_stock_out.page_size
+                app_id: this.props.warehouse.app_id,
+                warehouse_name: this.props.warehouse.warehouse_name,
+                page_index: this.props.warehouse.page_index,
+                page_size: this.props.warehouse.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member_stock_out/fetch',
+                    type: 'warehouse/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -126,7 +117,7 @@ class MemberStockOutIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member_stock_out/fetch',
+                type: 'warehouse/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -141,7 +132,7 @@ class MemberStockOutIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member_stock_out/fetch',
+                type: 'warehouse/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -154,16 +145,37 @@ class MemberStockOutIndex extends Component {
         }.bind(this));
     }
 
-    handleView(stock_id) {
-        notification.emit('notification_member_stock_out_detail_view', {
-            stock_id: stock_id
+    handleAdd() {
+        notification.emit('notification_warehouse_detail_add', {});
+    }
+
+    handleEdit(warehouse_id) {
+        notification.emit('notification_warehouse_detail_edit', {
+            warehouse_id: warehouse_id
         });
     }
 
-    handleExpress(stock_id, stock_type) {
-        notification.emit('notification_member_stock_out_express', {
-            stock_id: stock_id,
-            stock_type: stock_type
+    handleDel(warehouse_id, system_version) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/warehouse/' + constant.action + '/delete',
+            data: {
+                warehouse_id: warehouse_id,
+                system_version: system_version
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
         });
     }
 
@@ -173,40 +185,18 @@ class MemberStockOutIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            width: 150,
-            title: '收货人',
-            dataIndex: 'stock_receiver_name'
+            title: '名称',
+            dataIndex: 'warehouse_name'
         }, {
-            width: 150,
-            title: '发货数量',
-            dataIndex: 'stock_quantity'
+            title: '编码',
+            dataIndex: 'warehouse_code'
         }, {
-            width: 150,
-            title: '快递单号',
-            dataIndex: 'express_no'
-        }, {
-            width: 150,
-            title: '发货人',
-            dataIndex: 'express_sender_name'
-        }, {
-            width: 150,
-            title: '来源',
-            dataIndex: 'stock_type',
-            render: (text, record, index) => (
-                <span>
-                    {
-                        text === 'MEMBER'?'会员发货':text === 'TRADE'?'会员下订单':null
-                    }
-                </span>
-            )
-        }, {
-            width: 150,
             title: '状态',
-            dataIndex: 'stock_flow',
+            dataIndex: 'warehouse_status',
             render: (text, record, index) => (
                 <span>
                     {
-                        text === 'WAIT_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'COMPLETE'?'已完成':text === 'CANCEL'?'已取消':null
+                        text === 'AVAILABLE'?'启用':text === 'DISABLED'?'停用':null
                     }
                 </span>
             )
@@ -216,26 +206,25 @@ class MemberStockOutIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleView.bind(this, record.stock_id)}>查看</a>
-                    {
-                        record.stock_flow === 'WAIT_SEND'?<span>
-                            <span className="divider"/>
-                            <a onClick={this.handleExpress.bind(this, record.stock_id, record.stock_type)}>填写快递单</a>
-                        </span>:null
-                    }
-
+                  <a onClick={this.handleEdit.bind(this, record.warehouse_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.warehouse_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
                 </span>
             )
         }];
 
         const pagination = {
             size: 'defalut',
-            total: this.props.member_stock_out.total,
+            total: this.props.warehouse.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.member_stock_out.page_index,
-            pageSize: this.props.member_stock_out.page_size,
+            current: this.props.warehouse.page_index,
+            pageSize: this.props.warehouse.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -245,12 +234,14 @@ class MemberStockOutIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">发货单信息</div>
+                        <div className="">仓库信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -268,7 +259,7 @@ class MemberStockOutIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.member_stock_out.app_list.map(function (item) {
+                                                        this.props.warehouse.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -287,63 +278,36 @@ class MemberStockOutIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="收货人">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('stock_receiver_name', {
+                                    getFieldDecorator('warehouse_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入收货人" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="发货人">
-                                {
-                                    getFieldDecorator('express_sender_name', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入发货人" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="快递单号">
-                                {
-                                    getFieldDecorator('express_no', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入快递单号" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="stock_id"
+                       rowKey="warehouse_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.member_stock_out.list} pagination={pagination}
+                       dataSource={this.props.warehouse.list} pagination={pagination}
                        bordered/>
-                <MemberStockOutExpress/>
-                <MemberStockOutDetail/>
+                <WarehouseDetail/>
             </QueueAnim>
         );
     }
 }
 
-MemberStockOutIndex.propTypes = {};
+WarehouseIndex.propTypes = {};
 
-MemberStockOutIndex = Form.create({})(MemberStockOutIndex);
+WarehouseIndex = Form.create({})(WarehouseIndex);
 
-export default connect(({member_stock_out}) => ({
-    member_stock_out
-}))(MemberStockOutIndex);
+export default connect(({warehouse}) => ({
+    warehouse
+}))(WarehouseIndex);

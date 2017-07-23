@@ -40,6 +40,8 @@ import feijiu_recommend_product from './model/feijiu_recommend_product';
 import bill from './model/bill';
 import supplier from './model/supplier';
 
+import warehouse from './model/warehouse';
+
 document.title = constant.name;
 
 const app = dva();
@@ -79,6 +81,8 @@ app.model(feijiu_recommend_customer);
 app.model(feijiu_recommend_product);
 app.model(bill);
 app.model(supplier);
+
+app.model(warehouse);
 
 app.router(Router);
 

@@ -8,7 +8,6 @@ import SqlIndex from './view/sql/SqlIndex';
 import ExceptionIndex from './view/exception/ExceptionIndex';
 import AppIndex from './view/app/AppIndex';
 import AppStockIndex from './view/app_stock/AppStockIndex';
-import AppStockList from './view/app_stock/AppStockList';
 import CategoryIndex from './view/category/CategoryIndex';
 import MenuIndex from './view/menu/MenuIndex';
 import ApiIndex from './view/api/ApiIndex';
@@ -22,8 +21,6 @@ import MemberIndex from './view/member/MemberIndex';
 import MemberAddressIndex from './view/member_address/MemberAddressIndex';
 import MemberLevelIndex from './view/member_level/MemberLevelIndex';
 import MemberStockIndex from './view/member_stock/MemberStockIndex';
-import MemberStockList from './view/member_stock/MemberStockList';
-import MemberStockOutIndex from './view/member_stock/MemberStockOutIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 import QrcodeIndex from './view/qrcode/QrcodeIndex';
 
@@ -39,6 +36,8 @@ import FeijiuRecommendCustomerIndex from './view/feijiu_recommend_customer/Feiji
 import FeijiuRecommendProductIndex from './view/feijiu_recommend_product/FeijiuRecommendProductIndex';
 import BillIndex from './view/bill/BillIndex';
 import SupplierIndex from './view/supplier/SupplierIndex';
+
+import WarehouseIndex from './view/warehouse/WarehouseIndex';
 
 import storage from './util/storage';
 
@@ -67,7 +66,6 @@ function RouterConfig({history}) {
                     <Route path="exception/index" component={ExceptionIndex}/>
                     <Route path="app/index" component={AppIndex}/>
                     <Route path="app/stock/index" component={AppStockIndex}/>
-                    <Route path="app/stock/list" component={AppStockList}/>
                     <Route path="category/index" component={CategoryIndex}/>
                     <Route path="menu/index" component={MenuIndex}/>
                     <Route path="api/index" component={ApiIndex}/>
@@ -81,8 +79,6 @@ function RouterConfig({history}) {
                     <Route path="member/address/index" component={MemberAddressIndex}/>
                     <Route path="member/level/index" component={MemberLevelIndex}/>
                     <Route path="member/stock/index" component={MemberStockIndex}/>
-                    <Route path="member/stock/list" component={MemberStockList}/>
-                    <Route path="member/stock/out/index" component={MemberStockOutIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
                     <Route path="qrcode/index" component={QrcodeIndex}/>
 
@@ -99,6 +95,8 @@ function RouterConfig({history}) {
 
                     <Route path="bill/index" component={BillIndex}/>
                     <Route path="supplier/index" component={SupplierIndex}/>
+
+                    <Route path="warehouse/index" component={WarehouseIndex}/>
                 </Route>
             </Route>
         </Router>

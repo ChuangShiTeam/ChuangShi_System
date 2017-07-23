@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
 
-import AppStockDetail from './AppStockDetail';
-import AppStockReplenish from './AppStockReplenish';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -29,11 +27,12 @@ class AppStockIndex extends Component {
 		}
 
 		this.props.form.setFieldsValue({
-			stock_action: this.props.app_stock.stock_action
+			product_name: this.props.app_stock.product_name,
+			warehouse_id: this.props.app_stock.warehouse_id
 		});
 
 		this.handleLoad();
-        this.handleLoadProduct();
+		this.handleLoadWarehouse();
 
 		notification.on('notification_app_stock_index_load', this, function (data) {
 			this.handleLoad();
@@ -62,39 +61,40 @@ class AppStockIndex extends Component {
 		});
 	}
 
-    handleLoadProduct() {
-        http.request({
-            url: '/product/' + constant.action + '/all/list',
-            data: {},
-            success: function (data) {
-                this.props.dispatch({
-                    type: 'app_stock/fetch',
-                    data: {
-                        product_list: data
-                    }
-                });
-            }.bind(this),
-            complete: function () {
+	handleLoadWarehouse() {
+		http.request({
+			url: '/warehouse/' + constant.action + '/all/list',
+			data: {},
+			success: function (data) {
+				this.props.dispatch({
+					type: 'app_stock/fetch',
+					data: {
+						warehouse_list: data
+					}
+				});
+			}.bind(this),
+			complete: function () {
 
-            }
-        });
-    }
+			}
+		});
+	}
 
-
-    handleSearch() {
+	handleSearch() {
 		new Promise(function (resolve, reject) {
 			let app_id = this.props.form.getFieldValue('app_id');
 			if (validate.isUndefined(app_id)) {
 				app_id = '';
 			}
 
-			var stock_action = this.props.form.getFieldValue('stock_action');
+			var product_name = this.props.form.getFieldValue('product_name');
+			var warehouse_id = this.props.form.getFieldValue('warehouse_id');
 
 			this.props.dispatch({
 				type: 'app_stock/fetch',
 				data: {
 					app_id: app_id,
-					stock_action: stock_action,
+					product_name: product_name,
+					warehouse_id: warehouse_id,
 					page_index: 1
 				}
 			});
@@ -111,10 +111,12 @@ class AppStockIndex extends Component {
 		});
 
 		http.request({
-			url: '/app/stock/' + constant.action + '/list',
+			url: '/stock/' + constant.action + '/list',
 			data: {
 				app_id: this.props.app_stock.app_id,
-				stock_action: this.props.app_stock.stock_action,
+				stock_type: this.props.app_stock.stock_type,
+				product_name: this.props.app_stock.product_name,
+				warehouse_id: this.props.app_stock.warehouse_id,
 				page_index: this.props.app_stock.page_index,
 				page_size: this.props.app_stock.page_size
 			},
@@ -166,75 +168,19 @@ class AppStockIndex extends Component {
 		}.bind(this));
 	}
 
-	handleView(stock_id) {
-		notification.emit('notification_app_stock_detail_view', {
-			stock_id: stock_id
-		});
-	}
-
-	handleDel(stock_id, system_version) {
-		this.setState({
-			is_load: true
-		});
-
-		http.request({
-			url: '/app/stock/' + constant.action + '/delete',
-			data: {
-				stock_id: stock_id,
-				system_version: system_version
-			},
-			success: function (data) {
-				message.success(constant.success);
-
-				this.handleLoad();
-			}.bind(this),
-			complete: function () {
-				this.setState({
-					is_load: false
-				});
-			}.bind(this)
-		});
-	}
-
-	handleReplenish() {
-		notification.emit('notification_app_stock_replenish', {});
-	}
-
 	render() {
+		const FormItem = Form.Item;
+		const Option = Select.Option;
+		const {getFieldDecorator} = this.props.form;
+
 		const columns = [{
+			width: 150,
+			title: '产品名称',
+			dataIndex: 'product_name'
+		}, {
 			width: 150,
 			title: '数量',
 			dataIndex: 'stock_quantity'
-		}, {
-			width: 150,
-			title: '出库/入库/平台补充',
-			dataIndex: 'stock_action',
-			render: (text, record, index) => (
-				<span>
-					{
-						text === 'OUT'?'出库':text === 'IN'?'入库':text === 'REPLENISH'?'平台补充':null
-					}
-				</span>
-			)
-		}, {
-			width: 150,
-			title: '操作时间',
-			dataIndex: 'system_create_time'
-		}, {
-			width: 100,
-			title: constant.operation,
-			dataIndex: '',
-			render: (text, record, index) => (
-				<span>
-                  <a onClick={this.handleView.bind(this, record.stock_id)}>查看</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-							  cancelText={constant.popconfirm_cancel}
-							  onConfirm={this.handleDel.bind(this, record.stock_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
-                </span>
-			)
 		}];
 
 		const pagination = {
@@ -254,24 +200,88 @@ class AppStockIndex extends Component {
 			<QueueAnim>
 				<Row key="0" className="content-title">
 					<Col span={8}>
-						<div className="">公司出库入库信息</div>
+						<div className="">公司库存信息</div>
 					</Col>
 					<Col span={16} className="content-button">
 						<Button type="default" icon="search" size="default" className="margin-right"
 								loading={this.state.is_load}
 								onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-						<Button type="primary" icon="plus-circle" size="default"
-								onClick={this.handleReplenish.bind(this)}>平台补充</Button>
 					</Col>
 				</Row>
+				<Form key="1" className="content-search margin-top">
+					<Row>
+						{
+							constant.action === 'system' ?
+								<Col span={8}>
+									<FormItem hasFeedback {...{
+										labelCol: {span: 6},
+										wrapperCol: {span: 18}
+									}} className="content-search-item" label="应用名称">
+										{
+											getFieldDecorator('app_id', {
+												initialValue: ''
+											})(
+												<Select allowClear placeholder="请选择应用">
+													{
+														this.props.app_stock.app_list.map(function (item) {
+															return (
+																<Option key={item.app_id}
+																		value={item.app_id}>{item.app_name}</Option>
+															)
+														})
+													}
+												</Select>
+											)
+										}
+									</FormItem>
+								</Col>
+								:
+								''
+						}
+						<Col span={8}>
+							<FormItem hasFeedback {...{
+								labelCol: {span: 6},
+								wrapperCol: {span: 18}
+							}} className="content-search-item" label="仓库名称">
+								{
+									getFieldDecorator('warehouse_id', {
+										initialValue: ''
+									})(
+										<Select allowClear placeholder="请选择仓库">
+											{
+												this.props.app_stock.warehouse_list.map(function (item) {
+													return (
+														<Option key={item.warehouse_id}
+																value={item.warehouse_id}>{item.warehouse_name}</Option>
+													)
+												})
+											}
+										</Select>
+									)
+								}
+							</FormItem>
+						</Col>
+						<Col span={8}>
+							<FormItem hasFeedback {...{
+								labelCol: {span: 6},
+								wrapperCol: {span: 18}
+							}} className="content-search-item" label="产品名称">
+								{
+									getFieldDecorator('product_name', {
+										initialValue: ''
+									})(
+										<Input type="text" placeholder="请输入产品名称" onPressEnter={this.handleSearch.bind(this)}/>
+									)
+								}
+							</FormItem>
+						</Col>
+					</Row>
+				</Form>
 				<Table key="2"
-					   rowKey="stock_id"
 					   className="margin-top"
 					   loading={this.state.is_load} columns={columns}
 					   dataSource={this.props.app_stock.list} pagination={pagination}
 					   bordered/>
-				<AppStockDetail/>
-				<AppStockReplenish/>
 			</QueueAnim>
 		);
 	}

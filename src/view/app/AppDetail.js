@@ -15,7 +15,8 @@ class AppDetail extends Component {
             is_show: false,
             action: '',
             app_id: '',
-            system_version: ''
+            system_version: '',
+            app_is_create_warehouse: false
         }
     }
 
@@ -64,13 +65,16 @@ class AppDetail extends Component {
                     wechat_mch_key: data.wechat_mch_key,
                     wechat_token: data.wechat_token,
                     wechat_encoding_aes_key: data.wechat_encoding_aes_key,
-                    app_is_stock: data.app_is_stock,
+                    app_is_create_warehouse: data.app_is_create_warehouse,
+                    app_is_delivery: data.app_is_delivery,
+                    app_is_audit_member: data.app_is_audit_member,
                     app_is_commission: data.app_is_commission,
                     app_commission_level: data.app_commission_level
                 });
 
                 this.setState({
-                    system_version: data.system_version
+                    system_version: data.system_version,
+                    app_is_create_warehouse: data.app_is_create_warehouse
                 });
             }.bind(this),
             complete: function () {
@@ -288,9 +292,43 @@ class AppDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="是否库存">
+                                }} className="form-item" label="是否建仓库">
                                     {
-                                        getFieldDecorator('app_is_stock', {
+                                        getFieldDecorator('app_is_create_warehouse', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
+                                        })(
+                                            <Switch disabled={this.state.app_is_create_warehouse}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否发货">
+                                    {
+                                        getFieldDecorator('app_is_delivery', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
+                                        })(
+                                            <Switch />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否审核会员">
+                                    {
+                                        getFieldDecorator('app_is_audit_member', {
                                             valuePropName: 'checked',
                                             initialValue: false
                                         })(

@@ -11,8 +11,10 @@ export default {
 		page_index: 1,
 		page_size: constant.page_size,
 		list: [],
-        stock_action: '',
-        product_list: []
+        stock_type: 'APP',
+		product_name: '',
+        warehouse_id: '',
+		warehouse_list: []
 	},
 
 	reducers: {
