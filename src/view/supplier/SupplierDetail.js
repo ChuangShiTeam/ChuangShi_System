@@ -78,6 +78,12 @@ class SupplierDetail extends Component {
                     });
                 }
 
+                if (this.state.action === 'save') {
+                    this.setState({
+                        selectedRowKeys: []
+                    });
+                }
+
                 this.setState({
                     product_list: data.product_list
                 });
