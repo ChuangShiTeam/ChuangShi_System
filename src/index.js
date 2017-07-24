@@ -27,6 +27,8 @@ import app_stock from './model/app_stock';
 import express from './model/express';
 import qrcode from './model/qrcode';
 
+import delivery_order from './model/delivery_order';
+
 import trade from './model/trade';
 
 import customer from './model/customer';
@@ -83,6 +85,8 @@ app.model(bill);
 app.model(supplier);
 
 app.model(warehouse);
+
+app.model(delivery_order);
 
 app.router(Router);
 

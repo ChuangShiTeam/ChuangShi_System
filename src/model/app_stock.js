@@ -14,7 +14,8 @@ export default {
         stock_type: 'APP',
 		product_name: '',
         warehouse_id: '',
-		warehouse_list: []
+		warehouse_list: [],
+		product_list: []
 	},
 
 	reducers: {

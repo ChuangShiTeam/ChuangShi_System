@@ -3,6 +3,7 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
 
+import AppStockDetail from './AppStockDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -33,6 +34,7 @@ class AppStockIndex extends Component {
 
 		this.handleLoad();
 		this.handleLoadWarehouse();
+		this.handleLoadProduct();
 
 		notification.on('notification_app_stock_index_load', this, function (data) {
 			this.handleLoad();
@@ -52,6 +54,24 @@ class AppStockIndex extends Component {
 					type: 'app_stock/fetch',
 					data: {
 						app_list: data
+					}
+				});
+			}.bind(this),
+			complete: function () {
+
+			}
+		});
+	}
+
+	handleLoadProduct() {
+		http.request({
+			url: '/product/' + constant.action + '/all/list',
+			data: {},
+			success: function (data) {
+				this.props.dispatch({
+					type: 'app_stock/fetch',
+					data: {
+						product_list: data
 					}
 				});
 			}.bind(this),
@@ -168,6 +188,10 @@ class AppStockIndex extends Component {
 		}.bind(this));
 	}
 
+	handleSave() {
+		notification.emit('notification_app_stock_detail_save', {});
+	}
+
 	render() {
 		const FormItem = Form.Item;
 		const Option = Select.Option;
@@ -206,6 +230,8 @@ class AppStockIndex extends Component {
 						<Button type="default" icon="search" size="default" className="margin-right"
 								loading={this.state.is_load}
 								onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+						<Button type="primary" icon="plus-circle" size="default"
+								onClick={this.handleSave.bind(this)}>初始化库存</Button>
 					</Col>
 				</Row>
 				<Form key="1" className="content-search margin-top">
@@ -282,6 +308,7 @@ class AppStockIndex extends Component {
 					   loading={this.state.is_load} columns={columns}
 					   dataSource={this.props.app_stock.list} pagination={pagination}
 					   bordered/>
+				<AppStockDetail/>
 			</QueueAnim>
 		);
 	}

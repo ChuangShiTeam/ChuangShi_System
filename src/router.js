@@ -24,6 +24,8 @@ import MemberStockIndex from './view/member_stock/MemberStockIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 import QrcodeIndex from './view/qrcode/QrcodeIndex';
 
+import DeliveryOrderIndex from './view/delivery_order/DeliveryOrderIndex';
+
 import TradeIndex from './view/trade/TradeIndex';
 
 import CustomerIndex from './view/customer/CustomerIndex';
@@ -97,6 +99,7 @@ function RouterConfig({history}) {
                     <Route path="supplier/index" component={SupplierIndex}/>
 
                     <Route path="warehouse/index" component={WarehouseIndex}/>
+                    <Route path="delivery/order/index" component={DeliveryOrderIndex}/>
                 </Route>
             </Route>
         </Router>
