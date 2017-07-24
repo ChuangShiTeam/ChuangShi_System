@@ -90,7 +90,7 @@ class SupplierStockOutIndex extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/list',
+            url: '/trade/supplier/list',
             data: {
                 trade_number: this.props.supplier_stock_out.trade_number,
                 page_index: this.props.supplier_stock_out.page_index,
@@ -338,7 +338,7 @@ class SupplierStockOutIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="trade_id"
+                       rowKey={record => record.trade_id}
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
                        dataSource={this.props.supplier_stock_out.list}

@@ -19,7 +19,6 @@ class SupplierStockOutDetail extends Component {
             system_version: '',
             trade: {},
             tradeProductSkuList: [],
-            tradeCommossionList: [],
             expressList: []
         }
     }
@@ -55,7 +54,7 @@ class SupplierStockOutDetail extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/find',
+            url: '/trade/supplier/find',
             data: {
                 trade_id: this.state.trade_id
             },
@@ -91,7 +90,6 @@ class SupplierStockOutDetail extends Component {
                 this.setState({
                     trade: data.trade,
                     tradeProductSkuList: data.tradeProductSkuList,
-                    tradeCommossionList: data.tradeCommossionList,
                     expressList: data.expressList,
                     system_version: data.trade.system_version
                 });
@@ -456,7 +454,8 @@ class SupplierStockOutDetail extends Component {
                     </form>
                     <br/>
                     <h2>订单商品列表</h2>
-                    <Table rowKey=""
+                    <Table
+                           rowKey={record => record.product_sku_id}
                            className="margin-top"
                            columns={columnsProductSku}
                            dataSource={this.state.tradeProductSkuList} pagination={false}
@@ -474,7 +473,8 @@ class SupplierStockOutDetail extends Component {
                                     onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
                         </Col>
                     </Row>
-                    <Table rowKey=""
+                    <Table
+                           rowKey={record => record.express_id}
                            className="margin-top"
                            columns={columnsExpress}
                            dataSource={this.state.expressList} pagination={false}
