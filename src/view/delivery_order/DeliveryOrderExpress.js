@@ -15,7 +15,8 @@ class DeliveryOrderExpress extends Component {
             is_show: false,
             action: '',
             delivery_order_id: '',
-            delivery_order_product_sku_list: []
+            delivery_order_product_sku_list: [],
+            warehouse_list: []
         }
     }
 
@@ -23,17 +24,33 @@ class DeliveryOrderExpress extends Component {
         notification.on('notification_delivery_order_express', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save',
+                action: 'express',
                 delivery_order_id: data.delivery_order_id
             }, function () {
                 this.handleLoad();
             });
         });
+        this.handleLoadWarehouse();
     }
 
     componentWillUnmount() {
         notification.remove('notification_delivery_order_express', this);
 
+    }
+
+    handleLoadWarehouse() {
+        http.request({
+            url: '/warehouse/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.setState({
+                    warehouse_list: data
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
     }
 
     handleLoad() {
@@ -87,9 +104,9 @@ class DeliveryOrderExpress extends Component {
             this.setState({
                 is_load: true
             });
-            values.stock_id = this.state.stock_id;
+            values.delivery_order_id = this.state.delivery_order_id;
             http.request({
-                url: '/express/' + constant.action + '/' + this.state.action,
+                url: '/delivery/order/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -282,6 +299,36 @@ class DeliveryOrderExpress extends Component {
                             loading={this.state.is_load} columns={columns}
                             dataSource={this.state.delivery_order_product_sku_list} pagination={false}
                             bordered/>
+                        <h3>仓库信息</h3>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="content-search-item" label="仓库名称">
+                                    {
+                                        getFieldDecorator('warehouse_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Select allowClear placeholder="请选择仓库">
+                                                {
+                                                    this.state.warehouse_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.warehouse_id}
+                                                                    value={item.warehouse_id}>{item.warehouse_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <h3>快递单信息</h3>
                         <Row>
                             <Col span={8}>

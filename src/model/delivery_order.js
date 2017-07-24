@@ -14,6 +14,7 @@ export default {
         page_index: 1,
         page_size: constant.page_size,
         list: []
+
     },
 
     reducers: {

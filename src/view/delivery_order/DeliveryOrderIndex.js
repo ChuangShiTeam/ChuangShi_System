@@ -36,7 +36,6 @@ class DeliveryOrderIndex extends Component {
         });
 
         this.handleLoad();
-
         notification.on('notification_delivery_order_index_load', this, function (data) {
             this.handleLoad();
         });
