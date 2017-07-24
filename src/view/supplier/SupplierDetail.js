@@ -16,7 +16,8 @@ class SupplierDetail extends Component {
             supplier_id: '',
             system_version: 0,
             product_list: [],
-            selectedRows: []
+            selectedRows: [],
+            selectedRowKeys: []
         }
     }
 
@@ -37,8 +38,6 @@ class SupplierDetail extends Component {
             });
             this.handleLoad(data.supplier_id);
         });
-
-
     }
 
     componentWillUnmount() {
@@ -72,15 +71,10 @@ class SupplierDetail extends Component {
                         supplier_status: data.supplier_status
                     });
 
-                    var selectedRows = [];
-                    for (var i = 0; i < data.product_list.length; i++) {
-                        if (data.product_list[i].product_isCheck) {
-                            selectedRows.push(data.product_list[i]);
-                        }
-                    }
                     this.setState({
                         supplier_id: data.supplier_id,
-                        system_version: data.system_version
+                        system_version: data.system_version,
+                        selectedRowKeys: data.selectedRowKeys
                     });
                 }
 
@@ -114,7 +108,7 @@ class SupplierDetail extends Component {
                 values.supplier_id = this.state.supplier_id;
                 values.system_version = this.state.system_version;
             }
-            ;
+
             http.request({
                 url: '/supplier/' + constant.action + '/' + this.state.action,
                 data: values,
@@ -167,11 +161,15 @@ class SupplierDetail extends Component {
                 </div>
             )
         }];
+        const selectedRowKeys = this.state.selectedRowKeys;
         const rowSelection = {
+            selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                console.log("selectedRowKeys ===", selectedRowKeys);
                 this.setState({
-                    selectedRows: selectedRows
+                    selectedRows: selectedRows,
+                    selectedRowKeys: selectedRowKeys
                 });
             }
         };
