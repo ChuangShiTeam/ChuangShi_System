@@ -167,15 +167,15 @@ class MemberSend extends Component {
 				message.warn('请选择省市区');
 				return;
 			}
-			if (!validate.isMobile(values.stock_receiver_mobile)) {
+			if (!validate.isMobile(values.delivery_order_receiver_mobile)) {
 				message.warn('手机号码格式不对');
 				return;
 			}
-			values.stock_receiver_province = china[0].label;
-			values.stock_receiver_city = china[1].label;
-			values.stock_receiver_area = china[2].label;
+			values.delivery_order_receiver_province = china[0].label;
+			values.delivery_order_receiver_city = china[1].label;
+			values.delivery_order_receiver_area = china[2].label;
 			values.member_id = this.state.member_id;
-			values.stock_product_sku_list = [{
+			values.delivery_order_product_sku_list = [{
                 	product_sku_id: this.state.product_list[0].productSkuList[0].product_sku_id,
                 	product_sku_quantity: values.product_sku_quantity
 				}
@@ -191,7 +191,7 @@ class MemberSend extends Component {
 				success: function (data) {
 					message.success(constant.success);
 
-					notification.emit('notification_member_stock_index_load', {});
+					notification.emit('notification_delivery_order_index_load', {});
 
 					this.handleCancel();
 				}.bind(this),
@@ -387,7 +387,7 @@ class MemberSend extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="快递支付方式">
                                     {
-                                        getFieldDecorator('stock_express_pay_way', {
+                                        getFieldDecorator('delivery_order_express_pay_way', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
@@ -414,7 +414,7 @@ class MemberSend extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="指定快递公司">
                                     {
-                                        getFieldDecorator('stock_express_shipper_code', {
+                                        getFieldDecorator('delivery_order_express_shipper_code', {
                                             initialValue: ''
                                         })(
 											<Select
@@ -439,7 +439,7 @@ class MemberSend extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="收货人">
 									{
-										getFieldDecorator('stock_receiver_name', {
+										getFieldDecorator('delivery_order_receiver_name', {
 											rules: [{
 												required: true,
 												message: constant.required
@@ -459,7 +459,7 @@ class MemberSend extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="收货人手机">
 									{
-										getFieldDecorator('stock_receiver_mobile', {
+										getFieldDecorator('delivery_order_receiver_mobile', {
 											rules: [{
 												required: true,
 												message: constant.required
@@ -494,7 +494,7 @@ class MemberSend extends Component {
 									wrapperCol: {span: 18}
 								}} className="form-item" label="收货详细地址">
 									{
-										getFieldDecorator('stock_receiver_address', {
+										getFieldDecorator('delivery_order_receiver_address', {
 											rules: [{
 												required: true,
 												message: constant.required

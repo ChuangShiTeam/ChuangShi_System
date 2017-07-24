@@ -2,18 +2,16 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'member_stock_out',
+    namespace: 'warehouse',
 
     state: {
         app_id: '',
         app_list: [],
+        warehouse_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: [],
-        express_no: '',
-        stock_receiver_name: '',
-        express_sender_name: '',
+        list: []
     },
 
     reducers: {

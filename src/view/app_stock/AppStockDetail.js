@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Table} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -13,52 +13,54 @@ class AppStockDetail extends Component {
 		this.state = {
 			is_load: false,
 			is_show: false,
-			stock_id: '',
-			stock_product_sku_list: []
+			action: '',
+			app_id: ''
 		}
 	}
 
 	componentDidMount() {
-		notification.on('notification_app_stock_detail_view', this, function (data) {
+		notification.on('notification_app_stock_detail_save', this, function (data) {
 			this.setState({
 				is_show: true,
-				stock_id: data.stock_id
-			}, function () {
-				this.handleLoad();
+				action: 'save'
 			});
 		});
 	}
 
 	componentWillUnmount() {
-		notification.remove('notification_app_stock_detail_view', this);
+		notification.remove('notification_app_stock_detail_save', this);
 	}
 
-	handleLoad() {
-		this.setState({
-			is_load: true
-		});
+	handleSubmit() {
+		this.props.form.validateFieldsAndScroll((errors, values) => {
+			if (!!errors) {
+				return;
+			}
+			values.object_id = this.state.app_id;
+			values.product_sku_id = this.props.app_stock.product_list[0].productSkuList[0].product_sku_id;
+			values.product_id = this.props.app_stock.product_list[0].product.product_id;
+			values.product_category_id = this.props.app_stock.product_list[0].product.product_category_id;
+			values.stock_type = this.props.app_stock.stock_type;
+			this.setState({
+				is_load: true
+			});
 
-		http.request({
-			url: '/app/stock/' + constant.action + '/find',
-			data: {
-				stock_id: this.state.stock_id
-			},
-			success: function (data) {
-				this.props.form.setFieldsValue({
-					app_name: data.stock.app_name,
-					stock_action: data.stock.stock_action === 'IN'?'入库':data.stock.stock_action === 'OUT'?'出库':data.stock.stock_action === 'REPLENISH'?'平台补充':null,
-					stock_quantity: data.stock.stock_quantity
-				});
-				this.setState({
-					stock_product_sku_list: data.stock_product_sku_list
-				})
-			}.bind(this),
-			complete: function () {
-				this.setState({
-					is_load: false
-				});
+			http.request({
+				url: '/stock/' + constant.action + '/' + this.state.action,
+				data: values,
+				success: function (data) {
+					message.success(constant.success);
 
-			}.bind(this)
+					notification.emit('notification_app_stock_index_load', {});
+
+					this.handleCancel();
+				}.bind(this),
+				complete: function () {
+					this.setState({
+						is_load: false
+					});
+				}.bind(this)
+			});
 		});
 	}
 
@@ -66,9 +68,7 @@ class AppStockDetail extends Component {
 		this.setState({
 			is_load: false,
 			is_show: false,
-			action: '',
-			stock_id: '',
-			system_version: ''
+			action: ''
 		});
 
 		this.props.form.resetFields();
@@ -76,29 +76,85 @@ class AppStockDetail extends Component {
 
 	render() {
 		const FormItem = Form.Item;
+		const Option = Select.Option;
 		const {getFieldDecorator} = this.props.form;
 
-		const columns = [{
-			width: 150,
-			title: '商品名称',
-			dataIndex: 'product_name'
-		}, {
-			width: 150,
-			title: '数量',
-			dataIndex: 'product_sku_quantity'
-		}];
-
 		return (
-			<Modal title={'公司出库入库详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+			<Modal title={'初始化公司库存'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
 				   visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
 				   footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>关闭</Button>
+                               onClick={this.handleCancel.bind(this)}>关闭</Button>,
+                       <Button key="submit" type="primary" size="default" icon="check-circle"
+                               loading={this.state.is_load}
+                               onClick={this.handleSubmit.bind(this)}>确定</Button>
                    ]}
 			>
 				<Spin spinning={this.state.is_load}>
 					<form>
-						<h3>详情</h3>
+						{
+							constant.action === 'system' ?
+								<Row>
+									<Col span={8}>
+										<FormItem hasFeedback {...{
+											labelCol: {span: 6},
+											wrapperCol: {span: 18}
+										}} className="content-search-item" label="应用名称">
+											{
+												getFieldDecorator('app_id', {
+													rules: [{
+														required: true,
+														message: constant.required
+													}],
+													initialValue: ''
+												})(
+													<Select allowClear placeholder="请选择应用">
+														{
+															this.props.app_stock.app_list.map(function (item) {
+																return (
+																	<Option key={item.app_id}
+																			value={item.app_id}>{item.app_name}</Option>
+																)
+															})
+														}
+													</Select>
+												)
+											}
+										</FormItem>
+									</Col>
+								</Row>
+								:
+								''
+						}
+						<Row>
+							<Col span={8}>
+								<FormItem hasFeedback {...{
+									labelCol: {span: 6},
+									wrapperCol: {span: 18}
+								}} className="content-search-item" label="仓库名称">
+									{
+										getFieldDecorator('warehouse_id', {
+											rules: [{
+												required: true,
+												message: constant.required
+											}],
+											initialValue: ''
+										})(
+											<Select allowClear placeholder="请选择仓库">
+												{
+													this.props.app_stock.warehouse_list.map(function (item) {
+														return (
+															<Option key={item.warehouse_id}
+																	value={item.warehouse_id}>{item.warehouse_name}</Option>
+														)
+													})
+												}
+											</Select>
+										)
+									}
+								</FormItem>
+							</Col>
+						</Row>
 						<Row>
 							<Col span={8}>
 								<FormItem hasFeedback {...{
@@ -111,41 +167,14 @@ class AppStockDetail extends Component {
 												required: true,
 												message: constant.required
 											}],
-											initialValue: ''
+											initialValue: 0
 										})(
-											<Input type="text"/>
+											<InputNumber min={1} max={99999} placeholder={constant.placeholder + '数量'} onPressEnter={this.handleSubmit.bind(this)}/>
 										)
 									}
 								</FormItem>
 							</Col>
 						</Row>
-						<Row>
-							<Col span={8}>
-								<FormItem hasFeedback {...{
-									labelCol: {span: 6},
-									wrapperCol: {span: 18}
-								}} className="form-item" label="出库/入库/平台补充">
-									{
-										getFieldDecorator('stock_action', {
-											rules: [{
-												required: true,
-												message: constant.required
-											}],
-											initialValue: ''
-										})(
-											<Input type="text"/>
-										)
-									}
-								</FormItem>
-							</Col>
-						</Row>
-						<h3>明细</h3>
-						<Table
-							rowKey="product_sku_id"
-							className="margin-top"
-							loading={this.state.is_load} columns={columns}
-							dataSource={this.state.stock_product_sku_list} pagination={false}
-							bordered/>
 					</form>
 				</Spin>
 			</Modal>
