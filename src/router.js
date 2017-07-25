@@ -10,6 +10,7 @@ import AppIndex from './view/app/AppIndex';
 import AppStockIndex from './view/app_stock/AppStockIndex';
 import AppStockInIndex from './view/app_stock/AppStockInIndex';
 import AppStockOutIndex from './view/app_stock/AppStockOutIndex';
+import AppStockReplenishIndex from './view/app_stock/AppStockReplenishIndex';
 import CategoryIndex from './view/category/CategoryIndex';
 import MenuIndex from './view/menu/MenuIndex';
 import ApiIndex from './view/api/ApiIndex';
@@ -25,6 +26,7 @@ import MemberLevelIndex from './view/member_level/MemberLevelIndex';
 import MemberStockIndex from './view/member_stock/MemberStockIndex';
 import MemberStockInIndex from './view/member_stock/MemberStockInIndex';
 import MemberStockOutIndex from './view/member_stock/MemberStockOutIndex';
+import MemberStockReplenishIndex from './view/member_stock/MemberStockReplenishIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 import QrcodeIndex from './view/qrcode/QrcodeIndex';
 
@@ -77,6 +79,7 @@ function RouterConfig({history}) {
                     <Route path="app/stock/index" component={AppStockIndex}/>
                     <Route path="app/stock/in/index" component={AppStockInIndex}/>
                     <Route path="app/stock/out/index" component={AppStockOutIndex}/>
+                    <Route path="app/stock/replenish/index" component={AppStockReplenishIndex}/>
                     <Route path="category/index" component={CategoryIndex}/>
                     <Route path="menu/index" component={MenuIndex}/>
                     <Route path="api/index" component={ApiIndex}/>
@@ -92,6 +95,7 @@ function RouterConfig({history}) {
                     <Route path="member/stock/index" component={MemberStockIndex}/>
                     <Route path="member/stock/in/index" component={MemberStockInIndex}/>
                     <Route path="member/stock/out/index" component={MemberStockOutIndex}/>
+                    <Route path="member/stock/replenish/index" component={MemberStockReplenishIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
                     <Route path="qrcode/index" component={QrcodeIndex}/>
 

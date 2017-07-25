@@ -24,9 +24,11 @@ import member_level from './model/member_level';
 import member_stock from './model/member_stock';
 import member_stock_in from './model/member_stock_in';
 import member_stock_out from './model/member_stock_out';
+import member_stock_replenish from './model/member_stock_replenish';
 import app_stock from './model/app_stock';
 import app_stock_in from './model/app_stock_in';
 import app_stock_out from './model/app_stock_out';
+import app_stock_replenish from './model/app_stock_replenish';
 import express from './model/express';
 import qrcode from './model/qrcode';
 
@@ -73,9 +75,11 @@ app.model(member_level);
 app.model(member_stock);
 app.model(member_stock_in);
 app.model(member_stock_out);
+app.model(member_stock_replenish);
 app.model(app_stock);
 app.model(app_stock_in);
 app.model(app_stock_out);
+app.model(app_stock_replenish);
 app.model(express);
 app.model(qrcode);
 

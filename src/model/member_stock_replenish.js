@@ -2,7 +2,7 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'app_stock_replenish',
+    namespace: 'member_stock_replenish',
 
     state: {
         app_id: '',
@@ -11,7 +11,8 @@ export default {
         page_index: 1,
         page_size: constant.page_size,
         list: [],
-        stock_replenish_type: 'APP',
+        stock_replenish_type: 'MEMBER',
+        user_name: '',
         warehouse_id: '',
         warehouse_list: []
     },
