@@ -8,9 +8,9 @@ import notification from "../../util/notification";
 import validate from "../../util/validate";
 import http from "../../util/http";
 
-import SupplierStockOutDetail from "./SupplierStockOutDetail";
+import SupplierTradeExpress from "./SupplierTradeExpress";
 
-class SupplierStockOutIndex extends Component {
+class SupplierTradeIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -22,25 +22,25 @@ class SupplierStockOutIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.supplier_stock_out.app_id
+                app_id: this.props.supplier_trade.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            trade_number: this.props.supplier_stock_out.trade_number
+            trade_number: this.props.supplier_trade.trade_number
         });
 
         this.handleLoad();
 
-        notification.on('notification_trade_index_load', this, function (data) {
+        notification.on('notification_supplier_trade_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_trade_index_load', this);
+        notification.remove('notification_supplier_trade_index_load', this);
     }
 
     handleLoadApp() {
@@ -71,7 +71,7 @@ class SupplierStockOutIndex extends Component {
             let trade_number = this.props.form.getFieldValue('trade_number');
 
             this.props.dispatch({
-                type: 'supplier_stock_out/fetch',
+                type: 'supplier_trade/fetch',
                 data: {
                     trade_number: trade_number,
                     page_index: 1
@@ -92,13 +92,13 @@ class SupplierStockOutIndex extends Component {
         http.request({
             url: '/trade/supplier/list',
             data: {
-                trade_number: this.props.supplier_stock_out.trade_number,
-                page_index: this.props.supplier_stock_out.page_index,
-                page_size: this.props.supplier_stock_out.page_size
+                trade_number: this.props.supplier_trade.trade_number,
+                page_index: this.props.supplier_trade.page_index,
+                page_size: this.props.supplier_trade.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'supplier_stock_out/fetch',
+                    type: 'supplier_trade/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -116,7 +116,7 @@ class SupplierStockOutIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'supplier_stock_out/fetch',
+                type: 'supplier_trade/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -131,7 +131,7 @@ class SupplierStockOutIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'supplier_stock_out/fetch',
+                type: 'supplier_trade/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -265,12 +265,12 @@ class SupplierStockOutIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.supplier_stock_out.total,
+            total: this.props.supplier_trade.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.supplier_stock_out.page_index,
-            pageSize: this.props.supplier_stock_out.page_size,
+            current: this.props.supplier_trade.page_index,
+            pageSize: this.props.supplier_trade.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -303,7 +303,7 @@ class SupplierStockOutIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.supplier_stock_out.app_list.map(function (item) {
+                                                        this.props.supplier_trade.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -341,19 +341,19 @@ class SupplierStockOutIndex extends Component {
                        rowKey={record => record.trade_id}
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.supplier_stock_out.list}
+                       dataSource={this.props.supplier_trade.list}
                        pagination={pagination}
                        bordered/>
-                <SupplierStockOutDetail/>
+                <SupplierTradeExpress/>
             </QueueAnim>
         );
     }
 }
 
-SupplierStockOutIndex.propTypes = {};
+SupplierTradeIndex.propTypes = {};
 
-SupplierStockOutIndex = Form.create({})(SupplierStockOutIndex);
+SupplierTradeIndex = Form.create({})(SupplierTradeIndex);
 
-export default connect(({supplier_stock_out}) => ({
-    supplier_stock_out
-}))(SupplierStockOutIndex);
+export default connect(({supplier_trade}) => ({
+    supplier_trade
+}))(SupplierTradeIndex);

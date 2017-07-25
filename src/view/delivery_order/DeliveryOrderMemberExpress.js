@@ -6,7 +6,7 @@ import notification from '../../util/notification';
 import http from '../../util/http';
 import express_code from "../../util/express_code";
 
-class DeliveryOrderExpress extends Component {
+class DeliveryOrderMemberExpress extends Component {
     constructor(props) {
         super(props);
 
@@ -449,8 +449,8 @@ class DeliveryOrderExpress extends Component {
     }
 }
 
-DeliveryOrderExpress.propTypes = {};
+DeliveryOrderMemberExpress.propTypes = {};
 
-DeliveryOrderExpress = Form.create({})(DeliveryOrderExpress);
+DeliveryOrderMemberExpress = Form.create({})(DeliveryOrderMemberExpress);
 
-export default DeliveryOrderExpress;
+export default DeliveryOrderMemberExpress;

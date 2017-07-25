@@ -5,7 +5,7 @@ import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 
 
 import DeliveryOrderDetail from './DeliveryOrderDetail';
 import MemberSend from './MemberSend';
-import DeliveryOrderExpress from './DeliveryOrderExpress';
+import DeliveryOrderMemberExpress from './DeliveryOrderMemberExpress';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -322,7 +322,7 @@ class DeliveryOrderIndex extends Component {
                        dataSource={this.props.delivery_order.list} pagination={pagination}
                        bordered/>
                 <DeliveryOrderDetail/>
-                <DeliveryOrderExpress/>
+                <DeliveryOrderMemberExpress/>
                 <MemberSend/>
             </QueueAnim>
         );

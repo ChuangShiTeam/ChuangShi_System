@@ -38,6 +38,7 @@ import FeijiuRecommendCustomerIndex from './view/feijiu_recommend_customer/Feiji
 import FeijiuRecommendProductIndex from './view/feijiu_recommend_product/FeijiuRecommendProductIndex';
 import BillIndex from './view/bill/BillIndex';
 import SupplierIndex from './view/supplier/SupplierIndex';
+import SupplierTradeIndex from './view/supplier_trade/SupplierTradeIndex';
 import CacheIndex from "./view/cache/CacheIndex";
 
 import WarehouseIndex from './view/warehouse/WarehouseIndex';
@@ -99,7 +100,7 @@ function RouterConfig({history}) {
 
                     <Route path="bill/index" component={BillIndex}/>
                     <Route path="supplier/index" component={SupplierIndex}/>
-                    <Route path="supplier/stock/out/index" component={SupplierStockOutIndex}/>
+                    <Route path="supplier/trade/index" component={SupplierTradeIndex}/>
 
                     <Route path="warehouse/index" component={WarehouseIndex}/>
                     <Route path="delivery/order/index" component={DeliveryOrderIndex}/>

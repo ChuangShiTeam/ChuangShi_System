@@ -2,7 +2,7 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'supplier_stock_out',
+    namespace: 'supplier_trade',
 
     state: {
         app_id: '',
