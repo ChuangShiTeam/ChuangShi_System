@@ -54,12 +54,12 @@ class DeliveryOrderDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    user_name: data.stock.user_name,
-                    stock_quantity: data.stock.stock_quantity
+                    user_name: data.delivery_order.user_name,
+                    delivery_order_total_quantity: data.delivery_order.delivery_order_total_quantity
                 });
 
                 this.setState({
-                    stock_product_sku_list: data.stock_product_sku_list
+                    delivery_order_product_sku_list: data.delivery_order_product_sku_list
                 });
             }.bind(this),
             complete: function () {
@@ -77,9 +77,9 @@ class DeliveryOrderDetail extends Component {
         });
 
         http.request({
-            url: '/express/' + constant.action + '/findByStockId',
+            url: '/express/' + constant.action + '/findByDeliveryOrderId',
             data: {
-                stock_id: this.state.stock_id,
+                delivery_order_id: this.state.delivery_order_id
             },
             success: function (data) {
                 if (data) {
@@ -91,7 +91,7 @@ class DeliveryOrderDetail extends Component {
                         express_is_pay: data.express_is_pay,
                         express_start_date: data.express_start_date,
                         express_end_date: data.express_end_code,
-                        express_logistics: data.express_logistics,
+                        express_traces: data.express_traces,
                         express_flow: data.express_flow,
                         express_receiver_name: data.express_receiver_name,
                         express_receiver_mobile: data.express_receiver_mobile,
@@ -117,9 +117,8 @@ class DeliveryOrderDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            stock_id: '',
-            stock_type: '',
-            stock_product_sku_list: []
+            delivery_order_id: '',
+            delivery_order_product_sku_list: []
         });
 
         this.props.form.resetFields();
@@ -178,7 +177,7 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="数量">
                                     {
-                                        getFieldDecorator('stock_quantity', {
+                                        getFieldDecorator('delivery_order_total_quantity', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
@@ -195,7 +194,7 @@ class DeliveryOrderDetail extends Component {
                             rowKey="product_sku_id"
                             className="margin-top"
                             loading={this.state.is_load} columns={columns}
-                            dataSource={this.state.stock_product_sku_list} pagination={false}
+                            dataSource={this.state.delivery_order_product_sku_list} pagination={false}
                             bordered/>
                         <h3>快递单信息</h3>
                         <Row>
@@ -291,7 +290,7 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="物流信息">
                                     {
-                                        getFieldDecorator('express_logistics', {
+                                        getFieldDecorator('express_traces', {
                                             initialValue: ''
                                         })(
                                             <Input type="textarea" rows={4}/>
