@@ -21,10 +21,10 @@ class DeliveryOrderMemberExpress extends Component {
     }
 
     componentDidMount() {
-        notification.on('notification_delivery_order_express', this, function (data) {
+        notification.on('notification_delivery_order_member_express', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'express',
+                action: 'member/express',
                 delivery_order_id: data.delivery_order_id
             }, function () {
                 this.handleLoad();
@@ -34,7 +34,7 @@ class DeliveryOrderMemberExpress extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_delivery_order_express', this);
+        notification.remove('notification_delivery_order_member_express', this);
 
     }
 
@@ -106,7 +106,7 @@ class DeliveryOrderMemberExpress extends Component {
             });
             values.delivery_order_id = this.state.delivery_order_id;
             http.request({
-                url: '/delivery/order/' + constant.action + '/' + this.state.action,
+                url: '/express/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

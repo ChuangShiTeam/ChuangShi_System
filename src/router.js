@@ -8,6 +8,8 @@ import SqlIndex from './view/sql/SqlIndex';
 import ExceptionIndex from './view/exception/ExceptionIndex';
 import AppIndex from './view/app/AppIndex';
 import AppStockIndex from './view/app_stock/AppStockIndex';
+import AppStockInIndex from './view/app_stock/AppStockInIndex';
+import AppStockOutIndex from './view/app_stock/AppStockOutIndex';
 import CategoryIndex from './view/category/CategoryIndex';
 import MenuIndex from './view/menu/MenuIndex';
 import ApiIndex from './view/api/ApiIndex';
@@ -21,6 +23,8 @@ import MemberIndex from './view/member/MemberIndex';
 import MemberAddressIndex from './view/member_address/MemberAddressIndex';
 import MemberLevelIndex from './view/member_level/MemberLevelIndex';
 import MemberStockIndex from './view/member_stock/MemberStockIndex';
+import MemberStockInIndex from './view/member_stock/MemberStockInIndex';
+import MemberStockOutIndex from './view/member_stock/MemberStockOutIndex';
 import ExpressIndex from './view/express/ExpressIndex';
 import QrcodeIndex from './view/qrcode/QrcodeIndex';
 
@@ -71,6 +75,8 @@ function RouterConfig({history}) {
                     <Route path="exception/index" component={ExceptionIndex}/>
                     <Route path="app/index" component={AppIndex}/>
                     <Route path="app/stock/index" component={AppStockIndex}/>
+                    <Route path="app/stock/in/index" component={AppStockInIndex}/>
+                    <Route path="app/stock/out/index" component={AppStockOutIndex}/>
                     <Route path="category/index" component={CategoryIndex}/>
                     <Route path="menu/index" component={MenuIndex}/>
                     <Route path="api/index" component={ApiIndex}/>
@@ -84,6 +90,8 @@ function RouterConfig({history}) {
                     <Route path="member/address/index" component={MemberAddressIndex}/>
                     <Route path="member/level/index" component={MemberLevelIndex}/>
                     <Route path="member/stock/index" component={MemberStockIndex}/>
+                    <Route path="member/stock/in/index" component={MemberStockInIndex}/>
+                    <Route path="member/stock/out/index" component={MemberStockOutIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
                     <Route path="qrcode/index" component={QrcodeIndex}/>
 

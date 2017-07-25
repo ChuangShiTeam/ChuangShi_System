@@ -164,8 +164,8 @@ class DeliveryOrderIndex extends Component {
         });
     }
 
-    handleExpress(delivery_order_id) {
-        notification.emit('notification_delivery_order_express', {
+    handleMemberExpress(delivery_order_id) {
+        notification.emit('notification_delivery_order_member_express', {
             delivery_order_id: delivery_order_id
         });
     }
@@ -207,7 +207,7 @@ class DeliveryOrderIndex extends Component {
                     {
                         record.delivery_order_flow === 'WAIT_SEND'?<span>
                             <span className="divider"/>
-                            <a onClick={this.handleExpress.bind(this, record.delivery_order_id)}>填写快递单</a>
+                            <a onClick={this.handleMemberExpress.bind(this, record.delivery_order_id)}>填写快递单</a>
                         </span>:null
                     }
                 </span>

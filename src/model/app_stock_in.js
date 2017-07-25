@@ -11,11 +11,9 @@ export default {
         page_index: 1,
         page_size: constant.page_size,
         list: [],
-        stock_type: 'APP',
-        product_name: '',
+        stock_in_type: 'APP',
         warehouse_id: '',
-        warehouse_list: [],
-        product_list: []
+        warehouse_list: []
     },
 
     reducers: {

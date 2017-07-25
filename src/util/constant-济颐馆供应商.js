@@ -24,6 +24,6 @@ export default {
     detail_width: 1080,
     name: '广州市济颐馆贸易有限公司-供应商',
     app_id: 'df2078d6c9eb46babb0df957127273ab',
-    index: '/supplier/stock/out/index',
+    index: '/supplier/trade/index',
     login: '/supplier/login'
 };
