@@ -2,9 +2,9 @@ export default {
     host: 'http://localhost:8080',
     // host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
-    is_menu: false,
+    is_menu: true,
     action: 'admin',
-    platform: 'Supplier',
+    platform: 'Admin',
     version: '9.9.9',
     page_size: 10,
     operation: '操作',
@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '广州市济颐馆贸易有限公司-供应商',
+    name: '广州市济颐馆贸易有限公司--总控后台',
     app_id: 'df2078d6c9eb46babb0df957127273ab',
-    index: '/supplier/stock/out/index',
-    login: '/supplier/login'
+    index: 'product/index',
+    login: '/admin/login'
 };
