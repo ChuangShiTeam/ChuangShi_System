@@ -163,7 +163,8 @@ class SupplierDetail extends Component {
             dataIndex: 'product_image',
             render: (text, record, index) => (
                 <div className="clearfix">
-                    <img alt="example" style={{width: '100%'}} src={constant.host + record.product_image}/>
+                    <img alt="example" style={{heigth:'100px',width: '100px'}}
+                         src={constant.host + record.product_image}/>
                 </div>
             )
         }];
