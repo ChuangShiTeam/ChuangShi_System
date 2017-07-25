@@ -24,13 +24,6 @@ class SupplierStockOutDetail extends Component {
     }
 
     componentDidMount() {
-        notification.on('notification_trade_detail_add', this, function (data) {
-            this.setState({
-                is_show: true,
-                action: 'save'
-            });
-        });
-
         notification.on('notification_trade_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
@@ -40,11 +33,13 @@ class SupplierStockOutDetail extends Component {
                 this.handleLoad();
             });
         });
+
+        notification.on('notification_supplier_trade_express_index_load', this, function (data) {
+            this.handleLoad();
+        });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_trade_detail_add', this);
-
         notification.remove('notification_trade_detail_edit', this);
     }
 
@@ -113,7 +108,7 @@ class SupplierStockOutDetail extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/delete',
+            url: '/express/' + constant.action + '/delete',
             data: {
                 express_id: express_id,
                 system_version: system_version
@@ -196,12 +191,6 @@ class SupplierStockOutDetail extends Component {
             title: '快递单号',
             dataIndex: 'express_no'
         }, {
-            title: '快递类型',
-            dataIndex: 'express_type'
-        }, {
-            title: '收货公司',
-            dataIndex: 'express_receiver_company'
-        }, {
             title: '收货人',
             dataIndex: 'express_receiver_name',
             render: (text, record, index) => (
@@ -211,9 +200,6 @@ class SupplierStockOutDetail extends Component {
                     {record.express_receiver_mobile})
                 </span>
             )
-        }, {
-            title: '收货人邮编',
-            dataIndex: 'express_receiver_postcode'
         }, {
             title: '收货详细地址',
             dataIndex: '',
@@ -225,10 +211,7 @@ class SupplierStockOutDetail extends Component {
                     {record.express_receiver_address}
             </span>
             )
-        }, {
-            title: '发货人公司',
-            dataIndex: 'express_sender_company'
-        }, {
+        },{
             title: '发货人',
             dataIndex: 'express_sender_name',
             render: (text, record, index) => (
@@ -238,10 +221,7 @@ class SupplierStockOutDetail extends Component {
                     {record.express_sender_mobile})
                 </span>
             )
-        }, {
-            title: '发货人邮编',
-            dataIndex: 'express_sender_postcode'
-        }, {
+        },{
             title: '发货人详细地址',
             dataIndex: '',
             render: (text, record, index) => (
@@ -262,17 +242,11 @@ class SupplierStockOutDetail extends Component {
             title: '运费支付方式',
             dataIndex: 'express_pay_way'
         }, {
-            title: '快递发货时间',
-            dataIndex: 'express_start_date'
-        }, {
-            title: '快递取货时间',
-            dataIndex: 'express_end_date'
-        }, {
             title: '物流信息',
-            dataIndex: 'express_logistics'
+            dataIndex: 'express_traces'
         }, {
             title: '状态',
-            dataIndex: 'express_status'
+            dataIndex: 'express_flow'
         }, {
             title: '备注',
             dataIndex: 'express_remark'
@@ -282,11 +256,15 @@ class SupplierStockOutDetail extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                {
+                    this.state.trade.trade_flow === 'WAIT_SEND'?
+                        <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                            cancelText={constant.popconfirm_cancel}
+                            onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
+                            <a>{constant.del}</a>
+                        </Popconfirm>: null
+                }
+
                 </span>
             )
         }];
@@ -461,25 +439,35 @@ class SupplierStockOutDetail extends Component {
                            dataSource={this.state.tradeProductSkuList} pagination={false}
                            bordered/>
                     <br/>
-                    <Row>
-                        <Col span={8}>
-                            <h2>订单快递地址</h2>
-                        </Col>
-                        <Col span={16} className="content-button">
-                            <Button type="primary" icon="plus-circle" size="default" className="margin-right"
-                                    onClick={this.handleAdd.bind(this)}>填写快递单</Button>
-                            <Button type="primary" icon="plus-circle" size="default"
-                                    loading={this.state.is_load}
-                                    onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
-                        </Col>
-                    </Row>
-                    <Table
-                           rowKey={record => record.express_id}
-                           className="margin-top"
-                           columns={columnsExpress}
-                           dataSource={this.state.expressList} pagination={false}
-                           bordered/>
-                    <ExpressDetail/>
+                    {
+                        this.state.trade.trade_flow !== 'WAIT_PAY'?
+                            <span>
+                                <Row>
+                                    <Col span={8}>
+                                        <h2>订单快递地址</h2>
+                                    </Col>
+                                                {
+                                                    this.state.trade.trade_flow === 'WAIT_SEND'?
+                                                        <Col span={16} className="content-button">
+                                                            <Button type="primary" icon="plus-circle" size="default" className="margin-right"
+                                                                    onClick={this.handleAdd.bind(this)}>填写快递单</Button>
+                                                            <Button type="primary" icon="plus-circle" size="default"
+                                                                    loading={this.state.is_load}
+                                                                    onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
+                                                        </Col>: null
+                                                }
+
+                                </Row>
+                                <Table
+                                    rowKey={record => record.express_id}
+                                    className="margin-top"
+                                    columns={columnsExpress}
+                                    dataSource={this.state.expressList} pagination={false}
+                                    bordered/>
+                                <ExpressDetail/>
+                            </span>: null
+                    }
+
                 </Spin>
             </Modal>
         );

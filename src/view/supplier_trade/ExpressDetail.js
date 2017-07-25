@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import express_code from "../../util/express_code";
 
 class ExpressDetail extends Component {
     constructor(props) {
@@ -35,9 +36,8 @@ class ExpressDetail extends Component {
             this.setState({
                 trade: data.trade,
                 is_show: true,
-                action: 'save'
+                action: 'supplier/express'
             });
-            console.log("trade ", data.trade)
         });
 
         notification.on('notification_express_detail_edit', this, function (data) {
@@ -131,7 +131,7 @@ class ExpressDetail extends Component {
 
             values.express_id = this.state.express_id;
             values.system_version = this.state.system_version;
-
+            values.trade_id = this.state.trade.trade_id;
             this.setState({
                 is_load: true
             });
@@ -142,7 +142,7 @@ class ExpressDetail extends Component {
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_express_index_load', {});
+                    notification.emit('notification_supplier_trade_express_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -347,7 +347,7 @@ class ExpressDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="快递公司编码">
+                                }} className="form-item" label="快递公司">
                                     {
                                         getFieldDecorator('express_shipper_code', {
                                             rules: [{
@@ -356,8 +356,16 @@ class ExpressDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '快递公司编码'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select
+                                                showSearch
+                                                placeholder="选择快递公司"
+                                                optionFilterProp="children"
+                                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                            >
+                                                {
+                                                    express_code.map((item, index) => <Option value={item.value} key={index}>{item.label}</Option>)
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -385,17 +393,30 @@ class ExpressDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="快递类型">
+                                }} className="form-item" label="寄件费（运费）">
                                     {
-                                        getFieldDecorator('express_type', {
+                                        getFieldDecorator('express_cost', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '快递类型'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} placeholder={constant.placeholder + '请输入寄件费（运费）'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="备注">
+                                    {
+                                        getFieldDecorator('express_remark', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '备注'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

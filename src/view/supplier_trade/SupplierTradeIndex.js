@@ -144,10 +144,6 @@ class SupplierTradeIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_trade_detail_add', {});
-    }
-
     handleEdit(trade_id) {
         notification.emit('notification_trade_detail_edit', {
             trade_id: trade_id
