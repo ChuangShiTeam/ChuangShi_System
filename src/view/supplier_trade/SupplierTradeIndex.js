@@ -217,18 +217,6 @@ class SupplierTradeIndex extends Component {
                 </div>
             )
         }, {
-            title: '收货',
-            dataIndex: 'trade_is_confirm',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_is_confirm ?
-                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
-                        :
-                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
-                    }
-                </div>
-            )
-        }, {
             title: '订单当前流程',
             dataIndex: 'trade_flow',
             render: (text, record, index) => (

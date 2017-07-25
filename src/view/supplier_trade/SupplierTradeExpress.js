@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "dva";
-import {Button, Col, Form, message, Modal, Popconfirm, Row, Select, Spin, Steps, Table} from "antd";
+import {Button, Col, Form, message, Modal, Popconfirm, Row, Select, Spin, Steps, Table, Icon, Tooltip, Timeline} from "antd";
 
 import constant from "../../util/constant";
 import notification from "../../util/notification";
@@ -212,38 +212,52 @@ class SupplierStockOutDetail extends Component {
             </span>
             )
         },{
-            title: '发货人',
-            dataIndex: 'express_sender_name',
-            render: (text, record, index) => (
-                <span>
-                    {record.express_sender_name}
-                    ({record.express_sender_tel}/
-                    {record.express_sender_mobile})
-                </span>
-            )
-        },{
-            title: '发货人详细地址',
-            dataIndex: '',
-            render: (text, record, index) => (
-                <span>
-                {record.express_sender_province}-
-                    {record.express_sender_city}-
-                    {record.express_sender_area}-
-                    {record.express_sender_address}
-            </span>
-            )
-        }, {
             title: '寄件费（运费）',
             dataIndex: 'express_cost'
         }, {
             title: '运费是否支付',
-            dataIndex: 'express_is_pay'
+            dataIndex: 'express_is_pay',
+            render: (text, record, index) => (
+                <span>
+                    {
+                        text?
+                            <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                            :
+                            <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </span>
+            )
         }, {
             title: '运费支付方式',
             dataIndex: 'express_pay_way'
         }, {
             title: '物流信息',
-            dataIndex: 'express_traces'
+            dataIndex: 'express_traces',
+            render: (text, record, index) => {
+                let express_trace = [{
+                    'AcceptStation': '暂无物流信息'
+                }];
+                if (text) {
+                    express_trace = eval(text);
+                }
+                console.log('express_trace' ,express_trace);
+                let title = <Timeline style={{marginTop: '10px'}}>
+                    {
+                        express_trace.map(function (item, index) {
+                            return (
+                                <Timeline.Item key={index}>
+                                    {item.AcceptStation}
+                                    <p></p >
+                                    {item.AcceptTime}
+                                </Timeline.Item>
+                            )
+                        })
+                    }
+                </Timeline>
+                return (<Tooltip placement="topLeft" title={title}>
+                    <Icon type="question-circle-o" />
+                </Tooltip>)
+            }
         }, {
             title: '状态',
             dataIndex: 'express_flow'
