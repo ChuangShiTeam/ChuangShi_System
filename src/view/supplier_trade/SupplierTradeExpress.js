@@ -1,6 +1,21 @@
 import React, {Component} from "react";
 import {connect} from "dva";
-import {Button, Col, Form, message, Modal, Popconfirm, Row, Select, Spin, Steps, Table, Icon, Tooltip, Timeline} from "antd";
+import {
+    Button,
+    Col,
+    Form,
+    message,
+    Modal,
+    Popconfirm,
+    Row,
+    Select,
+    Spin,
+    Steps,
+    Table,
+    Icon,
+    Tooltip,
+    Timeline
+} from "antd";
 
 import constant from "../../util/constant";
 import notification from "../../util/notification";
@@ -211,7 +226,7 @@ class SupplierStockOutDetail extends Component {
                     {record.express_receiver_address}
             </span>
             )
-        },{
+        }, {
             title: '寄件费（运费）',
             dataIndex: 'express_cost'
         }, {
@@ -220,7 +235,7 @@ class SupplierStockOutDetail extends Component {
             render: (text, record, index) => (
                 <span>
                     {
-                        text?
+                        text ?
                             <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
                             :
                             <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
@@ -240,7 +255,7 @@ class SupplierStockOutDetail extends Component {
                 if (text) {
                     express_trace = eval(text);
                 }
-                console.log('express_trace' ,express_trace);
+                console.log('express_trace', express_trace);
                 let title = <Timeline style={{marginTop: '10px'}}>
                     {
                         express_trace.map(function (item, index) {
@@ -255,7 +270,7 @@ class SupplierStockOutDetail extends Component {
                     }
                 </Timeline>
                 return (<Tooltip placement="topLeft" title={title}>
-                    <Icon type="question-circle-o" />
+                    <Icon type="question-circle-o"/>
                 </Tooltip>)
             }
         }, {
@@ -271,12 +286,12 @@ class SupplierStockOutDetail extends Component {
             render: (text, record, index) => (
                 <span>
                 {
-                    this.state.trade.trade_flow === 'WAIT_SEND'?
+                    this.state.trade.trade_flow === 'WAIT_SEND' ?
                         <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                            cancelText={constant.popconfirm_cancel}
-                            onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
+                                    cancelText={constant.popconfirm_cancel}
+                                    onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
                             <a>{constant.del}</a>
-                        </Popconfirm>: null
+                        </Popconfirm> : null
                 }
 
                 </span>
@@ -447,29 +462,30 @@ class SupplierStockOutDetail extends Component {
                     <br/>
                     <h2>订单商品列表</h2>
                     <Table
-                           rowKey={record => record.product_sku_id}
-                           className="margin-top"
-                           columns={columnsProductSku}
-                           dataSource={this.state.tradeProductSkuList} pagination={false}
-                           bordered/>
+                        rowKey={record => record.product_sku_id}
+                        className="margin-top"
+                        columns={columnsProductSku}
+                        dataSource={this.state.tradeProductSkuList} pagination={false}
+                        bordered/>
                     <br/>
                     {
-                        this.state.trade.trade_flow !== 'WAIT_PAY'?
+                        this.state.trade.trade_flow !== 'WAIT_PAY' ?
                             <span>
                                 <Row>
                                     <Col span={8}>
                                         <h2>订单快递地址</h2>
                                     </Col>
-                                                {
-                                                    this.state.trade.trade_flow === 'WAIT_SEND'?
-                                                        <Col span={16} className="content-button">
-                                                            <Button type="primary" icon="plus-circle" size="default" className="margin-right"
-                                                                    onClick={this.handleAdd.bind(this)}>填写快递单</Button>
-                                                            <Button type="primary" icon="plus-circle" size="default"
-                                                                    loading={this.state.is_load}
-                                                                    onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
-                                                        </Col>: null
-                                                }
+                                    {
+                                        this.state.trade.trade_flow === 'WAIT_SEND' ?
+                                            <Col span={16} className="content-button">
+                                                <Button type="primary" icon="plus-circle" size="default"
+                                                        className="margin-right"
+                                                        onClick={this.handleAdd.bind(this)}>填写快递单</Button>
+                                                <Button type="primary" icon="plus-circle" size="default"
+                                                        loading={this.state.is_load}
+                                                        onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
+                                            </Col> : null
+                                    }
 
                                 </Row>
                                 <Table
@@ -479,9 +495,8 @@ class SupplierStockOutDetail extends Component {
                                     dataSource={this.state.expressList} pagination={false}
                                     bordered/>
                                 <ExpressDetail/>
-                            </span>: null
+                            </span> : null
                     }
-
                 </Spin>
             </Modal>
         );

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
+import React, {Component} from "react";
+import {connect} from "dva";
 import {
     Modal,
     Form,
@@ -11,13 +11,15 @@ import {
     message,
     Steps,
     Table,
-    Popconfirm
-} from 'antd';
-
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
-import ExpressDetail from './ExpressDetail';
+    Popconfirm,
+    Icon,
+    Timeline,
+    Tooltip
+} from "antd";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import http from "../../util/http";
+import ExpressDetail from "./ExpressDetail";
 
 class TradeDetail extends Component {
     constructor(props) {
@@ -237,12 +239,6 @@ class TradeDetail extends Component {
             title: '快递单号',
             dataIndex: 'express_no'
         }, {
-            title: '快递类型',
-            dataIndex: 'express_type'
-        }, {
-            title: '收货公司',
-            dataIndex: 'express_receiver_company'
-        }, {
             title: '收货人',
             dataIndex: 'express_receiver_name',
             render: (text, record, index) => (
@@ -252,9 +248,6 @@ class TradeDetail extends Component {
                     {record.express_receiver_mobile})
                 </span>
             )
-        }, {
-            title: '收货人邮编',
-            dataIndex: 'express_receiver_postcode'
         }, {
             title: '收货详细地址',
             dataIndex: '',
@@ -267,53 +260,55 @@ class TradeDetail extends Component {
             </span>
             )
         }, {
-            title: '发货人公司',
-            dataIndex: 'express_sender_company'
-        }, {
-            title: '发货人',
-            dataIndex: 'express_sender_name',
-            render: (text, record, index) => (
-                <span>
-                    {record.express_sender_name}
-                    ({record.express_sender_tel}/
-                    {record.express_sender_mobile})
-                </span>
-            )
-        }, {
-            title: '发货人邮编',
-            dataIndex: 'express_sender_postcode'
-        }, {
-            title: '发货人详细地址',
-            dataIndex: '',
-            render: (text, record, index) => (
-                <span>
-                {record.express_sender_province}-
-                    {record.express_sender_city}-
-                    {record.express_sender_area}-
-                    {record.express_sender_address}
-            </span>
-            )
-        }, {
             title: '寄件费（运费）',
             dataIndex: 'express_cost'
         }, {
             title: '运费是否支付',
-            dataIndex: 'express_is_pay'
+            dataIndex: 'express_is_pay',
+            render: (text, record, index) => (
+                <span>
+                    {
+                        text ?
+                            <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                            :
+                            <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </span>
+            )
         }, {
             title: '运费支付方式',
             dataIndex: 'express_pay_way'
         }, {
-            title: '快递发货时间',
-            dataIndex: 'express_start_date'
-        }, {
-            title: '快递取货时间',
-            dataIndex: 'express_end_date'
-        }, {
             title: '物流信息',
-            dataIndex: 'express_logistics'
+            dataIndex: 'express_traces',
+            render: (text, record, index) => {
+                let express_trace = [{
+                    'AcceptStation': '暂无物流信息'
+                }];
+                if (text) {
+                    express_trace = eval(text);
+                }
+                console.log('express_trace', express_trace);
+                let title = <Timeline style={{marginTop: '10px'}}>
+                    {
+                        express_trace.map(function (item, index) {
+                            return (
+                                <Timeline.Item key={index}>
+                                    {item.AcceptStation}
+                                    <p></p >
+                                    {item.AcceptTime}
+                                </Timeline.Item>
+                            )
+                        })
+                    }
+                </Timeline>
+                return (<Tooltip placement="topLeft" title={title}>
+                    <Icon type="question-circle-o"/>
+                </Tooltip>)
+            }
         }, {
             title: '状态',
-            dataIndex: 'express_status'
+            dataIndex: 'express_flow'
         }, {
             title: '备注',
             dataIndex: 'express_remark'
@@ -323,11 +318,15 @@ class TradeDetail extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                {
+                    this.state.trade.trade_flow === 'WAIT_SEND' ?
+                        <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                                    cancelText={constant.popconfirm_cancel}
+                                    onConfirm={this.handleDel.bind(this, record.express_id, record.system_version)}>
+                            <a>{constant.del}</a>
+                        </Popconfirm> : null
+                }
+
                 </span>
             )
         }];
@@ -415,8 +414,10 @@ class TradeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="订单备注">
-                                    <span>{this.state.trade.trade_message}</span>
+                                }} className="form-item" label="订单状态">
+                                    <span>
+                                        {this.state.trade.trade_status ? "正常" : "异常"}
+                                    </span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -426,15 +427,8 @@ class TradeDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="收货人">
-                                    <span>{this.state.trade.trade_receiver_name}</span>
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="收货电话">
-                                    <span>{this.state.trade.trade_receiver_mobile}</span>
+                                    <span>{this.state.trade.trade_receiver_name}
+                                        ( {this.state.trade.trade_receiver_mobile} ) </span>
                                 </FormItem>
                             </Col>
                             <Col span={8}>
@@ -450,8 +444,6 @@ class TradeDetail extends Component {
                                     </span>
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
@@ -459,26 +451,6 @@ class TradeDetail extends Component {
                                 }} className="form-item" label="订单商品数量">
                                     <span>
                                         {this.state.trade.trade_product_quantity}
-                                    </span>
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="订单状态">
-                                    <span>
-                                        {this.state.trade.trade_status ? "正常" : "异常"}
-                                    </span>
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="订单审计状态">
-                                    <span>
-                                        {this.state.trade.trade_audit_status ? "正常" : "异常"}
                                     </span>
                                 </FormItem>
                             </Col>
@@ -510,36 +482,12 @@ class TradeDetail extends Component {
                                     <span>￥{this.state.trade.trade_discount_amount}</span>
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="是否分成">
-                                    <span>
-                                        {this.state.trade.trade_is_commission ? "需分成" : "不分成"}
-                                    </span>
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="是否支付">
-                                    <span>
-                                        {this.state.trade.trade_is_pay ? "已支付" : "未支付"}
-                                    </span>
-                                </FormItem>
-                            </Col>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="是否收货">
-                                    <span>
-                                        {this.state.trade.trade_is_confirm ? "已收货" : "未收货"}
-                                    </span>
+                                }} className="form-item" label="订单备注">
+                                    <span>{this.state.trade.trade_message}</span>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -560,24 +508,35 @@ class TradeDetail extends Component {
                            bordered/>
                     <br/>
                     <br/>
-                    <Row>
-                        <Col span={8}>
-                            <h2>订单快递地址</h2>
-                        </Col>
-                        <Col span={16} className="content-button">
-                            <Button type="primary" icon="plus-circle" size="default" className="margin-right"
-                                    onClick={this.handleAdd.bind(this)}>填写快递单</Button>
-                            <Button type="primary" icon="plus-circle" size="default"
-                                    loading={this.state.is_load}
-                                    onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
-                        </Col>
-                    </Row>
-                    <Table rowKey=""
-                           className="margin-top"
-                           columns={columnsExpress}
-                           dataSource={this.state.expressList} pagination={false}
-                           bordered/>
-                    <ExpressDetail/>
+                    {
+                        this.state.trade.trade_flow !== 'WAIT_PAY' ?
+                            <span>
+                                <Row>
+                                    <Col span={8}>
+                                        <h2>订单快递地址</h2>
+                                    </Col>
+                                    {
+                                        this.state.trade.trade_flow === 'WAIT_SEND' ?
+                                            <Col span={16} className="content-button">
+                                                <Button type="primary" icon="plus-circle" size="default"
+                                                        className="margin-right"
+                                                        onClick={this.handleAdd.bind(this)}>填写快递单</Button>
+                                                <Button type="primary" icon="plus-circle" size="default"
+                                                        loading={this.state.is_load}
+                                                        onClick={this.handleDelivery.bind(this)}>已完成订单发货</Button>
+                                            </Col> : null
+                                    }
+
+                                </Row>
+                                <Table
+                                    rowKey={record => record.express_id}
+                                    className="margin-top"
+                                    columns={columnsExpress}
+                                    dataSource={this.state.expressList} pagination={false}
+                                    bordered/>
+                                <ExpressDetail/>
+                            </span> : null
+                    }
                 </Spin>
             </Modal>
         );

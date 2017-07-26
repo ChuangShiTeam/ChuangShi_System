@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message, Icon} from 'antd';
 
 import TradeDetail from './TradeDetail';
 import constant from '../../util/constant';
@@ -223,11 +223,11 @@ class TradeIndex extends Component {
             dataIndex: 'trade_receiver_address',
             render: (text, record, index) => (
                 <span>
-                    {record.trade_receiver_province}-
+            {record.trade_receiver_province}-
                     {record.trade_receiver_city}-
                     {record.trade_receiver_area}-
                     {record.trade_receiver_address}
-                </span>
+        </span>
             )
         }, {
             title: '商品数量',
@@ -237,51 +237,39 @@ class TradeIndex extends Component {
             dataIndex: 'trade_product_amount',
             render: (text, record, index) => (
                 <span>
-                    ￥{record.trade_product_amount}
-                </span>
+            ￥{record.trade_product_amount}
+        </span>
             )
         }, {
             title: '快递金额',
             dataIndex: 'trade_express_amount',
             render: (text, record, index) => (
                 <span>
-                    ￥{record.trade_express_amount}
-                </span>
+            ￥{record.trade_express_amount}
+        </span>
             )
         }, {
             title: '折扣金额',
             dataIndex: 'trade_discount_amount',
             render: (text, record, index) => (
                 <span>
-                    ￥{record.trade_discount_amount}
-                </span>
+            ￥{record.trade_discount_amount}
+        </span>
             )
         }, {
-            title: '是否分成',
-            dataIndex: 'trade_is_commission',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_is_commission ? '需分成' : '不需分成'}
-                </div>
-            )
-        }, {
-            title: '是否付款',
+            title: '付款',
             dataIndex: 'trade_is_pay',
             render: (text, record, index) => (
                 <div className="clearfix">
-                    {record.trade_is_pay ? '已付款' : '未付款'}
+                    {record.trade_is_pay ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
                 </div>
             )
         }, {
-            title: '是否收货',
-            dataIndex: 'trade_is_confirm',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_is_confirm ? '已收货' : '未收货'}
-                </div>
-            )
-        }, {
-            title: '订单流程',
+            title: '订单当前流程',
             dataIndex: 'trade_flow',
             render: (text, record, index) => (
                 <div className="clearfix">
@@ -300,21 +288,14 @@ class TradeIndex extends Component {
                 </div>
             )
         }, {
-            title: '订单审计状态',
-            dataIndex: 'trade_audit_status'
-        }, {
             title: '订单备注',
             dataIndex: 'trade_message'
         }, {
-            width: 100,
+            width: 50,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
-                <span>
-                  <a onClick={this.handlePay.bind(this, record.trade_number)}>付款</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.find}</a>
-                </span>
+                <sapn><a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.find}</a></sapn>
             )
         }];
 

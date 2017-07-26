@@ -180,7 +180,7 @@ class CustomerAttributeDetail extends Component {
                                 ''
                         }
                         <Row>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -201,7 +201,7 @@ class CustomerAttributeDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -222,7 +222,7 @@ class CustomerAttributeDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -243,7 +243,7 @@ class CustomerAttributeDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -264,7 +264,7 @@ class CustomerAttributeDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -272,7 +272,7 @@ class CustomerAttributeDetail extends Component {
                                     {
                                         getFieldDecorator('customer_attribute_default_value', {
                                             rules: [{
-                                                required: true,
+                                                required: false,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -285,7 +285,7 @@ class CustomerAttributeDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
