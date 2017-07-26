@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Table, Switch, InputNumber} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Table, Switch, InputNumber, Steps, Icon, Tooltip, Timeline, Popconfirm, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
-import express_code from "../../util/express_code";
+import DeliveryOrderMemberExpress from './DeliveryOrderMemberExpress';
+import DeliveryOrderWarehouseDeliver from './DeliveryOrderWarehouseDeliver';
 
 class DeliveryOrderDetail extends Component {
     constructor(props) {
@@ -15,7 +16,10 @@ class DeliveryOrderDetail extends Component {
             is_show: false,
             action: '',
             delivery_order_id: '',
-            delivery_order_product_sku_list: []
+            system_version: '',
+            delivery_order: {},
+            delivery_order_product_sku_list: [],
+            expressList: []
         }
     }
 
@@ -28,6 +32,10 @@ class DeliveryOrderDetail extends Component {
                 this.handleLoadDeliveryOrder();
                 this.handleLoadExpress();
             });
+        });
+        notification.on('notification_delivery_order_detail_view_load', this, function (data) {
+            this.handleLoadDeliveryOrder();
+            this.handleLoadExpress();
         });
     }
 
@@ -47,18 +55,8 @@ class DeliveryOrderDetail extends Component {
                 delivery_order_id: this.state.delivery_order_id
             },
             success: function (data) {
-                if (constant.action === 'system') {
-                    this.props.form.setFieldsValue({
-                        app_id: data.app_id
-                    });
-                }
-
-                this.props.form.setFieldsValue({
-                    user_name: data.delivery_order.user_name,
-                    delivery_order_total_quantity: data.delivery_order.delivery_order_total_quantity
-                });
-
                 this.setState({
+                    delivery_order: data.delivery_order,
                     delivery_order_product_sku_list: data.delivery_order_product_sku_list
                 });
             }.bind(this),
@@ -82,26 +80,9 @@ class DeliveryOrderDetail extends Component {
                 delivery_order_id: this.state.delivery_order_id
             },
             success: function (data) {
-                if (data) {
-                    this.props.form.setFieldsValue({
-                        express_shipper_code: data.express_shipper_code,
-                        express_no: data.express_no,
-                        express_pay_way: data.express_pay_way,
-                        express_cost: data.express_cost,
-                        express_is_pay: data.express_is_pay,
-                        express_start_date: data.express_start_date,
-                        express_end_date: data.express_end_code,
-                        express_traces: data.express_traces,
-                        express_flow: data.express_flow,
-                        express_receiver_name: data.express_receiver_name,
-                        express_receiver_mobile: data.express_receiver_mobile,
-                        express_receiver_province: data.express_receiver_province,
-                        express_receiver_city: data.express_receiver_city,
-                        express_receiver_area: data.express_receiver_area,
-                        express_receiver_address: data.express_receiver_address,
-                        express_remark: data.express_remark,
-                    });
-                }
+                this.setState({
+                    express_list: data
+                });
             }.bind(this),
             complete: function () {
                 this.setState({
@@ -112,24 +93,63 @@ class DeliveryOrderDetail extends Component {
         });
     }
 
+    handleDeleteExpress(express_id, system_version) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/express/' + constant.action + '/delete',
+            data: {
+                express_id: express_id,
+                system_version: system_version
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoadExpress();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
+    handleWarehouseDeliver() {
+        notification.emit('notification_delivery_order_warehouse_deliver', {
+            delivery_order_id: this.state.delivery_order_id
+        });
+    }
+
     handleCancel() {
         this.setState({
             is_load: false,
             is_show: false,
             action: '',
             delivery_order_id: '',
-            delivery_order_product_sku_list: []
+            system_version: '',
+            delivery_order: {},
+            delivery_order_product_sku_list: [],
+            expressList: []
         });
 
         this.props.form.resetFields();
+        notification.emit('notification_delivery_order_index_load', {});
+    }
+
+    handleAddExpress() {
+        notification.emit('notification_delivery_order_member_express', {delivery_order: this.state.delivery_order});
     }
 
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+        const Step = Steps.Step;
 
-        const columns = [{
+        const columnsProductSku = [{
             width: 150,
             title: '商品名称',
             dataIndex: 'product_name'
@@ -137,6 +157,104 @@ class DeliveryOrderDetail extends Component {
             width: 150,
             title: '数量',
             dataIndex: 'product_sku_quantity'
+        }];
+
+        const columnsExpress = [{
+            title: '快递公司编码',
+            dataIndex: 'express_shipper_code'
+        }, {
+            title: '快递单号',
+            dataIndex: 'express_no'
+        }, {
+            title: '收货人',
+            dataIndex: 'express_receiver_name',
+            render: (text, record, index) => (
+                <span>
+                    {record.express_receiver_name}
+                    ({record.express_receiver_tel?record.express_receiver_tel + '/':null}
+                    {record.express_receiver_mobile})
+                </span>
+            )
+        }, {
+            title: '收货详细地址',
+            dataIndex: '',
+            render: (text, record, index) => (
+                <span>
+                {record.express_receiver_province}-
+                    {record.express_receiver_city}-
+                    {record.express_receiver_area}-
+                    {record.express_receiver_address}
+            </span>
+            )
+        },{
+            title: '寄件费（运费）',
+            dataIndex: 'express_cost'
+        }, {
+            title: '运费是否支付',
+            dataIndex: 'express_is_pay',
+            render: (text, record, index) => (
+                <span>
+                    {
+                        text?
+                            <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                            :
+                            <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </span>
+            )
+        }, {
+            title: '运费支付方式',
+            dataIndex: 'express_pay_way'
+        }, {
+            title: '物流信息',
+            dataIndex: 'express_traces',
+            render: (text, record, index) => {
+                let express_trace = [{
+                    'AcceptStation': '暂无物流信息'
+                }];
+                if (text) {
+                    express_trace = eval(text);
+                }
+                let title = <Timeline style={{marginTop: '10px'}}>
+                    {
+                        express_trace.map(function (item, index) {
+                            return (
+                                <Timeline.Item key={index}>
+                                    {item.AcceptStation}
+                                    <p></p >
+                                    {item.AcceptTime}
+                                </Timeline.Item>
+                            )
+                        })
+                    }
+                </Timeline>
+                return (<Tooltip placement="topLeft" title={title}>
+                    <Icon type="question-circle-o" />
+                </Tooltip>)
+            }
+        }, {
+            title: '状态',
+            dataIndex: 'express_flow'
+        }, {
+            title: '备注',
+            dataIndex: 'express_remark'
+        }, {
+            width: 50,
+            title: constant.operation,
+            dataIndex: '',
+            render: (text, record, index) => (
+                <span>
+                {
+                    this.state.delivery_order.delivery_order_flow === 'WAIT_SEND'?
+                        <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                                    cancelText={constant.popconfirm_cancel}
+                                    onConfirm={this.handleDeleteExpress.bind(this, record.express_id, record.system_version)}>
+                            <a>{constant.del}</a>
+                        </Popconfirm>: null
+                }
+
+                </span>
+            )
         }];
 
         return (
@@ -148,285 +266,111 @@ class DeliveryOrderDetail extends Component {
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
+                    <Steps current={1}>
+                        <Step status={this.state.delivery_order.delivery_order_flow === 'WAIT_SEND' ? "process " : "wait"} title="待发货"
+                              description=""/>
+                        <Step status={this.state.delivery_order.delivery_order_flow === 'WAIT_RECEIVE' ? "process " : "wait"} title="待收货"
+                              description=""/>
+                        <Step status={this.state.delivery_order.delivery_order_flow === 'COMPLETE' ? "process " : "wait"} title="已完成"
+                              description=""/>
+                    </Steps>
                     <form>
-                        <h3>发货信息</h3>
+                        <br/>
+                        <h2>发货单信息</h2>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="会员名称">
-                                    {
-                                        getFieldDecorator('user_name', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
+                                    <span>{this.state.delivery_order.user_name}</span>
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="数量">
-                                    {
-                                        getFieldDecorator('delivery_order_total_quantity', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Table
-                            rowKey="product_sku_id"
-                            className="margin-top"
-                            loading={this.state.is_load} columns={columns}
-                            dataSource={this.state.delivery_order_product_sku_list} pagination={false}
-                            bordered/>
-                        <h3>快递单信息</h3>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递公司">
-                                    {
-                                        getFieldDecorator('express_shipper_code', {
-                                            initialValue: ''
-                                        })(
-                                            <Select>
-                                                {
-                                                    express_code.map((item, index) => <Option value={item.value} key={index}>{item.label}</Option>)
-                                                }
-                                            </Select>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递单号">
-                                    {
-                                        getFieldDecorator('express_no', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="快递支付类型">
-                                    {
-                                        getFieldDecorator('express_pay_way', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="寄件费（运费）">
-                                    {
-                                        getFieldDecorator('express_cost', {
-                                            initialValue: ''
-                                        })(
-                                            <InputNumber />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="运费是否支付">
-                                    {
-                                        getFieldDecorator('express_is_pay', {
-                                            valuePropName: 'checked',
-                                            initialValue: false
-                                        })(
-                                            <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="物流信息">
-                                    {
-                                        getFieldDecorator('express_traces', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="textarea" rows={4}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="状态">
-                                    {
-                                        getFieldDecorator('express_flow', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="收货人">
-                                    {
-                                        getFieldDecorator('express_receiver_name', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
+                                <span>{this.state.delivery_order.delivery_order_receiver_name}
+                                    ( {this.state.delivery_order.delivery_order_receiver_mobile} ) </span>
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="收货人手机">
-                                    {
-                                        getFieldDecorator('express_receiver_mobile', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="收货人省">
-                                    {
-                                        getFieldDecorator('express_receiver_province', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="收货人市">
-                                    {
-                                        getFieldDecorator('express_receiver_city', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="收货人区">
-                                    {
-                                        getFieldDecorator('express_receiver_area', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="收货人详细地址">
-                                    {
-                                        getFieldDecorator('express_receiver_address', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text"/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="备注">
-                                    {
-                                        getFieldDecorator('express_remark', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="textarea" rows={4}/>
-                                        )
-                                    }
+                                }} className="form-item" label="收货地址">
+                                <span>
+                                    {this.state.delivery_order.delivery_order_receiver_province}-
+                                    {this.state.delivery_order.delivery_order_receiver_city}-
+                                    {this.state.delivery_order.delivery_order_receiver_area}-
+                                    {this.state.delivery_order.delivery_order_receiver_address}
+                                </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="发货总数量">
+                                    <span>
+                                        {this.state.delivery_order.delivery_order_total_quantity}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="发货金额">
+                                    <span>
+                                        {this.state.delivery_order.delivery_order_amount}
+                                    </span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="是否支付">
+                                    <span>
+                                        {this.state.delivery_order.delivery_order_is_pay?'是':'否'}
+                                    </span>
                                 </FormItem>
                             </Col>
                         </Row>
+                        <br/>
+                        <h2>发货明细列表</h2>
+                        <Table
+                            rowKey="product_sku_id"
+                            className="margin-top"
+                            loading={this.state.is_load} columns={columnsProductSku}
+                            dataSource={this.state.delivery_order_product_sku_list} pagination={false}
+                            bordered/>
+                        <br/>
+                        <Row>
+                            <Col span={8}>
+                                <h2>快递信息</h2>
+                            </Col>
+                            {
+                                this.state.delivery_order.delivery_order_flow === 'WAIT_SEND'?
+                                    <Col span={16} className="content-button">
+                                        <Button type="primary" icon="plus-circle" size="default" className="margin-right"
+                                                onClick={this.handleAddExpress.bind(this)}>填写快递单</Button>
+                                        <Button type="primary" icon="plus-circle" size="default"
+                                                loading={this.state.is_load}
+                                                onClick={this.handleWarehouseDeliver.bind(this)}>仓库发货</Button>
+                                    </Col>: null
+                            }
+                        </Row>
+                        <Table
+                            rowKey={record => record.express_id}
+                            className="margin-top"
+                            columns={columnsExpress}
+                            dataSource={this.state.express_list} pagination={false}
+                            bordered/>
+                        <DeliveryOrderMemberExpress/>
+                        <DeliveryOrderWarehouseDeliver/>
                     </form>
                 </Spin>
             </Modal>
