@@ -289,7 +289,6 @@ class TradeDetail extends Component {
                 if (text) {
                     express_trace = coverEval(text);
                 }
-                console.log('express_trace', express_trace);
                 let title = <Timeline style={{marginTop: '10px'}}>
                     {
                         express_trace.map(function (item, index) {

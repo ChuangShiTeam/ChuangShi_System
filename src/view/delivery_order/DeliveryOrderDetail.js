@@ -210,6 +210,7 @@ class DeliveryOrderDetail extends Component {
             dataIndex: 'express_traces',
             render: (text, record, index) => {
                 let express_trace = [{
+                    'AcceptStation': '暂无物流信息'
                 }];
                 if (text) {
                     express_trace = coverEval(text);
