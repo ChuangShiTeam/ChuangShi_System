@@ -253,7 +253,7 @@ class SupplierStockOutDetail extends Component {
                     'AcceptStation': '暂无物流信息'
                 }];
                 if (text) {
-                    express_trace = eval(text);
+                    express_trace = JSON.parse(text);
                 }
                 console.log('express_trace', express_trace);
                 let title = <Timeline style={{marginTop: '10px'}}>

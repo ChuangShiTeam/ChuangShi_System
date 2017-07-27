@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';

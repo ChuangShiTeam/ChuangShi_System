@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
+import {Row, Col, Button, Form, Select, Table} from 'antd';
 
 import AppStockReplenishDetail from './AppStockReplenishDetail';
 import constant from '../../util/constant';

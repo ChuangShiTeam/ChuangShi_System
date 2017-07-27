@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Table, Switch, InputNumber, Steps, Icon, Tooltip, Timeline, Popconfirm, message} from 'antd';
-
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
-import DeliveryOrderMemberExpress from './DeliveryOrderMemberExpress';
-import DeliveryOrderWarehouseDeliver from './DeliveryOrderWarehouseDeliver';
+import React, {Component} from "react";
+import {Modal, Form, Row, Col, Spin, Button, Table, Steps, Icon, Tooltip, Timeline, Popconfirm, message} from "antd";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import http from "../../util/http";
+import DeliveryOrderMemberExpress from "./DeliveryOrderMemberExpress";
+import DeliveryOrderWarehouseDeliver from "./DeliveryOrderWarehouseDeliver";
 
 class DeliveryOrderDetail extends Component {
     constructor(props) {
@@ -145,8 +144,6 @@ class DeliveryOrderDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
-        const Option = Select.Option;
-        const {getFieldDecorator} = this.props.form;
         const Step = Steps.Step;
 
         const columnsProductSku = [{
@@ -171,7 +168,7 @@ class DeliveryOrderDetail extends Component {
             render: (text, record, index) => (
                 <span>
                     {record.express_receiver_name}
-                    ({record.express_receiver_tel?record.express_receiver_tel + '/':null}
+                    ({record.express_receiver_tel ? record.express_receiver_tel + '/' : null}
                     {record.express_receiver_mobile})
                 </span>
             )
@@ -186,7 +183,7 @@ class DeliveryOrderDetail extends Component {
                     {record.express_receiver_address}
             </span>
             )
-        },{
+        }, {
             title: '寄件费（运费）',
             dataIndex: 'express_cost'
         }, {
@@ -195,7 +192,7 @@ class DeliveryOrderDetail extends Component {
             render: (text, record, index) => (
                 <span>
                     {
-                        text?
+                        text ?
                             <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
                             :
                             <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
@@ -213,7 +210,7 @@ class DeliveryOrderDetail extends Component {
                     'AcceptStation': '暂无物流信息'
                 }];
                 if (text) {
-                    express_trace = eval(text);
+                    express_trace = JSON.parse(text);
                 }
                 let title = <Timeline style={{marginTop: '10px'}}>
                     {
@@ -229,7 +226,7 @@ class DeliveryOrderDetail extends Component {
                     }
                 </Timeline>
                 return (<Tooltip placement="topLeft" title={title}>
-                    <Icon type="question-circle-o" />
+                    <Icon type="question-circle-o"/>
                 </Tooltip>)
             }
         }, {
@@ -245,12 +242,12 @@ class DeliveryOrderDetail extends Component {
             render: (text, record, index) => (
                 <span>
                 {
-                    this.state.delivery_order.delivery_order_flow === 'WAIT_SEND'?
+                    this.state.delivery_order.delivery_order_flow === 'WAIT_SEND' ?
                         <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                                     cancelText={constant.popconfirm_cancel}
                                     onConfirm={this.handleDeleteExpress.bind(this, record.express_id, record.system_version)}>
                             <a>{constant.del}</a>
-                        </Popconfirm>: null
+                        </Popconfirm> : null
                 }
 
                 </span>
@@ -258,7 +255,8 @@ class DeliveryOrderDetail extends Component {
         }];
 
         return (
-            <Modal title={'发货单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'发货单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+                   className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -267,12 +265,18 @@ class DeliveryOrderDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <Steps current={1}>
-                        <Step status={this.state.delivery_order.delivery_order_flow === 'WAIT_SEND' ? "process " : "wait"} title="待发货"
-                              description=""/>
-                        <Step status={this.state.delivery_order.delivery_order_flow === 'WAIT_RECEIVE' ? "process " : "wait"} title="待收货"
-                              description=""/>
-                        <Step status={this.state.delivery_order.delivery_order_flow === 'COMPLETE' ? "process " : "wait"} title="已完成"
-                              description=""/>
+                        <Step
+                            status={this.state.delivery_order.delivery_order_flow === 'WAIT_SEND' ? "process " : "wait"}
+                            title="待发货"
+                            description=""/>
+                        <Step
+                            status={this.state.delivery_order.delivery_order_flow === 'WAIT_RECEIVE' ? "process " : "wait"}
+                            title="待收货"
+                            description=""/>
+                        <Step
+                            status={this.state.delivery_order.delivery_order_flow === 'COMPLETE' ? "process " : "wait"}
+                            title="已完成"
+                            description=""/>
                     </Steps>
                     <form>
                         <br/>
@@ -334,7 +338,7 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="是否支付">
                                     <span>
-                                        {this.state.delivery_order.delivery_order_is_pay?'是':'否'}
+                                        {this.state.delivery_order.delivery_order_is_pay ? '是' : '否'}
                                     </span>
                                 </FormItem>
                             </Col>
@@ -353,14 +357,15 @@ class DeliveryOrderDetail extends Component {
                                 <h2>快递信息</h2>
                             </Col>
                             {
-                                this.state.delivery_order.delivery_order_flow === 'WAIT_SEND'?
+                                this.state.delivery_order.delivery_order_flow === 'WAIT_SEND' ?
                                     <Col span={16} className="content-button">
-                                        <Button type="primary" icon="plus-circle" size="default" className="margin-right"
+                                        <Button type="primary" icon="plus-circle" size="default"
+                                                className="margin-right"
                                                 onClick={this.handleAddExpress.bind(this)}>填写快递单</Button>
                                         <Button type="primary" icon="plus-circle" size="default"
                                                 loading={this.state.is_load}
                                                 onClick={this.handleWarehouseDeliver.bind(this)}>仓库发货</Button>
-                                    </Col>: null
+                                    </Col> : null
                             }
                         </Row>
                         <Table
