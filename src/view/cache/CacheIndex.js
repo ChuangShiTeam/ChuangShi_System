@@ -184,8 +184,8 @@ class CacheIndex extends Component {
             success: function (data) {
                 message.success(constant.success);
 
-                //this.handleLoad();
-            }.bind(this),
+                //this.handleLoad().bind(this);
+            },
             complete: function () {
                 this.setState({
                     is_load: false

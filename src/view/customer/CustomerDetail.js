@@ -25,6 +25,7 @@ class CustomerDetail extends Component {
                 is_show: true,
                 action: 'save'
             });
+            this.handleAppCustomerAttributeLoad();
         });
 
         notification.on('notification_customer_detail_edit', this, function (data) {
@@ -35,9 +36,8 @@ class CustomerDetail extends Component {
             }, function () {
                 this.handleLoad();
             });
+            this.handleAppCustomerAttributeLoad(data.customer_id);
         });
-
-        this.handleAppCustomerAttributeLoad();
     }
 
     componentWillUnmount() {
@@ -90,7 +90,7 @@ class CustomerDetail extends Component {
         });
     }
 
-    handleAppCustomerAttributeLoad() {
+    handleAppCustomerAttributeLoad(customer_id) {
         this.setState({
             is_load: true
         });
@@ -98,7 +98,7 @@ class CustomerDetail extends Component {
         http.request({
             url: '/customer/attribute/admin/app/list',
             data: {
-                customer_id: this.state.customer_id
+                customer_id: customer_id
             },
             success: function (data) {
                 this.setState({
@@ -436,12 +436,12 @@ class CustomerDetail extends Component {
                         <br/>
                         <Row>
                             {
-                                this.state.customer_attribute_list.map(function (item) {
+                                this.state.customer_attribute_list.map(function (item, index) {
                                     const customer_attribute_name = item.customer_attribute_name;
                                     const customer_attribute_key = item.customer_attribute_key;
-                                    const customer_attribute_default_value = item.customer_attribute_default_value;
+                                    const customer_attribute_value = item.customer_attribute_value;
                                     return (
-                                        <Col span={8}>
+                                        <Col key={index} span={8}>
                                             <FormItem hasFeedback {...{
                                                 labelCol: {span: 6},
                                                 wrapperCol: {span: 18}
@@ -452,7 +452,7 @@ class CustomerDetail extends Component {
                                                             required: false,
                                                             message: constant.required
                                                         }],
-                                                        initialValue: customer_attribute_default_value
+                                                        initialValue: customer_attribute_value
                                                     })(
                                                         <Input type="text"
                                                                placeholder={constant.placeholder+customer_attribute_name}/>
