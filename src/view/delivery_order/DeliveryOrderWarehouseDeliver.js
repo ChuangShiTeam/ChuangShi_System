@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Table, InputNumber} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Select, message, InputNumber} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -128,7 +128,7 @@ class DeliveryOrderWarehouseDeliver extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'仓库发货'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={<h3>仓库发货</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"

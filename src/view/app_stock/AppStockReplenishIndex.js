@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table} from 'antd';
+import {Row, Col, Button, Form, Select, Table} from 'antd';
 
 import AppStockReplenishDetail from './AppStockReplenishDetail';
 import constant from '../../util/constant';
@@ -33,6 +33,7 @@ class AppStockReplenishIndex extends Component {
 
         this.handleLoad();
         this.handleLoadWarehouse();
+        this.handleLoadProduct();
 
         notification.on('notification_app_stock_replenish_index_load', this, function (data) {
             this.handleLoad();
@@ -52,6 +53,24 @@ class AppStockReplenishIndex extends Component {
                     type: 'app_stock_replenish/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadProduct() {
+        http.request({
+            url: '/product/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'app_stock_replenish/fetch',
+                    data: {
+                        product_list: data
                     }
                 });
             }.bind(this),
@@ -169,6 +188,10 @@ class AppStockReplenishIndex extends Component {
         notification.emit('notification_app_stock_replenish_detail_view', {stock_replenish_id: stock_replenish_id});
     }
 
+    handleSave() {
+        notification.emit('notification_app_stock_replenish_detail_save', {});
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -231,6 +254,8 @@ class AppStockReplenishIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleSave.bind(this)}>报损报溢</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

@@ -20,6 +20,7 @@ import {
 import constant from "../../util/constant";
 import notification from "../../util/notification";
 import http from "../../util/http";
+import {coverEval} from '../../util/function';
 import ExpressDetail from "./ExpressDetail";
 
 class SupplierStockOutDetail extends Component {
@@ -253,7 +254,7 @@ class SupplierStockOutDetail extends Component {
                     'AcceptStation': '暂无物流信息'
                 }];
                 if (text) {
-                    express_trace = eval(text);
+                    express_trace = coverEval(text);
                 }
                 console.log('express_trace', express_trace);
                 let title = <Timeline style={{marginTop: '10px'}}>

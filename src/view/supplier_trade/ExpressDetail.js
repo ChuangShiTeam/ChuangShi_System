@@ -380,6 +380,9 @@ class ExpressDetail extends Component {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
+                                            }, {
+                                                min: 6,
+                                                message: '快递单号长度不能少于6位'
                                             }],
                                             initialValue: ''
                                         })(
@@ -407,6 +410,8 @@ class ExpressDetail extends Component {
                                     }
                                 </FormItem>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
@@ -28,7 +27,8 @@ class DeliveryOrderMemberExpress extends Component {
                 express_receiver_province: data.delivery_order.delivery_order_receiver_province,
                 express_receiver_city: data.delivery_order.delivery_order_receiver_city,
                 express_receiver_area: data.delivery_order.delivery_order_receiver_area,
-                express_receiver_address: data.delivery_order.delivery_order_receiver_address
+                express_receiver_address: data.delivery_order.delivery_order_receiver_address,
+                express_shipper_code: data.delivery_order.delivery_order_express_shipper_code
             });
 
             this.setState({
@@ -90,7 +90,7 @@ class DeliveryOrderMemberExpress extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={<h3>发货单</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200}
+            <Modal title={<h3>填写快递单</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
@@ -262,6 +262,9 @@ class DeliveryOrderMemberExpress extends Component {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
+                                            }, {
+                                                min: 6,
+                                                message: '快递单号长度不能少于6位'
                                             }],
                                             initialValue: ''
                                         })(
@@ -289,6 +292,8 @@ class DeliveryOrderMemberExpress extends Component {
                                     }
                                 </FormItem>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},

@@ -14,7 +14,8 @@ export default {
         stock_replenish_type: 'MEMBER',
         user_name: '',
         warehouse_id: '',
-        warehouse_list: []
+        warehouse_list: [],
+        product_list: []
     },
 
     reducers: {

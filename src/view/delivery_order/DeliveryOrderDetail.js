@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Table, Switch, InputNumber, Steps, Icon, Tooltip, Timeline, Popconfirm, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Table, Steps, Icon, Tooltip, Timeline, Popconfirm, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import {coverEval} from '../../util/function';
 import DeliveryOrderMemberExpress from './DeliveryOrderMemberExpress';
 import DeliveryOrderWarehouseDeliver from './DeliveryOrderWarehouseDeliver';
 
@@ -41,6 +42,7 @@ class DeliveryOrderDetail extends Component {
 
     componentWillUnmount() {
         notification.remove('notification_delivery_order_detail_view', this);
+        notification.remove('notification_delivery_order_detail_view_load', this);
 
     }
 
@@ -145,8 +147,6 @@ class DeliveryOrderDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
-        const Option = Select.Option;
-        const {getFieldDecorator} = this.props.form;
         const Step = Steps.Step;
 
         const columnsProductSku = [{
@@ -210,10 +210,9 @@ class DeliveryOrderDetail extends Component {
             dataIndex: 'express_traces',
             render: (text, record, index) => {
                 let express_trace = [{
-                    'AcceptStation': '暂无物流信息'
                 }];
                 if (text) {
-                    express_trace = eval(text);
+                    express_trace = coverEval(text);
                 }
                 let title = <Timeline style={{marginTop: '10px'}}>
                     {
@@ -258,7 +257,7 @@ class DeliveryOrderDetail extends Component {
         }];
 
         return (
-            <Modal title={'发货单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={<h3>发货单详情</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"

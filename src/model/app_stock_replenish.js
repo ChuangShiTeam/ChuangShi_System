@@ -13,7 +13,8 @@ export default {
         list: [],
         stock_replenish_type: 'APP',
         warehouse_id: '',
-        warehouse_list: []
+        warehouse_list: [],
+        product_list: []
     },
 
     reducers: {

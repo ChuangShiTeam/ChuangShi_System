@@ -34,6 +34,7 @@ class MemberStockReplenishIndex extends Component {
 
         this.handleLoad();
         this.handleLoadWarehouse();
+        this.handleLoadProduct();
 
         notification.on('notification_member_stock_replenish_index_load', this, function (data) {
             this.handleLoad();
@@ -53,6 +54,24 @@ class MemberStockReplenishIndex extends Component {
                     type: 'member_stock_replenish/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadProduct() {
+        http.request({
+            url: '/product/' + constant.action + '/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'member_stock_replenish/fetch',
+                    data: {
+                        product_list: data
                     }
                 });
             }.bind(this),
@@ -173,6 +192,10 @@ class MemberStockReplenishIndex extends Component {
         notification.emit('notification_member_stock_replenish_detail_view', {stock_replenish_id: stock_replenish_id});
     }
 
+    handleSave() {
+        notification.emit('notification_member_stock_replenish_detail_save', {});
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -239,6 +262,8 @@ class MemberStockReplenishIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleSave.bind(this)}>报损报溢</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
