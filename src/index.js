@@ -1,55 +1,49 @@
-import dva from 'dva';
-import Router from './router';
-
-import constant from './util/constant';
-import './view/Style.css';
-
-import code from './model/code';
-import http from './model/http';
-import sql from './model/sql';
-import exception from './model/exception';
-import appModel from './model/app';
-import category from './model/category';
-import menu from './model/menu';
-import api from './model/api';
-import user from './model/user';
-import admin from './model/admin';
-import file from './model/file';
-import product from './model/product';
-import product_brand from './model/product_brand';
-import product_category from './model/product_category';
-import member from './model/member';
-import member_address from './model/member_address';
-import member_level from './model/member_level';
-import member_stock from './model/member_stock';
-import member_stock_in from './model/member_stock_in';
-import member_stock_out from './model/member_stock_out';
-import member_stock_replenish from './model/member_stock_replenish';
-import app_stock from './model/app_stock';
-import app_stock_in from './model/app_stock_in';
-import app_stock_out from './model/app_stock_out';
-import app_stock_replenish from './model/app_stock_replenish';
-import express from './model/express';
-import qrcode from './model/qrcode';
-
-import delivery_order from './model/delivery_order';
-
-import trade from './model/trade';
-
-import customer from './model/customer';
-import customer_attribute from './model/customer_attribute';
-
-import guangqi_customer from './model/guangqi_customer';
-import guangqi_prize from './model/guangqi_prize';
-import feijiu_fast_customer from './model/feijiu_fast_customer';
-import feijiu_recommend_customer from './model/feijiu_recommend_customer';
-import feijiu_recommend_product from './model/feijiu_recommend_product';
-import bill from './model/bill';
-import supplier from './model/supplier';
-import supplier_trade from './model/supplier_trade';
-import cache from './model/cache';
-
-import warehouse from './model/warehouse';
+import dva from "dva";
+import Router from "./router";
+import constant from "./util/constant";
+import "./view/Style.css";
+import code from "./model/code";
+import http from "./model/http";
+import sql from "./model/sql";
+import exception from "./model/exception";
+import appModel from "./model/app";
+import category from "./model/category";
+import menu from "./model/menu";
+import api from "./model/api";
+import user from "./model/user";
+import admin from "./model/admin";
+import file from "./model/file";
+import product from "./model/product";
+import product_brand from "./model/product_brand";
+import product_category from "./model/product_category";
+import member from "./model/member";
+import member_address from "./model/member_address";
+import member_level from "./model/member_level";
+import member_stock from "./model/member_stock";
+import member_stock_in from "./model/member_stock_in";
+import member_stock_out from "./model/member_stock_out";
+import member_stock_replenish from "./model/member_stock_replenish";
+import app_stock from "./model/app_stock";
+import app_stock_in from "./model/app_stock_in";
+import app_stock_out from "./model/app_stock_out";
+import app_stock_replenish from "./model/app_stock_replenish";
+import express from "./model/express";
+import qrcode from "./model/qrcode";
+import delivery_order from "./model/delivery_order";
+import trade from "./model/trade";
+import customer from "./model/customer";
+import customer_attribute from "./model/customer_attribute";
+import guangqi_customer from "./model/guangqi_customer";
+import guangqi_prize from "./model/guangqi_prize";
+import feijiu_fast_customer from "./model/feijiu_fast_customer";
+import feijiu_recommend_customer from "./model/feijiu_recommend_customer";
+import feijiu_recommend_product from "./model/feijiu_recommend_product";
+import bill from "./model/bill";
+import supplier from "./model/supplier";
+import supplier_trade from "./model/supplier_trade";
+import cache from "./model/cache";
+import warehouse from "./model/warehouse";
+import certificate from "./model/certificate";
 
 document.title = constant.name;
 
@@ -102,13 +96,15 @@ app.model(warehouse);
 
 app.model(delivery_order);
 
+app.model(certificate);
+
 app.router(Router);
 
 for (let i = 0; i < document.styleSheets.length; i++) {
     let rule = document.styleSheets[i].cssRules;
-    for (let j = 0 ; j < rule.length; j++) {
+    for (let j = 0; j < rule.length; j++) {
         if (rule[j].selectorText === '.ant-modal-body') {
-            rule[j].style.height= document.documentElement.clientHeight - 290 + 'px';
+            rule[j].style.height = document.documentElement.clientHeight - 290 + 'px';
             break;
         }
     }
