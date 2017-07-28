@@ -201,11 +201,21 @@ class QrcodeIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '会员名称',
-            dataIndex: 'object_id'
-        }, {
             title: '二维码类型',
-            dataIndex: 'qrcode_type'
+            dataIndex: 'qrcode_type',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.qrcode_type === "MEMBER" ? "会员二维码" : "平台二维码"}
+                </div>
+            )
+        }, {
+            title: '会员名称',
+            dataIndex: 'object_id',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.object_id === "" ? "无" : record.object_id}
+                </div>
+            )
         }, {
             width: 100,
             title: '二维码地址',
@@ -226,7 +236,7 @@ class QrcodeIndex extends Component {
             dataIndex: 'qrcode_status',
             render: (text, record, index) => (
                 <div className="clearfix">
-                    {record.qrcode_status ? '正常' : '暂停'}
+                    {record.qrcode_status ? '未使用' : '已使用'}
                 </div>
             )
         }, {
@@ -301,12 +311,13 @@ class QrcodeIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="类型">
+                            }} className="content-search-item" label="二维码分类">
                                 {
                                     getFieldDecorator('qrcode_type', {
                                         initialValue: ''
                                     })(
                                         <Select placeholder="请选择类型">
+                                            <Option value="">全部</Option>
                                             <Option value="MEMBER">会员</Option>
                                             <Option value="PLATFORM">平台</Option>
                                         </Select>

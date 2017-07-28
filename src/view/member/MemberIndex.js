@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import MemberDetail from './MemberDetail';
+import CertificateImageIndex from '../certificate/CertificateImageIndex';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -21,7 +22,7 @@ class MemberIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.member.app_id
+                app_id: this.props.member.app_id
             });
 
             this.handleLoadApp();
@@ -155,6 +156,12 @@ class MemberIndex extends Component {
         });
     }
 
+    handleCertificateList(user_id) {
+        notification.emit('notification_certificate_image_list', {
+            user_id
+        });
+    }
+
     handleDel(member_id, system_version) {
         this.setState({
             is_load: true
@@ -188,11 +195,13 @@ class MemberIndex extends Component {
             title: '名称',
             dataIndex: 'user_name'
         }, {
-            width: 100,
+            width: 150,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
+                  <a onClick={this.handleCertificateList.bind(this, record.user_id)}>授权书</a>
+                  <span className="divider"/>
                   <a onClick={this.handleEdit.bind(this, record.member_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
@@ -270,7 +279,8 @@ class MemberIndex extends Component {
                                     getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -286,6 +296,7 @@ class MemberIndex extends Component {
                        dataSource={this.props.member.list} pagination={pagination}
                        bordered/>
                 <MemberDetail/>
+                <CertificateImageIndex/>
             </QueueAnim>
         );
     }
