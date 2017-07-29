@@ -1,28 +1,29 @@
 import React, {Component} from "react";
 import {connect} from "dva";
 import {
-    Modal,
-    Form,
-    Row,
-    Col,
-    Spin,
     Button,
-    Select,
+    Col,
+    Form,
     message,
+    Modal,
+    Popconfirm,
+    Row,
+    Select,
+    Spin,
     Steps,
     Table,
-    Popconfirm,
     Icon,
-    Timeline,
-    Tooltip
+    Tooltip,
+    Timeline
 } from "antd";
+
 import constant from "../../util/constant";
 import notification from "../../util/notification";
 import http from "../../util/http";
 import {coverEval} from '../../util/function';
 import ExpressDetail from "./ExpressDetail";
 
-class TradeDetail extends Component {
+class SupplierStockOutDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -34,19 +35,11 @@ class TradeDetail extends Component {
             system_version: '',
             trade: {},
             tradeProductSkuList: [],
-            tradeCommossionList: [],
             expressList: []
         }
     }
 
     componentDidMount() {
-        notification.on('notification_trade_detail_add', this, function (data) {
-            this.setState({
-                is_show: true,
-                action: 'save'
-            });
-        });
-
         notification.on('notification_trade_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
@@ -56,11 +49,13 @@ class TradeDetail extends Component {
                 this.handleLoad();
             });
         });
+
+        notification.on('notification_supplier_trade_express_index_load', this, function (data) {
+            this.handleLoad();
+        });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_trade_detail_add', this);
-
         notification.remove('notification_trade_detail_edit', this);
     }
 
@@ -70,7 +65,7 @@ class TradeDetail extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/find',
+            url: '/trade/supplier/find',
             data: {
                 trade_id: this.state.trade_id
             },
@@ -106,7 +101,6 @@ class TradeDetail extends Component {
                 this.setState({
                     trade: data.trade,
                     tradeProductSkuList: data.tradeProductSkuList,
-                    tradeCommossionList: data.tradeCommossionList,
                     expressList: data.expressList,
                     system_version: data.trade.system_version
                 });
@@ -130,7 +124,7 @@ class TradeDetail extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/delete',
+            url: '/express/' + constant.action + '/delete',
             data: {
                 express_id: express_id,
                 system_version: system_version
@@ -206,33 +200,6 @@ class TradeDetail extends Component {
             )
         }];
 
-        const columnsCommossion = [{
-            title: '商品名称',
-            dataIndex: 'product_name'
-        }, {
-            title: '用户名称',
-            dataIndex: 'member_name'
-        }, {
-            title: '用户等级',
-            dataIndex: 'member_level_name'
-        }, {
-            title: '商品分成比例',
-            dataIndex: 'product_sku_commission',
-            render: (text, record, index) => (
-                <span>
-                    {record.product_sku_commission}%
-                </span>
-            )
-        }, {
-            title: '分成金额',
-            dataIndex: 'product_sku_commission_amount',
-            render: (text, record, index) => (
-                <span>
-                    ￥{record.product_sku_commission_amount}
-                </span>
-            )
-        }];
-
         const columnsExpress = [{
             title: '快递公司编码',
             dataIndex: 'express_shipper_code'
@@ -289,6 +256,7 @@ class TradeDetail extends Component {
                 if (text) {
                     express_trace = coverEval(text);
                 }
+                console.log('express_trace', express_trace);
                 let title = <Timeline style={{marginTop: '10px'}}>
                     {
                         express_trace.map(function (item, index) {
@@ -346,13 +314,13 @@ class TradeDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <Steps current={1}>
-                        <Step status={this.state.trade.trade_flow==='WAIT_PAY'?"process ":"wait"} title="待付款"
+                        <Step status={this.state.trade.trade_flow === 'WAIT_PAY' ? "process " : "wait"} title="待付款"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow==='WAIT_SEND'?"process ":"wait"} title="待发货"
+                        <Step status={this.state.trade.trade_flow === 'WAIT_SEND' ? "process " : "wait"} title="待发货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow==='WAIT_RECEIVE'?"process ":"wait"} title="待收货"
+                        <Step status={this.state.trade.trade_flow === 'WAIT_RECEIVE' ? "process " : "wait"} title="待收货"
                               description=""/>
-                        <Step status={this.state.trade.trade_flow==='COMPLETE'?"process ":"wait"} title="已完成"
+                        <Step status={this.state.trade.trade_flow === 'COMPLETE' ? "process " : "wait"} title="已完成"
                               description=""/>
                     </Steps>
                     <br/>
@@ -494,19 +462,12 @@ class TradeDetail extends Component {
                     </form>
                     <br/>
                     <h2>订单商品列表</h2>
-                    <Table rowKey=""
-                           className="margin-top"
-                           columns={columnsProductSku}
-                           dataSource={this.state.tradeProductSkuList} pagination={false}
-                           bordered/>
-                    <br/>
-                    <h2>订单分成列表</h2>
-                    <Table rowKey=""
-                           className="margin-top"
-                           columns={columnsCommossion}
-                           dataSource={this.state.tradeCommossionList} pagination={false}
-                           bordered/>
-                    <br/>
+                    <Table
+                        rowKey={record => record.product_sku_id}
+                        className="margin-top"
+                        columns={columnsProductSku}
+                        dataSource={this.state.tradeProductSkuList} pagination={false}
+                        bordered/>
                     <br/>
                     {
                         this.state.trade.trade_flow !== 'WAIT_PAY' ?
@@ -543,8 +504,8 @@ class TradeDetail extends Component {
     }
 }
 
-TradeDetail.propTypes = {};
+SupplierStockOutDetail.propTypes = {};
 
-TradeDetail = Form.create({})(TradeDetail);
+SupplierStockOutDetail = Form.create({})(SupplierStockOutDetail);
 
-export default connect(({trade}) => ({trade}))(TradeDetail);
+export default connect(({supplier_stock_out}) => ({supplier_stock_out}))(SupplierStockOutDetail);

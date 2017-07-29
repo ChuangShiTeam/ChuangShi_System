@@ -1,14 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "dva";
 import QueueAnim from "rc-queue-anim";
-import {Row, Col, Button, Form, Select, Table, message} from "antd";
-import QrcodeDetail from "./QrcodeDetail";
+import {Row, Col, Button, Form, Select, Input, message} from "antd";
 import constant from "../../util/constant";
 import notification from "../../util/notification";
 import validate from "../../util/validate";
 import http from "../../util/http";
 
-class QrcodeIndex extends Component {
+class CacheIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -20,25 +19,21 @@ class QrcodeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.qrcode.app_id
+                app_id: this.props.supplier.app_id
             });
 
             this.handleLoadApp();
         }
 
-        this.props.form.setFieldsValue({
-            qrcode_type: this.props.qrcode.qrcode_type
-        });
+        //this.handleLoad();
 
-        this.handleLoad();
-
-        notification.on('notification_qrcode_index_load', this, function (data) {
+        notification.on('notification_cache_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_qrcode_index_load', this);
+        notification.remove('notification_cache_index_load', this);
     }
 
     handleLoadApp() {
@@ -47,7 +42,7 @@ class QrcodeIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'qrcode/fetch',
+                    type: 'cache/fetch',
                     data: {
                         app_list: data
                     }
@@ -66,13 +61,13 @@ class QrcodeIndex extends Component {
                 app_id = '';
             }
 
-            let qrcode_type = this.props.form.getFieldValue('qrcode_type');
+            let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
-                type: 'qrcode/fetch',
+                type: 'cache/fetch',
                 data: {
                     app_id: app_id,
-                    qrcode_type: qrcode_type,
+                    user_name: user_name,
                     page_index: 1
                 }
             });
@@ -89,16 +84,16 @@ class QrcodeIndex extends Component {
         });
 
         http.request({
-            url: '/qrcode/' + constant.action + '/list',
+            url: '/cache/' + constant.action + '/list',
             data: {
-                app_id: this.props.qrcode.app_id,
-                qrcode_type: this.props.qrcode.qrcode_type,
-                page_index: this.props.qrcode.page_index,
-                page_size: this.props.qrcode.page_size
+                app_id: this.props.supplier.app_id,
+                user_name: this.props.supplier.user_name,
+                page_index: this.props.supplier.page_index,
+                page_size: this.props.supplier.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'qrcode/fetch',
+                    type: 'cache/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -116,7 +111,7 @@ class QrcodeIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'qrcode/fetch',
+                type: 'supplier/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -131,7 +126,7 @@ class QrcodeIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'qrcode/fetch',
+                type: 'supplier/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -145,41 +140,24 @@ class QrcodeIndex extends Component {
     }
 
     handleAdd() {
+        notification.emit('notification_cache_detail_add', {});
+    }
+
+    handleEdit(cache_id) {
+        notification.emit('notification_cache_detail_edit', {
+            cache_id: cache_id
+        });
+    }
+
+    handleDel(cache_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/qrcode/' + constant.action + '/save',
-            data: {},
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoad();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
-    handleEdit(qrcode_id) {
-        notification.emit('notification_qrcode_detail_edit', {
-            qrcode_id: qrcode_id
-        });
-    }
-
-    handleDel(qrcode_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/qrcode/' + constant.action + '/delete',
+            url: '/cache/' + constant.action + '/delete',
             data: {
-                qrcode_id: qrcode_id,
+                cache_id: cache_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -195,86 +173,41 @@ class QrcodeIndex extends Component {
         });
     }
 
+    handleRemoveAllCache() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/remove/all/cache',
+            data: {},
+            success: function (data) {
+                message.success(constant.success);
+
+                //this.handleLoad().bind(this);
+            },
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
-        const columns = [{
-            title: '二维码类型',
-            dataIndex: 'qrcode_type',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.qrcode_type === "MEMBER" ? "会员二维码" : "平台二维码"}
-                </div>
-            )
-        }, {
-            title: '会员名称',
-            dataIndex: 'object_id',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.object_id === "" ? "无" : record.object_id}
-                </div>
-            )
-        }, {
-            width: 100,
-            title: '二维码地址',
-            dataIndex: 'qrcode_url',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    <img alt="example" style={{ width: '100%' }} src={record.qrcode_url}/>
-                </div>
-            )
-        }, {
-            title: '关注人数',
-            dataIndex: 'qrcode_add'
-        }, {
-            title: '取消人数',
-            dataIndex: 'qrcode_cancel'
-        }, {
-            title: '二维码状态',
-            dataIndex: 'qrcode_status',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.qrcode_status ? '未使用' : '已使用'}
-                </div>
-            )
-        }, {
-            width: 100,
-            title: constant.operation,
-            dataIndex: '',
-            render: (text, record, index) => (
-                <span>
-                  <a onClick={this.handleEdit.bind(this, record.qrcode_id)}>{constant.find}</a>
-                </span>
-            )
-        }];
-
-        const pagination = {
-            size: 'defalut',
-            total: this.props.qrcode.total,
-            showTotal: function (total, range) {
-                return '总共' + total + '条数据';
-            },
-            current: this.props.qrcode.page_index,
-            pageSize: this.props.qrcode.page_size,
-            showSizeChanger: true,
-            onShowSizeChange: this.handleChangeSize.bind(this),
-            onChange: this.handleChangeIndex.bind(this)
-        };
-
         return (
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">缓存信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="default" icon="search" size="default" className="margin-right"
-                                loading={this.state.is_load}
-                                onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                onClick={this.handleRemoveAllCache.bind(this,)}>清空缓存</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -292,7 +225,7 @@ class QrcodeIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.qrcode.app_list.map(function (item) {
+                                                        this.props.supplier.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -311,16 +244,13 @@ class QrcodeIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="二维码分类">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('qrcode_type', {
+                                    getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Select placeholder="请选择类型">
-                                            <Option value="">全部</Option>
-                                            <Option value="MEMBER">会员</Option>
-                                            <Option value="PLATFORM">平台</Option>
-                                        </Select>
+                                        <Input type="text" placeholder="请输入名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -329,22 +259,15 @@ class QrcodeIndex extends Component {
                         </Col>
                     </Row>
                 </Form>
-                <Table key="2"
-                       rowKey="qrcode_id"
-                       className="margin-top"
-                       loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.qrcode.list} pagination={pagination}
-                       bordered/>
-                <QrcodeDetail/>
             </QueueAnim>
         );
     }
 }
 
-QrcodeIndex.propTypes = {};
+CacheIndex.propTypes = {};
 
-QrcodeIndex = Form.create({})(QrcodeIndex);
+CacheIndex = Form.create({})(CacheIndex);
 
-export default connect(({qrcode}) => ({
-    qrcode
-}))(QrcodeIndex);
+export default connect(({cache}) => ({
+    cache
+}))(CacheIndex);

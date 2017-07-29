@@ -1,11 +1,12 @@
-import React, {Component} from "react";
-import {connect} from "dva";
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, InputNumber} from "antd";
-import constant from "../../util/constant";
-import notification from "../../util/notification";
-import http from "../../util/http";
+import React, {Component} from 'react';
+import {connect} from 'dva';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, DatePicker} from 'antd';
 
-class CustomerAttributeDetail extends Component {
+import constant from '../../util/constant';
+import notification from '../../util/notification';
+import http from '../../util/http';
+
+class CertificateDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -13,24 +14,24 @@ class CustomerAttributeDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            customer_attribute_id: '',
+            certificate_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_customer_attribute_detail_add', this, function (data) {
+        notification.on('notification_certificate_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_customer_attribute_detail_edit', this, function (data) {
+        notification.on('notification_certificate_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                customer_attribute_id: data.customer_attribute_id
+                certificate_id: data.certificate_id
             }, function () {
                 this.handleLoad();
             });
@@ -38,9 +39,9 @@ class CustomerAttributeDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_customer_attribute_detail_add', this);
+        notification.remove('notification_certificate_detail_add', this);
 
-        notification.remove('notification_customer_attribute_detail_edit', this);
+        notification.remove('notification_certificate_detail_edit', this);
     }
 
     handleLoad() {
@@ -49,9 +50,9 @@ class CustomerAttributeDetail extends Component {
         });
 
         http.request({
-            url: '/customer/attribute/' + constant.action + '/find',
+            url: '/certificate/' + constant.action + '/find',
             data: {
-                customer_attribute_id: this.state.customer_attribute_id
+                certificate_id: this.state.certificate_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -61,12 +62,12 @@ class CustomerAttributeDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    customer_attribute_name: data.customer_attribute_name,
-                    customer_attribute_key: data.customer_attribute_key,
-                    customer_attribute_input_type: data.customer_attribute_input_type,
-                    customer_attribute_data_type: data.customer_attribute_data_type,
-                    customer_attribute_default_value: data.customer_attribute_default_value,
-                    customer_attribute_sort: data.customer_attribute_sort,
+                    user_id: data.user_id,
+                    certificate_number: data.certificate_number,
+                    certificate_start_date: data.certificate_start_date,
+                    certificate_end_date: data.certificate_end_date,
+                    certificate_content: data.certificate_content,
+                    certificate_file: data.certificate_file,
                 });
 
                 this.setState({
@@ -88,7 +89,7 @@ class CustomerAttributeDetail extends Component {
                 return;
             }
 
-            values.customer_attribute_id = this.state.customer_attribute_id;
+            values.certificate_id = this.state.certificate_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -96,12 +97,12 @@ class CustomerAttributeDetail extends Component {
             });
 
             http.request({
-                url: '/customer/attribute/' + constant.action + '/' + this.state.action,
+                url: '/certificate/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_customer_attribute_index_load', {});
+                    notification.emit('notification_certificate_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -119,7 +120,7 @@ class CustomerAttributeDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            customer_attribute_id: '',
+            certificate_id: '',
             system_version: ''
         });
 
@@ -163,7 +164,7 @@ class CustomerAttributeDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.customer_attribute.app_list.map(function (item) {
+                                                            this.props.certificate.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -180,20 +181,20 @@ class CustomerAttributeDetail extends Component {
                                 ''
                         }
                         <Row>
-                            <Col span={12}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="模板数据名称">
+                                }} className="form-item" label="用户编号">
                                     {
-                                        getFieldDecorator('customer_attribute_name', {
+                                        getFieldDecorator('user_id', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '模板数据名称'}
+                                            <Input type="text" placeholder={constant.placeholder + '用户编号'}
                                                    onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
@@ -201,105 +202,81 @@ class CustomerAttributeDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={12}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="模板数据key">
+                                }} className="form-item" label="授权编号">
                                     {
-                                        getFieldDecorator('customer_attribute_key', {
+                                        getFieldDecorator('certificate_number', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '模板数据key'}
+                                            <Input type="text" placeholder={constant.placeholder + '授权编号'}
                                                    onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span={12}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="模板数据输入类型">
+                                }} className="form-item" label="授权开始日期">
                                     {
-                                        getFieldDecorator('customer_attribute_input_type', {
+                                        getFieldDecorator('certificate_start_date', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '模板数据输入类型'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker size='large'
+                                                        placeholder={constant.placeholder + '授权开始日期'}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span={12}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="模板数据类型">
+                                }} className="form-item" label="授权结束日期">
                                     {
-                                        getFieldDecorator('customer_attribute_data_type', {
+                                        getFieldDecorator('certificate_end_date', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '模板数据类型'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker size='large'
+                                                        placeholder={constant.placeholder + '授权结束日期'}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={12}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="模板数据默认值">
+                                }} className="form-item" label="授权内容">
                                     {
-                                        getFieldDecorator('customer_attribute_default_value', {
-                                            rules: [{
-                                                required: false,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '模板数据默认值'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={12}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="模板数据排序">
-                                    {
-                                        getFieldDecorator('customer_attribute_sort', {
+                                        getFieldDecorator('certificate_content', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: 0
+                                            initialValue: ''
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '模板数据排序'}
-                                                         onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input rows={4} type="textarea"
+                                                   placeholder={constant.placeholder + '授权内容'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -312,8 +289,8 @@ class CustomerAttributeDetail extends Component {
     }
 }
 
-CustomerAttributeDetail.propTypes = {};
+CertificateDetail.propTypes = {};
 
-CustomerAttributeDetail = Form.create({})(CustomerAttributeDetail);
+CertificateDetail = Form.create({})(CertificateDetail);
 
-export default connect(({customer_attribute}) => ({customer_attribute}))(CustomerAttributeDetail);
+export default connect(({certificate}) => ({certificate}))(CertificateDetail);

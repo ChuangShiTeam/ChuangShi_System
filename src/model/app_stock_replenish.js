@@ -2,16 +2,19 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'qrcode',
+    namespace: 'app_stock_replenish',
 
     state: {
         app_id: '',
         app_list: [],
-        qrcode_type: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: []
+        list: [],
+        stock_replenish_type: 'APP',
+        warehouse_id: '',
+        warehouse_list: [],
+        product_list: []
     },
 
     reducers: {

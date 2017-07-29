@@ -2,12 +2,12 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'qrcode',
+    namespace: 'supplier_trade',
 
     state: {
         app_id: '',
         app_list: [],
-        qrcode_type: '',
+        trade_number: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

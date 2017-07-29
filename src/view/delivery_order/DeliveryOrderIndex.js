@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table } from 'antd';
 
 import DeliveryOrderDetail from './DeliveryOrderDetail';
 import MemberSend from './MemberSend';
-import DeliveryOrderExpress from './DeliveryOrderExpress';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -31,7 +30,6 @@ class DeliveryOrderIndex extends Component {
 
         this.props.form.setFieldsValue({
             user_name: this.props.delivery_order.user_name,
-            express_no: this.props.delivery_order.express_no,
             delivery_order_receiver_name: this.props.delivery_order.delivery_order_receiver_name
         });
 
@@ -71,7 +69,6 @@ class DeliveryOrderIndex extends Component {
             }
 
             let user_name = this.props.form.getFieldValue('user_name');
-            let express_no = this.props.form.getFieldValue('express_no');
             let delivery_order_receiver_name = this.props.form.getFieldValue('delivery_order_receiver_name');
 
             this.props.dispatch({
@@ -79,7 +76,6 @@ class DeliveryOrderIndex extends Component {
                 data: {
                     app_id: app_id,
                     user_name: user_name,
-                    express_no: express_no,
                     delivery_order_receiver_name: delivery_order_receiver_name,
                     page_index: 1
                 }
@@ -101,7 +97,6 @@ class DeliveryOrderIndex extends Component {
             data: {
                 app_id: this.props.delivery_order.app_id,
                 user_name: this.props.delivery_order.user_name,
-                express_no: this.props.delivery_order.express_no,
                 delivery_order_receiver_name: this.props.delivery_order.delivery_order_receiver_name,
                 page_index: this.props.delivery_order.page_index,
                 page_size: this.props.delivery_order.page_size
@@ -164,12 +159,6 @@ class DeliveryOrderIndex extends Component {
         });
     }
 
-    handleExpress(delivery_order_id) {
-        notification.emit('notification_delivery_order_express', {
-            delivery_order_id: delivery_order_id
-        });
-    }
-
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -185,8 +174,8 @@ class DeliveryOrderIndex extends Component {
             title: '发货数量',
             dataIndex: 'delivery_order_total_quantity'
         }, {
-            title: '快递单号',
-            dataIndex: 'express_no'
+            title: '发货金额',
+            dataIndex: 'delivery_order_amount'
         }, {
             title: '状态',
             dataIndex: 'delivery_order_flow',
@@ -204,12 +193,6 @@ class DeliveryOrderIndex extends Component {
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleView.bind(this, record.delivery_order_id)}>查看</a>
-                    {
-                        record.delivery_order_flow === 'WAIT_SEND'?<span>
-                            <span className="divider"/>
-                            <a onClick={this.handleExpress.bind(this, record.delivery_order_id)}>填写快递单</a>
-                        </span>:null
-                    }
                 </span>
             )
         }];
@@ -299,30 +282,14 @@ class DeliveryOrderIndex extends Component {
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="快递单号">
-                                {
-                                    getFieldDecorator('express_no', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入快递单号" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="delivery_order_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
                        dataSource={this.props.delivery_order.list} pagination={pagination}
                        bordered/>
                 <DeliveryOrderDetail/>
-                <DeliveryOrderExpress/>
                 <MemberSend/>
             </QueueAnim>
         );

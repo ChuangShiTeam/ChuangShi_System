@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
@@ -7,7 +6,7 @@ import notification from '../../util/notification';
 import http from '../../util/http';
 import express_code from "../../util/express_code";
 
-class ExpressDetail extends Component {
+class DeliveryOrderMemberExpress extends Component {
     constructor(props) {
         super(props);
 
@@ -15,112 +14,33 @@ class ExpressDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            express_id: '',
-            system_version: '',
-            trade: {}
+            delivery_order: {}
         }
     }
 
     componentDidMount() {
-        notification.on('notification_express_detail_add', this, function (data) {
+        notification.on('notification_delivery_order_member_express', this, function (data) {
 
             this.props.form.setFieldsValue({
-                express_receiver_name: data.trade.trade_receiver_name,
-                express_receiver_mobile: data.trade.trade_receiver_mobile,
-                express_receiver_province: data.trade.trade_receiver_province,
-                express_receiver_city: data.trade.trade_receiver_city,
-                express_receiver_area: data.trade.trade_receiver_area,
-                express_receiver_address: data.trade.trade_receiver_address,
+                express_receiver_name: data.delivery_order.delivery_order_receiver_name,
+                express_receiver_mobile: data.delivery_order.delivery_order_receiver_mobile,
+                express_receiver_province: data.delivery_order.delivery_order_receiver_province,
+                express_receiver_city: data.delivery_order.delivery_order_receiver_city,
+                express_receiver_area: data.delivery_order.delivery_order_receiver_area,
+                express_receiver_address: data.delivery_order.delivery_order_receiver_address,
+                express_shipper_code: data.delivery_order.delivery_order_express_shipper_code
             });
 
             this.setState({
-                trade: data.trade,
+                delivery_order: data.delivery_order,
                 is_show: true,
-                action: 'supplier/express'
-            });
-        });
-
-        notification.on('notification_express_detail_edit', this, function (data) {
-            this.setState({
-                is_show: true,
-                action: 'update',
-                express_id: data.express_id
-            }, function () {
-                this.handleLoad();
+                action: 'member/express'
             });
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_express_detail_add', this);
-
-        notification.remove('notification_express_detail_edit', this);
-    }
-
-    handleLoad() {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/express/' + constant.action + '/find',
-            data: {
-                express_id: this.state.express_id
-            },
-            success: function (data) {
-                if (constant.action === 'system') {
-                    this.props.form.setFieldsValue({
-                        app_id: data.app_id
-                    });
-                }
-
-                this.props.form.setFieldsValue({
-                    trade_id: data.trade_id,
-                    stock_id: data.stock_id,
-                    express_receiver_user_id: data.express_receiver_user_id,
-                    express_sender_user_id: data.express_sender_user_id,
-                    express_shipper_code: data.express_shipper_code,
-                    express_no: data.express_no,
-                    express_type: data.express_type,
-                    express_receiver_company: data.express_receiver_company,
-                    express_receiver_name: data.express_receiver_name,
-                    express_receiver_tel: data.express_receiver_tel,
-                    express_receiver_mobile: data.express_receiver_mobile,
-                    express_receiver_postcode: data.express_receiver_postcode,
-                    express_receiver_province: data.express_receiver_province,
-                    express_receiver_city: data.express_receiver_city,
-                    express_receiver_area: data.express_receiver_area,
-                    express_receiver_address: data.express_receiver_address,
-                    express_sender_company: data.express_sender_company,
-                    express_sender_name: data.express_sender_name,
-                    express_sender_tel: data.express_sender_tel,
-                    express_sender_mobile: data.express_sender_mobile,
-                    express_sender_postcode: data.express_sender_postcode,
-                    express_sender_province: data.express_sender_province,
-                    express_sender_city: data.express_sender_city,
-                    express_sender_area: data.express_sender_area,
-                    express_sender_address: data.express_sender_address,
-                    express_cost: data.express_cost,
-                    express_is_pay: data.express_is_pay,
-                    express_pay_way: data.express_pay_way,
-                    express_start_date: data.express_start_date,
-                    express_end_date: data.express_end_date,
-                    express_logistics: data.express_logistics,
-                    express_status: data.express_status,
-                    express_remark: data.express_remark
-                });
-
-                this.setState({
-                    system_version: data.system_version
-                });
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-
-            }.bind(this)
-        });
+        notification.remove('notification_delivery_order_member_express', this);
     }
 
     handleSubmit() {
@@ -129,9 +49,7 @@ class ExpressDetail extends Component {
                 return;
             }
 
-            values.express_id = this.state.express_id;
-            values.system_version = this.state.system_version;
-            values.trade_id = this.state.trade.trade_id;
+            values.delivery_order_id = this.state.delivery_order.delivery_order_id;
             this.setState({
                 is_load: true
             });
@@ -142,7 +60,7 @@ class ExpressDetail extends Component {
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_supplier_trade_express_index_load', {});
+                    notification.emit('notification_delivery_order_detail_view_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -160,8 +78,7 @@ class ExpressDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            express_id: '',
-            system_version: ''
+            delivery_order: {}
         });
 
         this.props.form.resetFields();
@@ -173,7 +90,7 @@ class ExpressDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={<h3>发货单</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200}
+            <Modal title={<h3>填写快递单</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
@@ -186,41 +103,6 @@ class ExpressDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
-                        {
-                            constant.action === 'system' ?
-                                <Row>
-                                    <Col span={8}>
-                                        <FormItem hasFeedback {...{
-                                            labelCol: {span: 6},
-                                            wrapperCol: {span: 18}
-                                        }} className="content-search-item" label="应用名称">
-                                            {
-                                                getFieldDecorator('app_id', {
-                                                    rules: [{
-                                                        required: true,
-                                                        message: constant.required
-                                                    }],
-                                                    initialValue: ''
-                                                })(
-                                                    <Select allowClear placeholder="请选择应用">
-                                                        {
-                                                            this.props.express.app_list.map(function (item) {
-                                                                return (
-                                                                    <Option key={item.app_id}
-                                                                            value={item.app_id}>{item.app_name}</Option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </Select>
-                                                )
-                                            }
-                                        </FormItem>
-                                    </Col>
-                                </Row>
-                                :
-                                ''
-                        }
-                        <br/>
                         <h2>收货人信息</h2>
                         <Row>
                             <Col span={8}>
@@ -434,8 +316,8 @@ class ExpressDetail extends Component {
     }
 }
 
-ExpressDetail.propTypes = {};
+DeliveryOrderMemberExpress.propTypes = {};
 
-ExpressDetail = Form.create({})(ExpressDetail);
+DeliveryOrderMemberExpress = Form.create({})(DeliveryOrderMemberExpress);
 
-export default connect(({express}) => ({express}))(ExpressDetail);
+export default DeliveryOrderMemberExpress;

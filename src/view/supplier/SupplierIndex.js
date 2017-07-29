@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
-
-import SupplierDetail from './SupplierDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import React, {Component} from "react";
+import {connect} from "dva";
+import QueueAnim from "rc-queue-anim";
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from "antd";
+import SupplierDetail from "./SupplierDetail";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import validate from "../../util/validate";
+import http from "../../util/http";
 
 class SupplierIndex extends Component {
     constructor(props) {
@@ -187,6 +186,12 @@ class SupplierIndex extends Component {
         const columns = [{
             title: '供应商名称',
             dataIndex: 'user_name'
+        }, {
+            title: '供应商账号',
+            dataIndex: 'user_account'
+        }, {
+            title: '创建时间',
+            dataIndex: 'system_create_time'
         }, {
             title: '状态',
             dataIndex: 'supplier_status',

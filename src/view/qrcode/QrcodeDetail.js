@@ -177,27 +177,32 @@ class QrcodeDetail extends Component {
                                 :
                                 ''
                         }
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="外键编号">
+                        {
+                            this.state.qrcode.object_id === "" ?
+                                ""
+                                :
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="form-item" label="会员名称">
 
-                                    {
-                                        getFieldDecorator('object_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input disabled/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
+                                            {
+                                                getFieldDecorator('object_id', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Input disabled/>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                        }
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

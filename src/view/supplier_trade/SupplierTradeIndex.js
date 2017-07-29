@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, message, Icon} from 'antd';
+import React, {Component} from "react";
+import {connect} from "dva";
+import QueueAnim from "rc-queue-anim";
+import {Button, Col, Form, Icon, Input, Row, Select, Table} from "antd";
 
-import TradeDetail from './TradeDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import validate from "../../util/validate";
+import http from "../../util/http";
 
-class TradeIndex extends Component {
+import SupplierTradeExpress from "./SupplierTradeExpress";
+
+class SupplierTradeIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +22,25 @@ class TradeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.trade.app_id
+                app_id: this.props.supplier_trade.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            trade_number: this.props.trade.trade_number
+            trade_number: this.props.supplier_trade.trade_number
         });
 
         this.handleLoad();
 
-        notification.on('notification_trade_index_load', this, function (data) {
+        notification.on('notification_supplier_trade_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_trade_index_load', this);
+        notification.remove('notification_supplier_trade_index_load', this);
     }
 
     handleLoadApp() {
@@ -70,9 +71,8 @@ class TradeIndex extends Component {
             let trade_number = this.props.form.getFieldValue('trade_number');
 
             this.props.dispatch({
-                type: 'trade/fetch',
+                type: 'supplier_trade/fetch',
                 data: {
-                    app_id: app_id,
                     trade_number: trade_number,
                     page_index: 1
                 }
@@ -90,16 +90,15 @@ class TradeIndex extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/list',
+            url: '/trade/supplier/list',
             data: {
-                app_id: this.props.trade.app_id,
-                trade_number: this.props.trade.trade_number,
-                page_index: this.props.trade.page_index,
-                page_size: this.props.trade.page_size
+                trade_number: this.props.supplier_trade.trade_number,
+                page_index: this.props.supplier_trade.page_index,
+                page_size: this.props.supplier_trade.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'trade/fetch',
+                    type: 'supplier_trade/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +116,7 @@ class TradeIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'trade/fetch',
+                type: 'supplier_trade/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +131,7 @@ class TradeIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'trade/fetch',
+                type: 'supplier_trade/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -145,60 +144,9 @@ class TradeIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_trade_detail_add', {});
-    }
-
     handleEdit(trade_id) {
         notification.emit('notification_trade_detail_edit', {
             trade_id: trade_id
-        });
-    }
-
-    handlePay(trade_number) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/wechat/pay/success',
-            data: {
-                trade_number: trade_number
-            },
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoad();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
-    handleDel(trade_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/trade/' + constant.action + '/delete',
-            data: {
-                trade_id: trade_id,
-                system_version: system_version
-            },
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoad();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
         });
     }
 
@@ -301,12 +249,12 @@ class TradeIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.trade.total,
+            total: this.props.supplier_trade.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.trade.page_index,
-            pageSize: this.props.trade.page_size,
+            current: this.props.supplier_trade.page_index,
+            pageSize: this.props.supplier_trade.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -339,7 +287,7 @@ class TradeIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.trade.app_list.map(function (item) {
+                                                        this.props.supplier_trade.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -374,21 +322,22 @@ class TradeIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="trade_id"
+                       rowKey={record => record.trade_id}
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.trade.list} pagination={pagination}
+                       dataSource={this.props.supplier_trade.list}
+                       pagination={pagination}
                        bordered/>
-                <TradeDetail/>
+                <SupplierTradeExpress/>
             </QueueAnim>
         );
     }
 }
 
-TradeIndex.propTypes = {};
+SupplierTradeIndex.propTypes = {};
 
-TradeIndex = Form.create({})(TradeIndex);
+SupplierTradeIndex = Form.create({})(SupplierTradeIndex);
 
-export default connect(({trade}) => ({
-    trade
-}))(TradeIndex);
+export default connect(({supplier_trade}) => ({
+    supplier_trade
+}))(SupplierTradeIndex);

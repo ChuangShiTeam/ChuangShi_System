@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, message, Icon} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import TradeDetail from './TradeDetail';
+import CertificateDetail from './CertificateDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class TradeIndex extends Component {
+class CertificateIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class TradeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.trade.app_id
+            app_id: this.props.certificate.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            trade_number: this.props.trade.trade_number
+            certificate_number: this.props.certificate.certificate_number
         });
 
         this.handleLoad();
 
-        notification.on('notification_trade_index_load', this, function (data) {
+        notification.on('notification_certificate_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_trade_index_load', this);
+        notification.remove('notification_certificate_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class TradeIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'trade/fetch',
+                    type: 'certificate/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +67,13 @@ class TradeIndex extends Component {
                 app_id = '';
             }
 
-            let trade_number = this.props.form.getFieldValue('trade_number');
+            let certificate_number = this.props.form.getFieldValue('certificate_number');
 
             this.props.dispatch({
-                type: 'trade/fetch',
+                type: 'certificate/fetch',
                 data: {
                     app_id: app_id,
-                    trade_number: trade_number,
+                    certificate_number: certificate_number,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class TradeIndex extends Component {
         });
 
         http.request({
-            url: '/trade/' + constant.action + '/list',
+            url: '/certificate/' + constant.action + '/list',
             data: {
-                app_id: this.props.trade.app_id,
-                trade_number: this.props.trade.trade_number,
-                page_index: this.props.trade.page_index,
-                page_size: this.props.trade.page_size
+                app_id: this.props.certificate.app_id,
+                certificate_number: this.props.certificate.certificate_number,
+                page_index: this.props.certificate.page_index,
+                page_size: this.props.certificate.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'trade/fetch',
+                    type: 'certificate/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class TradeIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'trade/fetch',
+                type: 'certificate/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class TradeIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'trade/fetch',
+                type: 'certificate/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,47 +146,24 @@ class TradeIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_trade_detail_add', {});
+        notification.emit('notification_certificate_detail_add', {});
     }
 
-    handleEdit(trade_id) {
-        notification.emit('notification_trade_detail_edit', {
-            trade_id: trade_id
+    handleEdit(certificate_id) {
+        notification.emit('notification_certificate_detail_edit', {
+            certificate_id: certificate_id
         });
     }
 
-    handlePay(trade_number) {
+    handleDel(certificate_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/wechat/pay/success',
+            url: '/certificate/' + constant.action + '/delete',
             data: {
-                trade_number: trade_number
-            },
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoad();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
-    handleDel(trade_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/trade/' + constant.action + '/delete',
-            data: {
-                trade_id: trade_id,
+                certificate_id: certificate_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -206,107 +183,35 @@ class TradeIndex extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+
         const columns = [{
-            title: '用户',
-            dataIndex: 'user_name'
+            title: '名称',
+            dataIndex: 'certificate_number'
         }, {
-            title: '订单编号',
-            dataIndex: 'trade_number'
-        }, {
-            title: '收货人',
-            dataIndex: 'trade_receiver_name',
-            render: (text, record, index) => (
-                <span>{record.trade_receiver_name}({record.trade_receiver_mobile})</span>
-            )
-        }, {
-            title: '收货人地址',
-            dataIndex: 'trade_receiver_address',
-            render: (text, record, index) => (
-                <span>
-            {record.trade_receiver_province}-
-                    {record.trade_receiver_city}-
-                    {record.trade_receiver_area}-
-                    {record.trade_receiver_address}
-        </span>
-            )
-        }, {
-            title: '商品数量',
-            dataIndex: 'trade_product_quantity'
-        }, {
-            title: '订单金额',
-            dataIndex: 'trade_product_amount',
-            render: (text, record, index) => (
-                <span>
-            ￥{record.trade_product_amount}
-        </span>
-            )
-        }, {
-            title: '快递金额',
-            dataIndex: 'trade_express_amount',
-            render: (text, record, index) => (
-                <span>
-            ￥{record.trade_express_amount}
-        </span>
-            )
-        }, {
-            title: '折扣金额',
-            dataIndex: 'trade_discount_amount',
-            render: (text, record, index) => (
-                <span>
-            ￥{record.trade_discount_amount}
-        </span>
-            )
-        }, {
-            title: '付款',
-            dataIndex: 'trade_is_pay',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_is_pay ?
-                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
-                        :
-                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
-                    }
-                </div>
-            )
-        }, {
-            title: '订单当前流程',
-            dataIndex: 'trade_flow',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_flow === "WAIT_PAY" ? "待付款" :
-                        record.trade_flow === "WAIT_SEND" ? "待发货" :
-                            record.trade_flow === "WAIT_RECEIVE" ? "待收货" :
-                                record.trade_flow === "COMPLETE" ? "已完成" : ""}
-                </div>
-            )
-        }, {
-            title: '订单状态',
-            dataIndex: 'trade_status',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_status ? '正常' : '异常'}
-                </div>
-            )
-        }, {
-            title: '订单备注',
-            dataIndex: 'trade_message'
-        }, {
-            width: 50,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
-                <sapn><a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.find}</a></sapn>
+                <span>
+                  <a onClick={this.handleEdit.bind(this, record.certificate_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.certificate_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
+                </span>
             )
         }];
 
         const pagination = {
             size: 'defalut',
-            total: this.props.trade.total,
+            total: this.props.certificate.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.trade.page_index,
-            pageSize: this.props.trade.page_size,
+            current: this.props.certificate.page_index,
+            pageSize: this.props.certificate.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -316,12 +221,14 @@ class TradeIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">订单信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -339,7 +246,7 @@ class TradeIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.trade.app_list.map(function (item) {
+                                                        this.props.certificate.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -358,13 +265,12 @@ class TradeIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="订单编号">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('trade_number', {
+                                    getFieldDecorator('certificate_number', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入订单编号"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -374,21 +280,21 @@ class TradeIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="trade_id"
+                       rowKey="certificate_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.trade.list} pagination={pagination}
+                       dataSource={this.props.certificate.list} pagination={pagination}
                        bordered/>
-                <TradeDetail/>
+                <CertificateDetail/>
             </QueueAnim>
         );
     }
 }
 
-TradeIndex.propTypes = {};
+CertificateIndex.propTypes = {};
 
-TradeIndex = Form.create({})(TradeIndex);
+CertificateIndex = Form.create({})(CertificateIndex);
 
-export default connect(({trade}) => ({
-    trade
-}))(TradeIndex);
+export default connect(({certificate}) => ({
+    certificate
+}))(CertificateIndex);

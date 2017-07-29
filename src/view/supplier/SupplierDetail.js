@@ -1,10 +1,9 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Switch, Checkbox} from 'antd';
-
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
+import React, {Component} from "react";
+import {connect} from "dva";
+import {Button, Col, Form, Input, message, Modal, Row, Select, Spin, Switch, Table} from "antd";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import http from "../../util/http";
 
 class SupplierDetail extends Component {
     constructor(props) {
@@ -15,21 +14,20 @@ class SupplierDetail extends Component {
             is_show: false,
             action: '',
             supplier_id: '',
-            system_version: '',
+            system_version: 0,
             product_list: [],
-            all_list: [],
-            checkedList: [],
-            indeterminate: true,
-            checkAll: false
+            selectedRows: [],
+            selectedRowKeys: []
         }
     }
 
     componentDidMount() {
-        notification.on('notification_supplier_detail_add', this, function (data) {
+        notification.on('notification_supplier_detail_add', this, function () {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
+            this.handleLoad();
         });
 
         notification.on('notification_supplier_detail_edit', this, function (data) {
@@ -37,9 +35,8 @@ class SupplierDetail extends Component {
                 is_show: true,
                 action: 'update',
                 supplier_id: data.supplier_id
-            }, function () {
-                this.handleLoad();
             });
+            this.handleLoad(data.supplier_id);
         });
     }
 
@@ -49,7 +46,7 @@ class SupplierDetail extends Component {
         notification.remove('notification_supplier_detail_edit', this);
     }
 
-    handleLoad() {
+    handleLoad(supplier_id) {
         this.setState({
             is_load: true
         });
@@ -57,37 +54,44 @@ class SupplierDetail extends Component {
         http.request({
             url: '/supplier/' + constant.action + '/find',
             data: {
-                supplier_id: this.state.supplier_id
+                supplier_id: supplier_id
             },
             success: function (data) {
-                if (constant.action === 'system') {
+                if (this.state.action === 'system') {
                     this.props.form.setFieldsValue({
                         app_id: data.app_id
                     });
                 }
 
-                this.props.form.setFieldsValue({
-                    user_id: data.user_id,
-                    user_name: data.user_name,
-                    supplier_status: data.supplier_status
-                });
+                if (this.state.action === 'update') {
+                    this.props.form.setFieldsValue({
+                        user_id: data.user_id,
+                        user_name: data.user_name,
+                        user_account: data.user_account,
+                        supplier_status: data.supplier_status
+                    });
 
-                var product_name_list = [];
-                for (let j = 0; j < data.product_list.length; j++) {
-                    product_name_list.push(data.product_list[j].product_name)
+                    this.setState({
+                        supplier_id: data.supplier_id,
+                        system_version: data.system_version,
+                        selectedRowKeys: data.selectedRowKeys
+                    });
+                }
+
+                if (this.state.action === 'save') {
+                    this.setState({
+                        selectedRowKeys: []
+                    });
                 }
 
                 this.setState({
-                    product_list: data.product_list,
-                    product_name_list: product_name_list,
-                    system_version: data.system_version
+                    product_list: data.product_list
                 });
             }.bind(this),
             complete: function () {
                 this.setState({
                     is_load: false
                 });
-
             }.bind(this)
         });
     }
@@ -97,25 +101,18 @@ class SupplierDetail extends Component {
             if (!!errors) {
                 return;
             }
-
-            values.supplier_id = this.state.supplier_id;
-            values.system_version = this.state.system_version;
-
             this.setState({
                 is_load: true
             });
-
-            var product_name_list = this.state.product_name_list;
-            var product_list = this.state.product_list;
-
-            values.product_list = [];
-            for (let j = 0; j < product_name_list.length; j++) {
-                for (let i = 0; i < product_list.length; i++) {
-                    if (product_name_list[j].product_name === product_list[i].product_name ) {
-                        values.product_list.push(product_list[i].product_id);
-                        break;
-                    }
-                }
+            var selectedRows = this.state.selectedRows;
+            var temp = [];
+            for (var i = 0; i < selectedRows.length; i++) {
+                temp.push({"product_id": selectedRows[i].product_id});
+            }
+            values.product_list = temp;
+            if (this.state.action === "update") {
+                values.supplier_id = this.state.supplier_id;
+                values.system_version = this.state.system_version;
             }
 
             http.request({
@@ -149,30 +146,44 @@ class SupplierDetail extends Component {
         this.props.form.resetFields();
     }
 
-    onChange = (checkedList) => {
-        this.setState({
-            checkedList,
-            indeterminate: !!checkedList.length && (checkedList.length < this.state.product_name_list.length),
-            checkAll: checkedList.length === this.state.product_name_list.length,
-        });
-    }
-
-    onCheckAllChange = (e) => {
-        this.setState({
-            checkedList: e.target.checked ? this.state.product_name_list : [],
-            indeterminate: false,
-            checkAll: e.target.checked,
-        });
-    }
-
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-        const CheckboxGroup = Checkbox.Group;
+        const columns = [{
+            title: '名称',
+            dataIndex: 'product_name',
+            render: (text, record, index) => (
+                <span>
+                    {record.product_name}
+                </span>
+            )
+        }, {
+            title: '图片',
+            dataIndex: 'product_image',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    <img alt="example" style={{heigth:'100px',width: '100px'}}
+                         src={constant.host + record.product_image}/>
+                </div>
+            )
+        }];
+        const selectedRowKeys = this.state.selectedRowKeys;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                console.log("selectedRowKeys ===", selectedRowKeys);
+                this.setState({
+                    selectedRows: selectedRows,
+                    selectedRowKeys: selectedRowKeys
+                });
+            }
+        };
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+            <Modal title={this.state.action === 'save' ? '添加' : this.state.action === 'update' ? '修改' : "详情"}
+                   maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
@@ -219,6 +230,8 @@ class SupplierDetail extends Component {
                                 :
                                 ''
                         }
+                        <h2>基本信息</h2>
+                        <br/>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
@@ -245,6 +258,48 @@ class SupplierDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="供应商帐号">
+                                    {
+                                        getFieldDecorator('user_account', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '供应商帐号'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="供应商密码">
+                                    {
+                                        getFieldDecorator('user_password', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '供应商密码'}
+                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="供应商状态">
                                     {
                                         getFieldDecorator('supplier_status', {
@@ -257,28 +312,18 @@ class SupplierDetail extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
+                        <br/>
+                        <h2>商品列表</h2>
+                        <br/>
                         <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="商品">
-                                    <div>
-                                        <div style={{ borderBottom: '1px solid #E9E9E9' }}>
-                                            <Checkbox
-                                                indeterminate={this.state.indeterminate}
-                                                onChange={this.onCheckAllChange}
-                                                checked={this.state.checkAll}
-                                            >
-                                                Check all
-                                            </Checkbox>
-                                        </div>
-                                        <br />
-                                        <CheckboxGroup options={this.state.product_name_list}
-                                                       value={this.state.checkedList}
-                                                       onChange={this.onChange}/>
-                                    </div>
-                                </FormItem>
+                            <Col span={18}>
+                                <Table
+                                    key="product_id"
+                                    rowSelection={rowSelection}
+                                    columns={columns}
+                                    dataSource={this.state.product_list}
+                                    pagination={false}
+                                />
                             </Col>
                         </Row>
                     </form>
