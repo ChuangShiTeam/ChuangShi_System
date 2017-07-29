@@ -7,7 +7,7 @@ export default {
     state: {
         app_id: '',
         app_list: [],
-        qrcode_type: 'MEMBER',
+        qrcode_type: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
