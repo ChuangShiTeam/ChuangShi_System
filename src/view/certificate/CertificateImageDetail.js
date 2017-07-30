@@ -15,8 +15,8 @@ class CertificateImageDetail extends Component {
             is_show: false,
             action: '',
             certificate_image_id: '',
-            system_version: '',
-            certificate_type: '',
+            system_version: 0,
+            type: '',
             user_id: ''
         }
     }
@@ -26,7 +26,7 @@ class CertificateImageDetail extends Component {
             this.setState({
                 is_show: true,
                 action: 'save',
-                certificate_type: data.certificate_type,
+                type: data.type,
                 user_id: data.user_id
             });
         });
@@ -99,9 +99,12 @@ class CertificateImageDetail extends Component {
                 return;
             }
 
-            values.system_version = this.state.system_version;
-            values.certificate_type = this.state.certificate_type;
+            if (this.state.action === "update") {
+                values.system_version = this.state.system_version;
+            }
             values.user_id = this.state.user_id;
+            values.certificate_start_date = values['certificate_start_date'].format('YYYY-MM-DD');
+            values.certificate_end_date = values['certificate_end_date'].format('YYYY-MM-DD');
 
             this.setState({
                 is_load: true
@@ -192,7 +195,7 @@ class CertificateImageDetail extends Component {
                                 ''
                         }
                         {
-                            this.state.certificate_type === "wx" ?
+                            this.state.type === "wx" ?
                                 <span>
                                     <Row>
                                         <Col span={8}>
@@ -221,12 +224,11 @@ class CertificateImageDetail extends Component {
                                                 {
                                                     getFieldDecorator('certificate_start_date', {
                                                         rules: [{
-                                                            type: 'object',
                                                             required: true,
                                                             message: constant.required
                                                         }]
                                                     })(
-                                                        <DatePicker/>
+                                                        <DatePicker size='large'/>
                                                     )
                                                 }
                                             </FormItem>
@@ -239,13 +241,11 @@ class CertificateImageDetail extends Component {
                                                 {
                                                     getFieldDecorator('certificate_end_date', {
                                                         rules: [{
-                                                            type: 'object',
                                                             required: true,
                                                             message: constant.required
                                                         }]
                                                     })(
-                                                        <DatePicker size='large'
-                                                                    placeholder={constant.placeholder + '授权结束日期'}/>
+                                                        <DatePicker size='large'/>
                                                     )
                                                 }
                                             </FormItem>
@@ -313,7 +313,8 @@ class CertificateImageDetail extends Component {
                                     </Row>
                                 </span>
                                 :
-                                <span>
+                                this.state.type === "other" ?
+                                    <span>
                                     <Row>
                                         <Col span={8}>
                                             <FormItem hasFeedback {...{
@@ -328,7 +329,7 @@ class CertificateImageDetail extends Component {
                                                         }],
                                                         initialValue: ''
                                                     })(
-                                                        <Select  style={{ width: 120 }}>
+                                                        <Select style={{ width: 120 }}>
                                                             <Option value="淘宝">淘宝</Option>
                                                             <Option value="天猫">天猫</Option>
                                                             <Option value="京东">京东</Option>
@@ -518,6 +519,8 @@ class CertificateImageDetail extends Component {
                                         </Col>
                                     </Row>
                                 </span>
+                                    :
+                                    ''
                         }
                     </form>
                 </Spin>

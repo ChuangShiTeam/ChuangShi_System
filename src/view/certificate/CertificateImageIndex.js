@@ -65,13 +65,10 @@ class CertificateImageIndex extends Component {
         });
     }
 
-    handleAdd(certificate_type) {
-        let data = {};
-        data.certificate_type = certificate_type;
-        data.user_id = this.state.user_id;
+    handleAdd(type) {
         notification.emit('notification_certificate_image_detail_add',
             {
-                "certificate_type": certificate_type,
+                "type": type,
                 "user_id": this.state.user_id
             }
         );
@@ -144,25 +141,6 @@ class CertificateImageIndex extends Component {
                                     {this.state.certificate.certificate_start_date}
                                 </FormItem>
                             </Col>
-                            <Row>
-                                {
-                                    this.state.certificateImageWXList.map(function (item, index) {
-                                        return (
-                                            <Col key={index} span={8}>
-                                                <FormItem hasFeedback {...{
-                                                    labelCol: {span: 6},
-                                                    wrapperCol: {span: 18}
-                                                }} className="form-item" label="授权书">
-                                                    <div className="clearfix">
-                                                        <img alt="example" style={{ height: '200px' }}
-                                                             src="http://pic17.nipic.com/20111111/6504506_085505323000_2.jpg"/>
-                                                    </div>
-                                                </FormItem>
-                                            </Col>
-                                        )
-                                    })
-                                }
-                            </Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
@@ -185,7 +163,7 @@ class CertificateImageIndex extends Component {
                         </Row>
                         <Row>
                             {
-                                this.state.certificateImageOtherList.map(function (item, index) {
+                                this.state.certificateImageWXList.map(function (item, index) {
                                     return (
                                         <Col key={index} span={8}>
                                             <FormItem hasFeedback {...{
@@ -202,19 +180,6 @@ class CertificateImageIndex extends Component {
                                 })
                             }
                         </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="授权书">
-                                    <div className="clearfix">
-                                        <img alt="example" style={{ height: '200px' }}
-                                             src="http://pic17.nipic.com/20111111/6504506_085505323000_2.jpg"/>
-                                    </div>
-                                </FormItem>
-                            </Col>
-                        </Row>
                         <br/>
                         <Row>
                             <Col span={8}>
@@ -223,21 +188,27 @@ class CertificateImageIndex extends Component {
                             <Col span={16} className="content-button">
                                 <Button type="primary" icon="plus-circle" size="default"
                                         className="margin-right"
-                                        onClick={this.handleAdd.bind(this)}>添加授权</Button>
+                                        onClick={this.handleAdd.bind(this, 'other')}>添加授权</Button>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="授权书">
-                                    <div className="clearfix">
-                                        <img alt="example" style={{ height: '200px' }}
-                                             src="http://pic17.nipic.com/20111111/6504506_085505323000_2.jpg"/>
-                                    </div>
-                                </FormItem>
-                            </Col>
+                            {
+                                this.state.certificateImageOtherList.map(function (item, index) {
+                                    return (
+                                        <Col key={index} span={8}>
+                                            <FormItem hasFeedback {...{
+                                                labelCol: {span: 6},
+                                                wrapperCol: {span: 18}
+                                            }} className="form-item" label="授权书">
+                                                <div className="clearfix">
+                                                    <img alt="example" style={{ height: '200px' }}
+                                                         src="http://pic17.nipic.com/20111111/6504506_085505323000_2.jpg"/>
+                                                </div>
+                                            </FormItem>
+                                        </Col>
+                                    )
+                                })
+                            }
                         </Row>
                     </form>
                 </Spin>
