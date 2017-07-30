@@ -169,10 +169,10 @@ class CertificateImageIndex extends Component {
                                             <FormItem hasFeedback {...{
                                                 labelCol: {span: 6},
                                                 wrapperCol: {span: 18}
-                                            }} className="form-item" label="授权书">
+                                            }} className="form-item" label="">
                                                 <div className="clearfix">
                                                     <img alt="example" style={{ height: '200px' }}
-                                                         src="http://pic17.nipic.com/20111111/6504506_085505323000_2.jpg"/>
+                                                         src={constant.host+item.file_original_path}/>
                                                 </div>
                                             </FormItem>
                                         </Col>
@@ -202,7 +202,7 @@ class CertificateImageIndex extends Component {
                                             }} className="form-item" label="授权书">
                                                 <div className="clearfix">
                                                     <img alt="example" style={{ height: '200px' }}
-                                                         src="http://pic17.nipic.com/20111111/6504506_085505323000_2.jpg"/>
+                                                         src={constant.host+item.file_original_path}/>
                                                 </div>
                                             </FormItem>
                                         </Col>

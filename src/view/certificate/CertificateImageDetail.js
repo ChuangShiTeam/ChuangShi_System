@@ -116,7 +116,9 @@ class CertificateImageDetail extends Component {
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_certificate_image_list', {});
+                    notification.emit('notification_certificate_image_list', {
+                        user_id: this.state.user_id
+                    });
 
                     this.handleCancel();
                 }.bind(this),
