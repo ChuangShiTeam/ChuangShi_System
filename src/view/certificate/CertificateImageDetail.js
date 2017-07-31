@@ -293,6 +293,8 @@ class CertificateImageDetail extends Component {
                                                 }
                                             </FormItem>
                                         </Col>
+                                    </Row>
+                                    <Row>
                                         <Col span={8}>
                                             <FormItem hasFeedback {...{
                                                 labelCol: {span: 6},
@@ -307,6 +309,25 @@ class CertificateImageDetail extends Component {
                                                         initialValue: ''
                                                     })(
                                                         <Input type="text" placeholder={constant.placeholder + '授权人手机'}
+                                                               onPressEnter={this.handleSubmit.bind(this)}/>
+                                                    )
+                                                }
+                                            </FormItem>
+                                        </Col>
+                                         <Col span={8}>
+                                            <FormItem hasFeedback {...{
+                                                labelCol: {span: 6},
+                                                wrapperCol: {span: 18}
+                                            }} className="form-item" label="授权人微信">
+                                                {
+                                                    getFieldDecorator('certificate_people_wx', {
+                                                        rules: [{
+                                                            required: true,
+                                                            message: constant.required
+                                                        }],
+                                                        initialValue: ''
+                                                    })(
+                                                        <Input type="text" placeholder={constant.placeholder + '授权人微信'}
                                                                onPressEnter={this.handleSubmit.bind(this)}/>
                                                     )
                                                 }
@@ -481,6 +502,25 @@ class CertificateImageDetail extends Component {
                                         </Col>
                                     </Row>
                                     <Row>
+                                        <Col span={8}>
+                                            <FormItem hasFeedback {...{
+                                                labelCol: {span: 6},
+                                                wrapperCol: {span: 18}
+                                            }} className="form-item" label="授权人微信">
+                                                {
+                                                    getFieldDecorator('certificate_people_wx', {
+                                                        rules: [{
+                                                            required: true,
+                                                            message: constant.required
+                                                        }],
+                                                        initialValue: ''
+                                                    })(
+                                                        <Input type="text" placeholder={constant.placeholder + '授权人微信'}
+                                                               onPressEnter={this.handleSubmit.bind(this)}/>
+                                                    )
+                                                }
+                                            </FormItem>
+                                        </Col>
                                         <Col span={8}>
                                             <FormItem hasFeedback {...{
                                                 labelCol: {span: 6},
