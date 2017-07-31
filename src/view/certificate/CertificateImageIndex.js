@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, Icon} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Icon} from 'antd';
 
 import CertificateImageDetail from './CertificateImageDetail';
 import constant from '../../util/constant';
@@ -222,4 +221,4 @@ CertificateImageIndex.propTypes = {};
 
 CertificateImageIndex = Form.create({})(CertificateImageIndex);
 
-export default connect(({}) => ({}))(CertificateImageIndex);
+export default CertificateImageIndex;
