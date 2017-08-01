@@ -44,6 +44,8 @@ import SupplierTradeIndex from "./view/supplier_trade/SupplierTradeIndex";
 import CacheIndex from "./view/cache/CacheIndex";
 import WarehouseIndex from "./view/warehouse/WarehouseIndex";
 import CertificateIndex from "./view/certificate/CertificateIndex";
+import ArticleIndex from './view/article/ArticleIndex';
+
 import storage from "./util/storage";
 import constant from "./util/constant";
 
@@ -112,6 +114,7 @@ function RouterConfig({history}) {
                     <Route path="delivery/order/index" component={DeliveryOrderIndex}/>
 
                     <Route path="certificate/index" component={CertificateIndex}/>
+                    <Route path="article/index" component={ArticleIndex}/>
                 </Route>
             </Route>
         </Router>

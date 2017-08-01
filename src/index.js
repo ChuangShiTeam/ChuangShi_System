@@ -44,6 +44,7 @@ import supplier_trade from "./model/supplier_trade";
 import cache from "./model/cache";
 import warehouse from "./model/warehouse";
 import certificate from "./model/certificate";
+import article from './model/article';
 
 document.title = constant.name;
 
@@ -97,6 +98,7 @@ app.model(warehouse);
 app.model(delivery_order);
 
 app.model(certificate);
+app.model(article);
 
 app.router(Router);
 
