@@ -3,7 +3,9 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Form, Row, Col, Button, Input, Table, message} from 'antd';
 
+import CodeDetail from './CodeDetail';
 import constant from '../../util/constant';
+import notification from '../../util/notification';
 import http from '../../util/http';
 
 class CodeIndex extends Component {
@@ -101,8 +103,10 @@ class CodeIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-
+    handleAdd(table_name) {
+        notification.emit('notification_code_detail_edit', {
+            table_name: table_name
+        });
     }
 
     handleEdit(table_name) {
@@ -143,6 +147,8 @@ class CodeIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
+                  <a onClick={this.handleAdd.bind(this, record.table_name)}>{constant.find}</a>
+                  <span className="divider"/>
                   <a onClick={this.handleEdit.bind(this, record.table_name)}>执行</a>
                 </span>
             )
@@ -165,7 +171,7 @@ class CodeIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">代码生成</div>
+                        <div className="">代码生成信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="primary" icon="search" size="default" className=""
@@ -201,6 +207,7 @@ class CodeIndex extends Component {
                        loading={this.state.is_load} columns={columns}
                        dataSource={this.props.code.list} pagination={pagination}
                        bordered/>
+                <CodeDetail/>
             </QueueAnim>
         );
     }
