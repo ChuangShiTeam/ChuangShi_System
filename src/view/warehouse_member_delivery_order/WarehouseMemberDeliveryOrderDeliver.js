@@ -58,7 +58,7 @@ class WarehouseMemberDeliveryOrderDeliver extends Component {
             this.setState({
                 is_load: true
             });
-            values.member_delivery_order.member_delivery_order_id = this.state.member_delivery_order.member_delivery_order_id;
+            values.member_delivery_order_id = this.state.member_delivery_order.member_delivery_order_id;
             http.request({
                 url: '/member/delivery/order/' + constant.action + '/' + this.state.action,
                 data: values,
@@ -94,7 +94,7 @@ class WarehouseMemberDeliveryOrderDeliver extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-
+        console.log(this.state.warehouse_list);
         return (
             <Modal title={<h3>仓库发货</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}

@@ -103,7 +103,7 @@ class WarehouseMemberDeliveryOrderDetail extends Component {
 
     handleDeliver() {
         notification.emit('notification_warehouse_member_delivery_order_deliver', {
-            member_delivery_order_id: this.state.member_delivery_order_id
+            member_delivery_order: this.state.member_delivery_order
         });
     }
 
