@@ -43,6 +43,7 @@ import supplier from "./model/supplier";
 import supplier_trade from "./model/supplier_trade";
 import cache from "./model/cache";
 import warehouse from "./model/warehouse";
+import warehouse_member_delivery_order from "./model/warehouse_member_delivery_order";
 import certificate from "./model/certificate";
 
 document.title = constant.name;
@@ -93,6 +94,7 @@ app.model(supplier_trade);
 app.model(cache);
 
 app.model(warehouse);
+app.model(warehouse_member_delivery_order);
 
 app.model(delivery_order);
 
