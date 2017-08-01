@@ -22,7 +22,7 @@ class CertificateImageDetail extends Component {
     }
 
     componentDidMount() {
-        notification.on('notification_certificate_image_detail_add', this, function (data) {
+        notification.on('notification_certificate_image_wx_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save',
@@ -31,7 +31,7 @@ class CertificateImageDetail extends Component {
             });
         });
 
-        notification.on('notification_certificate_image_detail_edit', this, function (data) {
+        notification.on('notification_certificate_image_wx_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
@@ -43,9 +43,9 @@ class CertificateImageDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_certificate_image_detail_add', this);
+        notification.remove('notification_certificate_image_wx_detail_add', this);
 
-        notification.remove('notification_certificate_image_detail_edit', this);
+        notification.remove('notification_certificate_image_wx_detail_edit', this);
     }
 
     handleLoad() {
@@ -111,7 +111,7 @@ class CertificateImageDetail extends Component {
             });
 
             http.request({
-                url: '/certificate/image/' + constant.action + '/' + this.state.action,
+                url: '/certificate/image/wx/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

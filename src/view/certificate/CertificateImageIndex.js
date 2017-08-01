@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Modal, Form, Row, Col, Spin, Button, Icon} from 'antd';
 
-import CertificateImageDetail from './CertificateImageDetail';
+import CertificateImageWXDetail from './CertificateImageWXDetail';
+import CertificateImageOtherDetail from './CertificateImageOtherDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -64,8 +65,17 @@ class CertificateImageIndex extends Component {
         });
     }
 
-    handleAdd(type) {
-        notification.emit('notification_certificate_image_detail_add',
+    handleWXAdd(type) {
+        notification.emit('notification_certificate_image_wx_detail_add',
+            {
+                "type": type,
+                "user_id": this.state.user_id
+            }
+        );
+    }
+
+    handleOtherAdd(type) {
+        notification.emit('notification_certificate_image_other_detail_add',
             {
                 "type": type,
                 "user_id": this.state.user_id
@@ -157,9 +167,10 @@ class CertificateImageIndex extends Component {
                             <Col span={16} className="content-button">
                                 <Button type="primary" icon="plus-circle" size="default"
                                         className="margin-right"
-                                        onClick={this.handleAdd.bind(this, 'wx')}>添加授权</Button>
+                                        onClick={this.handleWXAdd.bind(this, 'wx')}>添加授权</Button>
                             </Col>
                         </Row>
+                        <br/>
                         <Row>
                             {
                                 this.state.certificateImageWXList.map(function (item, index) {
@@ -170,7 +181,7 @@ class CertificateImageIndex extends Component {
                                                 wrapperCol: {span: 18}
                                             }} className="form-item" label="">
                                                 <div className="clearfix">
-                                                    <img alt="example" style={{ height: '200px' }}
+                                                    <img alt="example" style={{ width: '500px' }}
                                                          src={constant.host+item.file_original_path}/>
                                                 </div>
                                             </FormItem>
@@ -187,9 +198,10 @@ class CertificateImageIndex extends Component {
                             <Col span={16} className="content-button">
                                 <Button type="primary" icon="plus-circle" size="default"
                                         className="margin-right"
-                                        onClick={this.handleAdd.bind(this, 'other')}>添加授权</Button>
+                                        onClick={this.handleOtherAdd.bind(this, 'other')}>添加授权</Button>
                             </Col>
                         </Row>
+                        <br/>
                         <Row>
                             {
                                 this.state.certificateImageOtherList.map(function (item, index) {
@@ -198,9 +210,9 @@ class CertificateImageIndex extends Component {
                                             <FormItem hasFeedback {...{
                                                 labelCol: {span: 6},
                                                 wrapperCol: {span: 18}
-                                            }} className="form-item" label="授权书">
+                                            }} className="form-item" label="">
                                                 <div className="clearfix">
-                                                    <img alt="example" style={{ height: '200px' }}
+                                                    <img alt="example" style={{ width: '500px' }}
                                                          src={constant.host+item.file_original_path}/>
                                                 </div>
                                             </FormItem>
@@ -211,7 +223,8 @@ class CertificateImageIndex extends Component {
                         </Row>
                     </form>
                 </Spin>
-                <CertificateImageDetail/>
+                <CertificateImageWXDetail/>
+                <CertificateImageOtherDetail/>
             </Modal>
         );
     }
