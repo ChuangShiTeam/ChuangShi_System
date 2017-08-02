@@ -249,3 +249,7 @@
     color: #999;
     line-height: 20px;
 }
+
+.form-table-col .margin-top {
+    margin-top: 0px !important;
+}

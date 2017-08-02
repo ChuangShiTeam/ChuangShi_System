@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Checkbox, Switch, Table, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Checkbox, Input, Table, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -173,14 +173,49 @@ class CodeDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
-                        <Table
-                            rowKey={record => record.column_name}
-                            className="margin-top"
-                            columns={columns}
-                            dataSource={this.state.list} pagination={false}
-                            bordered/>
-                        <br/>
-                        <Button type="primary" icon="check-circle" size="default" className="">立即生成</Button>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="分类编号">
+                                    {
+                                        getFieldDecorator('category_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '分类编号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="form-table-col">
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="数据字段">
+
+                                    <Table
+                                        rowKey={record => record.column_name}
+                                        className="margin-top"
+                                        columns={columns}
+                                        dataSource={this.state.list} pagination={false}
+                                        bordered/>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={2}>
+                            </Col>
+                            <Col>
+                                <Button type="primary" icon="check-circle" size="default" className="">立即生成代码</Button>
+                            </Col>
+                        </Row>
                     </form>
                 </Spin>
             </Modal>
