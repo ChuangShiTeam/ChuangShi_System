@@ -28,7 +28,7 @@ class ArticleIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            article_name: this.props.article.article_name
+            article_name: this.props.article.article_name,
         });
 
         this.handleLoad();
@@ -44,7 +44,7 @@ class ArticleIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -185,7 +185,7 @@ class ArticleIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
+            title: '文章名称',
             dataIndex: 'article_name'
         }, {
             width: 100,
@@ -265,12 +265,12 @@ class ArticleIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="文章名称">
                                 {
                                     getFieldDecorator('article_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入文章名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

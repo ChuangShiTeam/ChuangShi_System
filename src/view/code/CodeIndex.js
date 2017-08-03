@@ -139,8 +139,16 @@ class CodeIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '数据库名称',
+            title: '名称',
             dataIndex: 'table_name'
+        }, {
+            width: 120,
+            title: '引擎',
+            dataIndex: 'engine'
+        }, {
+            width: 120,
+            title: '数据',
+            dataIndex: 'table_rows'
         }, {
             width: 90,
             title: '操作',
@@ -148,8 +156,8 @@ class CodeIndex extends Component {
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleAdd.bind(this, record.table_name)}>{constant.find}</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.table_name)}>执行</a>
+                  {/*<span className="divider"/>*/}
+                  {/*<a onClick={this.handleEdit.bind(this, record.table_name)}>执行</a>*/}
                 </span>
             )
         }];
