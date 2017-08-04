@@ -16,7 +16,7 @@ class DeliveryOrderDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            delivery_order_id: '',
+            member_delivery_order_id: '',
             system_version: '',
             delivery_order: {},
             delivery_order_product_sku_list: [],
@@ -28,7 +28,7 @@ class DeliveryOrderDetail extends Component {
         notification.on('notification_delivery_order_detail_view', this, function (data) {
             this.setState({
                 is_show: true,
-                delivery_order_id: data.delivery_order_id
+                member_delivery_order_id: data.member_delivery_order_id
             }, function () {
                 this.handleLoadDeliveryOrder();
                 this.handleLoadExpress();
@@ -52,9 +52,9 @@ class DeliveryOrderDetail extends Component {
         });
 
         http.request({
-            url: '/delivery/order/' + constant.action + '/find',
+            url: '/member/delivery/order/' + constant.action + '/find',
             data: {
-                delivery_order_id: this.state.delivery_order_id
+                member_delivery_order_id: this.state.member_delivery_order_id
             },
             success: function (data) {
                 this.setState({
@@ -79,7 +79,7 @@ class DeliveryOrderDetail extends Component {
         http.request({
             url: '/express/' + constant.action + '/findByDeliveryOrderId',
             data: {
-                delivery_order_id: this.state.delivery_order_id
+                member_delivery_order_id: this.state.member_delivery_order_id
             },
             success: function (data) {
                 this.setState({
@@ -121,7 +121,7 @@ class DeliveryOrderDetail extends Component {
 
     handleWarehouseDeliver() {
         notification.emit('notification_delivery_order_warehouse_deliver', {
-            delivery_order_id: this.state.delivery_order_id
+            member_delivery_order_id: this.state.member_delivery_order_id
         });
     }
 
@@ -130,7 +130,7 @@ class DeliveryOrderDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            delivery_order_id: '',
+            member_delivery_order_id: '',
             system_version: '',
             delivery_order: {},
             delivery_order_product_sku_list: [],
