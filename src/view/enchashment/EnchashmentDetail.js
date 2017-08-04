@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message} from 'antd';
 
-import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class ProductBrandDetail extends Component {
+class EnchashmentDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -15,24 +14,24 @@ class ProductBrandDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            product_brand_id: '',
+            enchashment_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_product_brand_detail_add', this, function (data) {
+        notification.on('notification_enchashment_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_product_brand_detail_edit', this, function (data) {
+        notification.on('notification_enchashment_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                product_brand_id: data.product_brand_id
+                enchashment_id: data.enchashment_id
             }, function () {
                 this.handleLoad();
             });
@@ -40,9 +39,9 @@ class ProductBrandDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_product_brand_detail_add', this);
+        notification.remove('notification_enchashment_detail_add', this);
 
-        notification.remove('notification_product_brand_detail_edit', this);
+        notification.remove('notification_enchashment_detail_edit', this);
     }
 
     handleLoad() {
@@ -51,9 +50,9 @@ class ProductBrandDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/product/brand/find',
+            url: '/enchashment/' + constant.action + '/find',
             data: {
-                product_brand_id: this.state.product_brand_id
+                enchashment_id: this.state.enchashment_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -63,17 +62,10 @@ class ProductBrandDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    product_brand_name: data.product_brand_name,
-                    product_brand_content: data.product_brand_content,
+                    user_id: data.user_id,
+                    enchashment_amount: data.enchashment_amount,
+                    enchashment_status: data.enchashment_status,
                 });
-
-                let product_brand_image = [];
-                if (typeof (data.product_brand_image_file) === 'undefined' || data.product_brand_image_file === '' || data.product_brand_image_file === null) {
-
-                } else {
-                    product_brand_image.push(data.product_brand_image_file);
-                }
-                this.refs.product_brand_image.handleSetValue(product_brand_image);
 
                 this.setState({
                     system_version: data.system_version
@@ -94,27 +86,20 @@ class ProductBrandDetail extends Component {
                 return;
             }
 
-            values.product_brand_id = this.state.product_brand_id;
+            values.enchashment_id = this.state.enchashment_id;
             values.system_version = this.state.system_version;
-
-            let file_list = this.refs.product_brand_image.handleGetValue();
-            if (file_list.length === 0) {
-                values.product_brand_image = '';
-            } else {
-                values.product_brand_image = file_list[0].file_id;
-            }
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/product/brand/' + constant.action + '/' + this.state.action,
+                url: '/enchashment/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_product_brand_index_load', {});
+                    notification.emit('notification_enchashment_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -132,13 +117,11 @@ class ProductBrandDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            product_brand_id: '',
+            enchashment_id: '',
             system_version: ''
         });
 
         this.props.form.resetFields();
-
-        this.refs.product_brand_image.handleReset();
     }
 
     render() {
@@ -177,7 +160,7 @@ class ProductBrandDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.product_brand.app_list.map(function (item) {
+                                                            this.props.enchashment.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -198,16 +181,16 @@ class ProductBrandDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="品牌名称">
+                                }} className="form-item" label="用户编号">
                                     {
-                                        getFieldDecorator('product_brand_name', {
+                                        getFieldDecorator('user_id', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '品牌名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '用户编号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -218,8 +201,18 @@ class ProductBrandDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="品牌图片">
-                                    <InputImage name="product_brand_image" limit={1} ref="product_brand_image"/>
+                                }} className="form-item" label="取现金额">
+                                    {
+                                        getFieldDecorator('enchashment_amount', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '取现金额'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>
@@ -228,16 +221,13 @@ class ProductBrandDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="品牌内容">
+                                }} className="form-item" label="取现状态">
                                     {
-                                        getFieldDecorator('product_brand_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                        getFieldDecorator('enchashment_status', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '品牌内容'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>
@@ -250,8 +240,8 @@ class ProductBrandDetail extends Component {
     }
 }
 
-ProductBrandDetail.propTypes = {};
+EnchashmentDetail.propTypes = {};
 
-ProductBrandDetail = Form.create({})(ProductBrandDetail);
+EnchashmentDetail = Form.create({})(EnchashmentDetail);
 
-export default connect(({product_brand}) => ({product_brand}))(ProductBrandDetail);
+export default connect(({enchashment}) => ({enchashment}))(EnchashmentDetail);

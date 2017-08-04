@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import ProductBrandDetail from './ProductBrandDetail';
+import EnchashmentDetail from './EnchashmentDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class ProductBrandIndex extends Component {
+class EnchashmentIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,26 @@ class ProductBrandIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.product_brand.app_id
+            app_id: this.props.enchashment.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            product_brand_name: this.props.product_brand.product_brand_name,
+            user_id: this.props.enchashment.user_id,
+            enchashment_status: this.props.enchashment.enchashment_status,
         });
 
         this.handleLoad();
 
-        notification.on('notification_product_brand_index_load', this, function (data) {
+        notification.on('notification_enchashment_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_product_brand_index_load', this);
+        notification.remove('notification_enchashment_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +49,7 @@ class ProductBrandIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'product_brand/fetch',
+                    type: 'enchashment/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +68,15 @@ class ProductBrandIndex extends Component {
                 app_id = '';
             }
 
-            let product_brand_name = this.props.form.getFieldValue('product_brand_name');
+            let user_id = this.props.form.getFieldValue('user_id');
+            let enchashment_status = this.props.form.getFieldValue('enchashment_status');
 
             this.props.dispatch({
-                type: 'product_brand/fetch',
+                type: 'enchashment/fetch',
                 data: {
                     app_id: app_id,
-                    product_brand_name: product_brand_name,
+                    user_id: user_id,
+                    enchashment_status: enchashment_status,
                     page_index: 1
                 }
             });
@@ -90,16 +93,17 @@ class ProductBrandIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/product/brand/list',
+            url: '/' + constant.action + '/enchashment/list',
             data: {
-                app_id: this.props.product_brand.app_id,
-                product_brand_name: this.props.product_brand.product_brand_name,
-                page_index: this.props.product_brand.page_index,
-                page_size: this.props.product_brand.page_size
+                app_id: this.props.enchashment.app_id,
+                user_id: this.props.enchashment.user_id,
+                enchashment_status: this.props.enchashment.enchashment_status,
+                page_index: this.props.enchashment.page_index,
+                page_size: this.props.enchashment.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'product_brand/fetch',
+                    type: 'enchashment/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +121,7 @@ class ProductBrandIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'product_brand/fetch',
+                type: 'enchashment/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +136,7 @@ class ProductBrandIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'product_brand/fetch',
+                type: 'enchashment/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +150,24 @@ class ProductBrandIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_product_brand_detail_add', {});
+        notification.emit('notification_enchashment_detail_add', {});
     }
 
-    handleEdit(product_brand_id) {
-        notification.emit('notification_product_brand_detail_edit', {
-            product_brand_id: product_brand_id
+    handleEdit(enchashment_id) {
+        notification.emit('notification_enchashment_detail_edit', {
+            enchashment_id: enchashment_id
         });
     }
 
-    handleDel(product_brand_id, system_version) {
+    handleDel(enchashment_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/product/brand/delete',
+            url: '/' + constant.action + '/enchashment/delete',
             data: {
-                product_brand_id: product_brand_id,
+                enchashment_id: enchashment_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,22 +189,25 @@ class ProductBrandIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '品牌名称',
-            dataIndex: 'product_brand_name'
+            title: '用户编号',
+            dataIndex: 'user_id'
         }, {
-            title: '品牌图片',
-            dataIndex: 'product_brand_image'
+            title: '取现金额',
+            dataIndex: 'enchashment_amount'
+        }, {
+            title: '取现状态',
+            dataIndex: 'enchashment_status'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.product_brand_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.enchashment_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.product_brand_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.enchashment_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -209,12 +216,12 @@ class ProductBrandIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.product_brand.total,
+            total: this.props.enchashment.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.product_brand.page_index,
-            pageSize: this.props.product_brand.page_size,
+            current: this.props.enchashment.page_index,
+            pageSize: this.props.enchashment.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -249,7 +256,7 @@ class ProductBrandIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.product_brand.app_list.map(function (item) {
+                                                        this.props.enchashment.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -268,12 +275,26 @@ class ProductBrandIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="品牌名称">
+                            }} className="content-search-item" label="用户编号">
                                 {
-                                    getFieldDecorator('product_brand_name', {
+                                    getFieldDecorator('user_id', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入品牌名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入用户编号" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="取现状态">
+                                {
+                                    getFieldDecorator('enchashment_status', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入取现状态" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -283,21 +304,21 @@ class ProductBrandIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="product_brand_id"
+                       rowKey="enchashment_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.product_brand.list} pagination={pagination}
+                       dataSource={this.props.enchashment.list} pagination={pagination}
                        bordered/>
-                <ProductBrandDetail/>
+                <EnchashmentDetail/>
             </QueueAnim>
         );
     }
 }
 
-ProductBrandIndex.propTypes = {};
+EnchashmentIndex.propTypes = {};
 
-ProductBrandIndex = Form.create({})(ProductBrandIndex);
+EnchashmentIndex = Form.create({})(EnchashmentIndex);
 
-export default connect(({product_brand}) => ({
-    product_brand
-}))(ProductBrandIndex);
+export default connect(({enchashment}) => ({
+    enchashment
+}))(EnchashmentIndex);

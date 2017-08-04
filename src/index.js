@@ -46,6 +46,7 @@ import warehouse from "./model/warehouse";
 import warehouse_member_delivery_order from "./model/warehouse_member_delivery_order";
 import certificate from "./model/certificate";
 import article from './model/article';
+import enchashment from './model/enchashment';
 
 document.title = constant.name;
 
@@ -101,6 +102,7 @@ app.model(delivery_order);
 
 app.model(certificate);
 app.model(article);
+app.model(enchashment);
 
 app.router(Router);
 
