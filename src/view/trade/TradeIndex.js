@@ -223,11 +223,11 @@ class TradeIndex extends Component {
             dataIndex: 'trade_receiver_address',
             render: (text, record, index) => (
                 <span>
-            {record.trade_receiver_province}-
+                    {record.trade_receiver_province}-
                     {record.trade_receiver_city}-
                     {record.trade_receiver_area}-
                     {record.trade_receiver_address}
-        </span>
+                </span>
             )
         }, {
             title: '商品数量',

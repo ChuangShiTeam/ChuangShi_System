@@ -1,14 +1,13 @@
-import React, {Component} from 'react';
-import {connect} from 'dva';
-import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table } from 'antd';
-
-import DeliveryOrderDetail from './DeliveryOrderDetail';
-import MemberSend from './MemberSend';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import React, {Component} from "react";
+import {connect} from "dva";
+import QueueAnim from "rc-queue-anim";
+import {Row, Col, Button, Form, Select, Input, Table, Icon} from "antd";
+import DeliveryOrderDetail from "./DeliveryOrderDetail";
+import MemberSend from "./MemberSend";
+import constant from "../../util/constant";
+import notification from "../../util/notification";
+import validate from "../../util/validate";
+import http from "../../util/http";
 
 class DeliveryOrderIndex extends Component {
     constructor(props) {
@@ -22,7 +21,7 @@ class DeliveryOrderIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.delivery_order.app_id
+                app_id: this.props.delivery_order.app_id
             });
 
             this.handleLoadApp();
@@ -93,7 +92,7 @@ class DeliveryOrderIndex extends Component {
         });
 
         http.request({
-            url: '/delivery/order/' + constant.action + '/list',
+            url: '/member/delivery/order/' + constant.action + '/list',
             data: {
                 app_id: this.props.delivery_order.app_id,
                 user_name: this.props.delivery_order.user_name,
@@ -153,9 +152,9 @@ class DeliveryOrderIndex extends Component {
         notification.emit('notification_member_send', {});
     }
 
-    handleView(delivery_order_id) {
+    handleView(member_delivery_order_id) {
         notification.emit('notification_delivery_order_detail_view', {
-            delivery_order_id: delivery_order_id
+            // member_delivery_order_id: member_delivery_order_id
         });
     }
 
@@ -165,26 +164,84 @@ class DeliveryOrderIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '会员名称',
-            dataIndex: 'user_name'
+            title: '上级会员（下单会员）',
+            dataIndex: 'user_name',
+            render: (text, record, index) => (
+                <span>{record.user_name}({record.order_user_name})</span>
+            )
         }, {
             title: '收货人',
-            dataIndex: 'delivery_order_receiver_name'
+            dataIndex: 'delivery_order_receiver_name',
+            render: (text, record, index) => (
+                <span>{record.member_delivery_order_receiver_name}({record.member_delivery_order_receiver_mobile})</span>
+            )
         }, {
-            title: '发货数量',
-            dataIndex: 'delivery_order_total_quantity'
-        }, {
-            title: '发货金额',
-            dataIndex: 'delivery_order_amount'
-        }, {
-            title: '状态',
-            dataIndex: 'delivery_order_flow',
+            title: '收货人地址',
+            dataIndex: 'member_delivery_order_receiver_address',
             render: (text, record, index) => (
                 <span>
-                    {
-                        text === 'WAIT_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'COMPLETE'?'已完成':text === 'CANCEL'?'已取消':null
-                    }
+                    {record.member_delivery_order_receiver_province}-
+                    {record.member_delivery_order_receiver_city}-
+                    {record.member_delivery_order_receiver_area}-
+                    {record.member_delivery_order_receiver_address}
                 </span>
+            )
+        }, {
+            title: '发货数量',
+            dataIndex: 'member_delivery_order_total_quantity'
+        }, {
+            title: '发货金额',
+            dataIndex: 'member_delivery_order_amount',
+            render: (text, record, index) => (
+                <span>￥{record.member_delivery_order_amount}</span>
+            )
+
+        }, {
+            title: '是否付款',
+            dataIndex: 'member_delivery_order_is_pay',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.member_delivery_order_is_pay ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+            )
+        }, {
+            title: '是否仓库代发',
+            dataIndex: 'member_delivery_order_is_warehouse_deliver',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.member_delivery_order_is_warehouse_deliver ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+            )
+        }, {
+            title: '是否完成',
+            dataIndex: 'member_delivery_order_is_complete',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.member_delivery_order_is_complete ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+            )
+        }, {
+            title: '当前流程',
+            dataIndex: 'member_delivery_order_flow',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.member_delivery_order_flow === "WAIT_SEND" ? "待发货" :
+                        record.member_delivery_order_flow === "WAIT_WAREHOUSE_SEND" ? "待仓库发货" :
+                            record.member_delivery_order_flow === "WAIT_RECEIVE" ? "待收货" :
+                                record.member_delivery_order_flow === "COMPLETE" ? "已完成" : ""}
+                </div>
             )
         }, {
             width: 150,
@@ -192,7 +249,7 @@ class DeliveryOrderIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleView.bind(this, record.delivery_order_id)}>查看</a>
+                  <a onClick={this.handleView.bind(this, record.member_delivery_order_id)}>查看</a>
                 </span>
             )
         }];
@@ -263,7 +320,8 @@ class DeliveryOrderIndex extends Component {
                                     getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入会员名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入会员名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -277,7 +335,8 @@ class DeliveryOrderIndex extends Component {
                                     getFieldDecorator('delivery_order_receiver_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入收货人" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入收货人"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
