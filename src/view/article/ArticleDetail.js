@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
+import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -33,7 +35,9 @@ class ArticleDetail extends Component {
                 action: 'update',
                 article_id: data.article_id
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -61,12 +65,18 @@ class ArticleDetail extends Component {
                     });
                 }
 
+                let article_image = [];
+                if (data.article_image_file !== null) {
+                    article_image.push(data.article_image_file);
+                }
+                this.refs.article_image.handleSetValue(article_image);
+
+                this.refs.article_content.handleSetValue(data.article_content);
+
                 this.props.form.setFieldsValue({
                     category_id: data.category_id,
                     article_name: data.article_name,
-                    article_image: data.article_image,
                     article_summary: data.article_summary,
-                    article_content: data.article_content,
                 });
 
                 this.setState({
@@ -90,6 +100,15 @@ class ArticleDetail extends Component {
 
             values.article_id = this.state.article_id;
             values.system_version = this.state.system_version;
+
+            let file_list = this.refs.article_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.article_image = '';
+            } else {
+                values.article_image = file_list[0].file_id;
+            }
+
+            values.article_content = this.refs.article_content.handleGetValue();
 
             this.setState({
                 is_load: true
@@ -124,11 +143,16 @@ class ArticleDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.article_image.handleReset();
+
+        this.refs.article_content.handleReset();
     }
 
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
+        const {TextArea} = Input;
         const {getFieldDecorator} = this.props.form;
 
         return (
@@ -183,26 +207,6 @@ class ArticleDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="分类编号">
-                                    {
-                                        getFieldDecorator('category_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类编号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="文章名称">
                                     {
                                         getFieldDecorator('article_name', {
@@ -223,16 +227,12 @@ class ArticleDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="文章图片">
+                                }} className="form-item" label="分类编号">
                                     {
-                                        getFieldDecorator('article_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
+                                        getFieldDecorator('category_id', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文章图片'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '分类编号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -243,38 +243,34 @@ class ArticleDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="文章图片">
+                                    <InputImage name="article_image" limit={1} ref="article_image"/>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-item" label="文章摘要">
                                     {
                                         getFieldDecorator('article_summary', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '文章摘要'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <TextArea rows={4} placeholder={constant.placeholder + '文章摘要'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={24}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-item" label="文章内容">
-                                    {
-                                        getFieldDecorator('article_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '文章内容'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                    <InputHtml name="article_content" ref="article_content"/>
                                 </FormItem>
                             </Col>
                         </Row>
