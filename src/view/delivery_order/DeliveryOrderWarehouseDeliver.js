@@ -13,7 +13,7 @@ class DeliveryOrderWarehouseDeliver extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            delivery_order_id: '',
+            member_delivery_order_id: '',
             delivery_order_is_pay: false,
             warehouse_list: []
         }
@@ -24,7 +24,7 @@ class DeliveryOrderWarehouseDeliver extends Component {
             this.setState({
                 is_show: true,
                 action: 'warehouse/deliver',
-                delivery_order_id: data.delivery_order_id
+                member_delivery_order_id: data.member_delivery_order_id
             }, function () {
                 this.handleLoad();
             });
@@ -58,16 +58,16 @@ class DeliveryOrderWarehouseDeliver extends Component {
         });
 
         http.request({
-            url: '/delivery/order/' + constant.action + '/find',
+            url: '/member/delivery/order/' + constant.action + '/find',
             data: {
-                delivery_order_id: this.state.delivery_order_id
+                member_delivery_order_id: this.state.member_delivery_order_id
             },
             success: function (data) {
                 this.props.form.setFieldsValue({
-                    delivery_order_amount: data.delivery_order.delivery_order_amount
+                    member_delivery_order_amount: data.member_delivery_order.member_delivery_order_amount
                 });
                 this.setState({
-                    delivery_order_is_pay: data.delivery_order.delivery_order_is_pay
+                    delivery_order_is_pay: data.member_delivery_order.delivery_order_is_pay
                 });
             }.bind(this),
             complete: function () {
@@ -88,9 +88,9 @@ class DeliveryOrderWarehouseDeliver extends Component {
             this.setState({
                 is_load: true
             });
-            values.delivery_order_id = this.state.delivery_order_id;
+            values.member_delivery_order_id = this.state.member_delivery_order_id;
             http.request({
-                url: '/delivery/order/' + constant.action + '/' + this.state.action,
+                url: '/member/delivery/order/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -113,8 +113,8 @@ class DeliveryOrderWarehouseDeliver extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            delivery_order_id: '',
-            delivery_order_amount: 0,
+            member_delivery_order_id: '',
+            member_delivery_order_amount: 0,
             delivery_order_is_pay: false,
             warehouse_list: []
         });
@@ -176,7 +176,7 @@ class DeliveryOrderWarehouseDeliver extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="发货金额">
                                     {
-                                        getFieldDecorator('delivery_order_amount', {
+                                        getFieldDecorator('member_delivery_order_amount', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
