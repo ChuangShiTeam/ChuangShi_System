@@ -35,7 +35,10 @@ import CustomerIndex from "./view/customer/CustomerIndex";
 import CustomerAttributeIndex from "./view/customer_attribute/CustomerAttributeIndex";
 import GuangqiCustomerIndex from "./view/guangqi_customer/GuangqiCustomerIndex";
 import GuangqiPrizeIndex from "./view/guangqi_prize/GuangqiPrizeIndex";
+import FeijiuFastCreditCardIndex from './view/feijiu_fast_credit_card/FeijiuFastCreditCardIndex';
 import FeijiuFastCustomerIndex from "./view/feijiu_fast_customer/FeijiuFastCustomerIndex";
+import FeijiuFastProductIndex from './view/feijiu_fast_product/FeijiuFastProductIndex';
+import FeijiuFastProductCategoryIndex from './view/feijiu_fast_product_category/FeijiuFastProductCategoryIndex';
 import FeijiuRecommendCustomerIndex from "./view/feijiu_recommend_customer/FeijiuRecommendCustomerIndex";
 import FeijiuRecommendProductIndex from "./view/feijiu_recommend_product/FeijiuRecommendProductIndex";
 import BillIndex from "./view/bill/BillIndex";
@@ -105,7 +108,10 @@ function RouterConfig({history}) {
 
                     <Route path="guangqi/customer/index" component={GuangqiCustomerIndex}/>
                     <Route path="guangqi/prize/index" component={GuangqiPrizeIndex}/>
+                    <Route path="feijiu/fast/credit/card/index" component={FeijiuFastCreditCardIndex}/>
                     <Route path="feijiu/fast/customer/index" component={FeijiuFastCustomerIndex}/>
+                    <Route path="feijiu/fast/product/index" component={FeijiuFastProductIndex}/>
+                    <Route path="feijiu/fast/product/category/index" component={FeijiuFastProductCategoryIndex}/>
                     <Route path="feijiu/recommend/customer/index" component={FeijiuRecommendCustomerIndex}/>
                     <Route path="feijiu/recommend/product/index" component={FeijiuRecommendProductIndex}/>
 
