@@ -124,8 +124,9 @@ class SupplierStockOutDetail extends Component {
         });
 
         http.request({
-            url: '/express/' + constant.action + '/delete',
+            url: '/trade/' + constant.action + '/express/delete',
             data: {
+                trade_id: this.state.trade_id,
                 express_id: express_id,
                 system_version: system_version
             },

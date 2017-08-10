@@ -36,7 +36,7 @@ class ExpressDetail extends Component {
             this.setState({
                 trade: data.trade,
                 is_show: true,
-                action: 'supplier/express'
+                action: 'express/save'
             });
         });
 
@@ -137,7 +137,7 @@ class ExpressDetail extends Component {
             });
 
             http.request({
-                url: '/express/' + constant.action + '/' + this.state.action,
+                url: '/trade/' + constant.action + '/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -173,7 +173,7 @@ class ExpressDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={<h3>发货单</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200}
+            <Modal title={<h3>填写快递单</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
