@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Table, Steps, Icon, Tooltip, Timeline, Popconfirm, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Table, Steps, Icon, Tooltip, Timeline} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 import {coverEval} from '../../util/function';
-import DeliveryOrderMemberExpress from './DeliveryOrderMemberExpress';
-import DeliveryOrderWarehouseDeliver from './DeliveryOrderWarehouseDeliver';
 
-class DeliveryOrderDetail extends Component {
+class MemberDeliveryOrderDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -17,33 +15,25 @@ class DeliveryOrderDetail extends Component {
             is_show: false,
             action: '',
             member_delivery_order_id: '',
-            system_version: '',
             member_delivery_order: {},
-            delivery_order_product_sku_list: [],
-            expressList: []
+            member_delivery_order_product_sku_list: [],
+            member_delivery_order_express_list: []
         }
     }
 
     componentDidMount() {
-        notification.on('notification_delivery_order_detail_view', this, function (data) {
+        notification.on('notification_member_delivery_order_detail_view', this, function (data) {
             this.setState({
                 is_show: true,
                 member_delivery_order_id: data.member_delivery_order_id
             }, function () {
                 this.handleLoadDeliveryOrder();
-                this.handleLoadExpress();
             });
-        });
-        notification.on('notification_delivery_order_detail_view_load', this, function (data) {
-            this.handleLoadDeliveryOrder();
-            this.handleLoadExpress();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_delivery_order_detail_view', this);
-        notification.remove('notification_delivery_order_detail_view_load', this);
-
+        notification.remove('notification_member_delivery_order_detail_view', this);
     }
 
     handleLoadDeliveryOrder() {
@@ -57,9 +47,14 @@ class DeliveryOrderDetail extends Component {
                 member_delivery_order_id: this.state.member_delivery_order_id
             },
             success: function (data) {
+                let member_delivery_order_express_list = [];
+                if (!data.is_direct_deliver) {
+                    member_delivery_order_express_list = data.member_delivery_order_express_list;
+                }
                 this.setState({
                     member_delivery_order: data.member_delivery_order,
-                    delivery_order_product_sku_list: data.delivery_order_product_sku_list
+                    member_delivery_order_product_sku_list: data.member_delivery_order_product_sku_list,
+                    member_delivery_order_express_list: member_delivery_order_express_list
                 });
             }.bind(this),
             complete: function () {
@@ -68,60 +63,6 @@ class DeliveryOrderDetail extends Component {
                 });
 
             }.bind(this)
-        });
-    }
-
-    handleLoadExpress() {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/member/delivery/order/' + constant.action + '/express/list',
-            data: {
-                member_delivery_order_id: this.state.member_delivery_order_id
-            },
-            success: function (data) {
-                this.setState({
-                    express_list: data
-                });
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-
-            }.bind(this)
-        });
-    }
-
-    handleDeleteExpress(express_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/express/' + constant.action + '/delete',
-            data: {
-                express_id: express_id,
-                system_version: system_version
-            },
-            success: function (data) {
-                message.success(constant.success);
-
-                this.handleLoadExpress();
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
-    handleWarehouseDeliver() {
-        notification.emit('notification_delivery_order_warehouse_deliver', {
-            member_delivery_order_id: this.state.member_delivery_order_id
         });
     }
 
@@ -131,18 +72,12 @@ class DeliveryOrderDetail extends Component {
             is_show: false,
             action: '',
             member_delivery_order_id: '',
-            system_version: '',
             member_delivery_order: {},
-            delivery_order_product_sku_list: [],
-            expressList: []
+            member_delivery_order_product_sku_list: [],
+            member_delivery_order_express_list: []
         });
 
         this.props.form.resetFields();
-        notification.emit('notification_delivery_order_index_load', {});
-    }
-
-    handleAddExpress() {
-        notification.emit('notification_delivery_order_member_express', {member_delivery_order: this.state.member_delivery_order});
     }
 
     render() {
@@ -238,27 +173,10 @@ class DeliveryOrderDetail extends Component {
         }, {
             title: '备注',
             dataIndex: 'express_remark'
-        }, {
-            width: 50,
-            title: constant.operation,
-            dataIndex: '',
-            render: (text, record, index) => (
-                <span>
-                {
-                    this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_SEND'?
-                        <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                                    cancelText={constant.popconfirm_cancel}
-                                    onConfirm={this.handleDeleteExpress.bind(this, record.express_id, record.system_version)}>
-                            <a>{constant.del}</a>
-                        </Popconfirm>: null
-                }
-
-                </span>
-            )
         }];
 
         return (
-            <Modal title={<h3>发货单详情</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={<h3>会员发货单详情</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -268,6 +186,8 @@ class DeliveryOrderDetail extends Component {
                 <Spin spinning={this.state.is_load}>
                     <Steps current={1}>
                         <Step status={this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_SEND' ? "process " : "wait"} title="待发货"
+                              description=""/>
+                        <Step status={this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_WAREHOUSE_SEND' ? "process " : "wait"} title="待仓库发货"
                               description=""/>
                         <Step status={this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_RECEIVE' ? "process " : "wait"} title="待收货"
                               description=""/>
@@ -345,32 +265,20 @@ class DeliveryOrderDetail extends Component {
                             rowKey="product_sku_id"
                             className="margin-top"
                             loading={this.state.is_load} columns={columnsProductSku}
-                            dataSource={this.state.delivery_order_product_sku_list} pagination={false}
+                            dataSource={this.state.member_delivery_order_product_sku_list} pagination={false}
                             bordered/>
                         <br/>
                         <Row>
                             <Col span={8}>
                                 <h2>快递信息</h2>
                             </Col>
-                            {
-                                this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_WAREHOUSE_SEND'?
-                                    <Col span={16} className="content-button">
-                                        <Button type="primary" icon="plus-circle" size="default" className="margin-right"
-                                                onClick={this.handleAddExpress.bind(this)}>填写快递单</Button>
-                                        <Button type="primary" icon="plus-circle" size="default"
-                                                loading={this.state.is_load}
-                                                onClick={this.handleWarehouseDeliver.bind(this)}>仓库发货</Button>
-                                    </Col>: null
-                            }
                         </Row>
                         <Table
                             rowKey={record => record.express_id}
                             className="margin-top"
                             columns={columnsExpress}
-                            dataSource={this.state.express_list} pagination={false}
+                            dataSource={this.state.member_delivery_order_express_list} pagination={false}
                             bordered/>
-                        <DeliveryOrderMemberExpress/>
-                        <DeliveryOrderWarehouseDeliver/>
                     </form>
                 </Spin>
             </Modal>
@@ -378,8 +286,8 @@ class DeliveryOrderDetail extends Component {
     }
 }
 
-DeliveryOrderDetail.propTypes = {};
+MemberDeliveryOrderDetail.propTypes = {};
 
-DeliveryOrderDetail = Form.create({})(DeliveryOrderDetail);
+MemberDeliveryOrderDetail = Form.create({})(MemberDeliveryOrderDetail);
 
-export default DeliveryOrderDetail;
+export default MemberDeliveryOrderDetail;

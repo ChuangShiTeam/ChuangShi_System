@@ -2,14 +2,13 @@ import React, {Component} from "react";
 import {connect} from "dva";
 import QueueAnim from "rc-queue-anim";
 import {Row, Col, Button, Form, Select, Input, Table, Icon} from "antd";
-import DeliveryOrderDetail from "./DeliveryOrderDetail";
-import MemberSend from "./MemberSend";
+import MemberDeliveryOrderDetail from "./MemberDeliveryOrderDetail";
 import constant from "../../util/constant";
 import notification from "../../util/notification";
 import validate from "../../util/validate";
 import http from "../../util/http";
 
-class DeliveryOrderIndex extends Component {
+class MemberDeliveryOrderIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +20,25 @@ class DeliveryOrderIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.delivery_order.app_id
+                app_id: this.props.member_delivery_order.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            user_name: this.props.delivery_order.user_name,
-            delivery_order_receiver_name: this.props.delivery_order.delivery_order_receiver_name
+            user_name: this.props.member_delivery_order.user_name,
+            member_delivery_order_receiver_name: this.props.member_delivery_order.member_delivery_order_receiver_name
         });
 
         this.handleLoad();
-        notification.on('notification_delivery_order_index_load', this, function (data) {
+        notification.on('notification_member_delivery_order_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_delivery_order_index_load', this);
+        notification.remove('notification_member_delivery_order_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +47,7 @@ class DeliveryOrderIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'delivery_order/fetch',
+                    type: 'member_delivery_order/fetch',
                     data: {
                         app_list: data
                     }
@@ -68,14 +67,14 @@ class DeliveryOrderIndex extends Component {
             }
 
             let user_name = this.props.form.getFieldValue('user_name');
-            let delivery_order_receiver_name = this.props.form.getFieldValue('delivery_order_receiver_name');
+            let member_delivery_order_receiver_name = this.props.form.getFieldValue('member_delivery_order_receiver_name');
 
             this.props.dispatch({
-                type: 'delivery_order/fetch',
+                type: 'member_delivery_order/fetch',
                 data: {
                     app_id: app_id,
                     user_name: user_name,
-                    delivery_order_receiver_name: delivery_order_receiver_name,
+                    member_delivery_order_receiver_name: member_delivery_order_receiver_name,
                     page_index: 1
                 }
             });
@@ -94,15 +93,15 @@ class DeliveryOrderIndex extends Component {
         http.request({
             url: '/member/delivery/order/' + constant.action + '/list',
             data: {
-                app_id: this.props.delivery_order.app_id,
-                user_name: this.props.delivery_order.user_name,
-                delivery_order_receiver_name: this.props.delivery_order.delivery_order_receiver_name,
-                page_index: this.props.delivery_order.page_index,
-                page_size: this.props.delivery_order.page_size
+                app_id: this.props.member_delivery_order.app_id,
+                user_name: this.props.member_delivery_order.user_name,
+                member_delivery_order_receiver_name: this.props.member_delivery_order.member_delivery_order_receiver_name,
+                page_index: this.props.member_delivery_order.page_index,
+                page_size: this.props.member_delivery_order.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'delivery_order/fetch',
+                    type: 'member_delivery_order/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -120,7 +119,7 @@ class DeliveryOrderIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'delivery_order/fetch',
+                type: 'member_delivery_order/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -135,7 +134,7 @@ class DeliveryOrderIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'delivery_order/fetch',
+                type: 'member_delivery_order/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -148,12 +147,8 @@ class DeliveryOrderIndex extends Component {
         }.bind(this));
     }
 
-    handleSend() {
-        notification.emit('notification_member_send', {});
-    }
-
     handleView(member_delivery_order_id) {
-        notification.emit('notification_delivery_order_detail_view', {
+        notification.emit('notification_member_delivery_order_detail_view', {
             member_delivery_order_id: member_delivery_order_id
         });
     }
@@ -171,7 +166,7 @@ class DeliveryOrderIndex extends Component {
             )
         }, {
             title: '收货人',
-            dataIndex: 'delivery_order_receiver_name',
+            dataIndex: 'member_delivery_order_receiver_name',
             render: (text, record, index) => (
                 <span>{record.member_delivery_order_receiver_name}({record.member_delivery_order_receiver_mobile})</span>
             )
@@ -256,12 +251,12 @@ class DeliveryOrderIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.delivery_order.total,
+            total: this.props.member_delivery_order.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.delivery_order.page_index,
-            pageSize: this.props.delivery_order.page_size,
+            current: this.props.member_delivery_order.page_index,
+            pageSize: this.props.member_delivery_order.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -277,8 +272,6 @@ class DeliveryOrderIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleSend.bind(this)}>会员发货</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -296,7 +289,7 @@ class DeliveryOrderIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.delivery_order.app_list.map(function (item) {
+                                                        this.props.member_delivery_order.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -332,7 +325,7 @@ class DeliveryOrderIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="收货人">
                                 {
-                                    getFieldDecorator('delivery_order_receiver_name', {
+                                    getFieldDecorator('member_delivery_order_receiver_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入收货人"
@@ -347,19 +340,18 @@ class DeliveryOrderIndex extends Component {
                        rowKey="member_delivery_order_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.delivery_order.list} pagination={pagination}
+                       dataSource={this.props.member_delivery_order.list} pagination={pagination}
                        bordered/>
-                <DeliveryOrderDetail/>
-                <MemberSend/>
+                <MemberDeliveryOrderDetail/>
             </QueueAnim>
         );
     }
 }
 
-DeliveryOrderIndex.propTypes = {};
+MemberDeliveryOrderIndex.propTypes = {};
 
-DeliveryOrderIndex = Form.create({})(DeliveryOrderIndex);
+MemberDeliveryOrderIndex = Form.create({})(MemberDeliveryOrderIndex);
 
-export default connect(({delivery_order}) => ({
-    delivery_order
-}))(DeliveryOrderIndex);
+export default connect(({member_delivery_order}) => ({
+    member_delivery_order
+}))(MemberDeliveryOrderIndex);

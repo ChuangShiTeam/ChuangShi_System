@@ -29,7 +29,7 @@ import app_stock_out from "./model/app_stock_out";
 import app_stock_replenish from "./model/app_stock_replenish";
 import express from "./model/express";
 import qrcode from "./model/qrcode";
-import delivery_order from "./model/delivery_order";
+import member_delivery_order from "./model/member_delivery_order";
 import trade from "./model/trade";
 import customer from "./model/customer";
 import customer_attribute from "./model/customer_attribute";
@@ -98,7 +98,7 @@ app.model(cache);
 app.model(warehouse);
 app.model(warehouse_member_delivery_order);
 
-app.model(delivery_order);
+app.model(member_delivery_order);
 
 app.model(certificate);
 app.model(article);

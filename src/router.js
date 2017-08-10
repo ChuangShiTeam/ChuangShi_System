@@ -27,9 +27,9 @@ import MemberStockIndex from "./view/member_stock/MemberStockIndex";
 import MemberStockInIndex from "./view/member_stock/MemberStockInIndex";
 import MemberStockOutIndex from "./view/member_stock/MemberStockOutIndex";
 import MemberStockReplenishIndex from "./view/member_stock/MemberStockReplenishIndex";
+import MemberDeliveryOrderIndex from "./view/member_delivery_order/MemberDeliveryOrderIndex";
 import ExpressIndex from "./view/express/ExpressIndex";
 import QrcodeIndex from "./view/qrcode/QrcodeIndex";
-import DeliveryOrderIndex from "./view/delivery_order/DeliveryOrderIndex";
 import TradeIndex from "./view/trade/TradeIndex";
 import CustomerIndex from "./view/customer/CustomerIndex";
 import CustomerAttributeIndex from "./view/customer_attribute/CustomerAttributeIndex";
@@ -94,6 +94,7 @@ function RouterConfig({history}) {
                     <Route path="member/stock/in/index" component={MemberStockInIndex}/>
                     <Route path="member/stock/out/index" component={MemberStockOutIndex}/>
                     <Route path="member/stock/replenish/index" component={MemberStockReplenishIndex}/>
+                    <Route path="member/delivery/order/index" component={MemberDeliveryOrderIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
                     <Route path="qrcode/index" component={QrcodeIndex}/>
 
@@ -114,7 +115,6 @@ function RouterConfig({history}) {
 
                     <Route path="warehouse/index" component={WarehouseIndex}/>
                     <Route path="warehouse/member/delivery/order/index" component={WarehouseMemberDeliveryOrderIndex}/>
-                    <Route path="delivery/order/index" component={DeliveryOrderIndex}/>
 
                     <Route path="certificate/index" component={CertificateIndex}/>
                     <Route path="article/index" component={ArticleIndex}/>
