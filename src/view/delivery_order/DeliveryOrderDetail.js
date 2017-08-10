@@ -18,7 +18,7 @@ class DeliveryOrderDetail extends Component {
             action: '',
             member_delivery_order_id: '',
             system_version: '',
-            delivery_order: {},
+            member_delivery_order: {},
             delivery_order_product_sku_list: [],
             expressList: []
         }
@@ -58,7 +58,7 @@ class DeliveryOrderDetail extends Component {
             },
             success: function (data) {
                 this.setState({
-                    delivery_order: data.delivery_order,
+                    member_delivery_order: data.member_delivery_order,
                     delivery_order_product_sku_list: data.delivery_order_product_sku_list
                 });
             }.bind(this),
@@ -77,7 +77,7 @@ class DeliveryOrderDetail extends Component {
         });
 
         http.request({
-            url: '/express/' + constant.action + '/findByDeliveryOrderId',
+            url: '/member/delivery/order/' + constant.action + '/express/list',
             data: {
                 member_delivery_order_id: this.state.member_delivery_order_id
             },
@@ -132,7 +132,7 @@ class DeliveryOrderDetail extends Component {
             action: '',
             member_delivery_order_id: '',
             system_version: '',
-            delivery_order: {},
+            member_delivery_order: {},
             delivery_order_product_sku_list: [],
             expressList: []
         });
@@ -142,7 +142,7 @@ class DeliveryOrderDetail extends Component {
     }
 
     handleAddExpress() {
-        notification.emit('notification_delivery_order_member_express', {delivery_order: this.state.delivery_order});
+        notification.emit('notification_delivery_order_member_express', {member_delivery_order: this.state.member_delivery_order});
     }
 
     render() {
@@ -245,7 +245,7 @@ class DeliveryOrderDetail extends Component {
             render: (text, record, index) => (
                 <span>
                 {
-                    this.state.delivery_order.delivery_order_flow === 'WAIT_SEND'?
+                    this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_SEND'?
                         <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                                     cancelText={constant.popconfirm_cancel}
                                     onConfirm={this.handleDeleteExpress.bind(this, record.express_id, record.system_version)}>
@@ -267,11 +267,11 @@ class DeliveryOrderDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <Steps current={1}>
-                        <Step status={this.state.delivery_order.delivery_order_flow === 'WAIT_SEND' ? "process " : "wait"} title="待发货"
+                        <Step status={this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_SEND' ? "process " : "wait"} title="待发货"
                               description=""/>
-                        <Step status={this.state.delivery_order.delivery_order_flow === 'WAIT_RECEIVE' ? "process " : "wait"} title="待收货"
+                        <Step status={this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_RECEIVE' ? "process " : "wait"} title="待收货"
                               description=""/>
-                        <Step status={this.state.delivery_order.delivery_order_flow === 'COMPLETE' ? "process " : "wait"} title="已完成"
+                        <Step status={this.state.member_delivery_order.member_delivery_order_flow === 'COMPLETE' ? "process " : "wait"} title="已完成"
                               description=""/>
                     </Steps>
                     <form>
@@ -283,7 +283,7 @@ class DeliveryOrderDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="会员名称">
-                                    <span>{this.state.delivery_order.user_name}</span>
+                                    <span>{this.state.member_delivery_order.user_name}</span>
                                 </FormItem>
                             </Col>
                             <Col span={8}>
@@ -291,8 +291,8 @@ class DeliveryOrderDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="收货人">
-                                <span>{this.state.delivery_order.delivery_order_receiver_name}
-                                    ( {this.state.delivery_order.delivery_order_receiver_mobile} ) </span>
+                                <span>{this.state.member_delivery_order.member_delivery_order_receiver_name}
+                                    ( {this.state.member_delivery_order.member_delivery_order_receiver_mobile} ) </span>
                                 </FormItem>
                             </Col>
                             <Col span={8}>
@@ -301,10 +301,10 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="收货地址">
                                 <span>
-                                    {this.state.delivery_order.delivery_order_receiver_province}-
-                                    {this.state.delivery_order.delivery_order_receiver_city}-
-                                    {this.state.delivery_order.delivery_order_receiver_area}-
-                                    {this.state.delivery_order.delivery_order_receiver_address}
+                                    {this.state.member_delivery_order.member_delivery_order_receiver_province}-
+                                    {this.state.member_delivery_order.member_delivery_order_receiver_city}-
+                                    {this.state.member_delivery_order.member_delivery_order_receiver_area}-
+                                    {this.state.member_delivery_order.member_delivery_order_receiver_address}
                                 </span>
                                 </FormItem>
                             </Col>
@@ -314,7 +314,7 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="发货总数量">
                                     <span>
-                                        {this.state.delivery_order.delivery_order_total_quantity}
+                                        {this.state.member_delivery_order.member_delivery_order_total_quantity}
                                     </span>
                                 </FormItem>
                             </Col>
@@ -324,7 +324,7 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="发货金额">
                                     <span>
-                                        {this.state.delivery_order.delivery_order_amount}
+                                        {this.state.member_delivery_order.member_delivery_order_amount}
                                     </span>
                                 </FormItem>
                             </Col>
@@ -334,7 +334,7 @@ class DeliveryOrderDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="是否支付">
                                     <span>
-                                        {this.state.delivery_order.delivery_order_is_pay?'是':'否'}
+                                        {this.state.member_delivery_order.member_delivery_order_is_pay?'是':'否'}
                                     </span>
                                 </FormItem>
                             </Col>
@@ -353,7 +353,7 @@ class DeliveryOrderDetail extends Component {
                                 <h2>快递信息</h2>
                             </Col>
                             {
-                                this.state.delivery_order.delivery_order_flow === 'WAIT_SEND'?
+                                this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_WAREHOUSE_SEND'?
                                     <Col span={16} className="content-button">
                                         <Button type="primary" icon="plus-circle" size="default" className="margin-right"
                                                 onClick={this.handleAddExpress.bind(this)}>填写快递单</Button>

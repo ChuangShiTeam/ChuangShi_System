@@ -1,6 +1,6 @@
 export default {
-    // host: 'http://localhost:8080',
-    host: 'http://api.chuangshi.nowui.com',
+    host: 'http://localhost:8080',
+    // host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     is_menu: true,
     action: 'admin',

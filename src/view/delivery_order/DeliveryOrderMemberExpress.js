@@ -14,7 +14,7 @@ class DeliveryOrderMemberExpress extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            delivery_order: {}
+            member_delivery_order: {}
         }
     }
 
@@ -22,17 +22,17 @@ class DeliveryOrderMemberExpress extends Component {
         notification.on('notification_delivery_order_member_express', this, function (data) {
 
             this.props.form.setFieldsValue({
-                express_receiver_name: data.delivery_order.delivery_order_receiver_name,
-                express_receiver_mobile: data.delivery_order.delivery_order_receiver_mobile,
-                express_receiver_province: data.delivery_order.delivery_order_receiver_province,
-                express_receiver_city: data.delivery_order.delivery_order_receiver_city,
-                express_receiver_area: data.delivery_order.delivery_order_receiver_area,
-                express_receiver_address: data.delivery_order.delivery_order_receiver_address,
-                express_shipper_code: data.delivery_order.delivery_order_express_shipper_code
+                express_receiver_name: data.member_delivery_order.member_delivery_order_receiver_name,
+                express_receiver_mobile: data.member_delivery_order.member_delivery_order_receiver_mobile,
+                express_receiver_province: data.member_delivery_order.member_delivery_order_receiver_province,
+                express_receiver_city: data.member_delivery_order.member_delivery_order_receiver_city,
+                express_receiver_area: data.member_delivery_order.member_delivery_order_receiver_area,
+                express_receiver_address: data.member_delivery_order.member_delivery_order_receiver_address,
+                express_shipper_code: data.member_delivery_order.delivery_order_express_shipper_code
             });
 
             this.setState({
-                delivery_order: data.delivery_order,
+                member_delivery_order: data.member_delivery_order,
                 is_show: true,
                 action: 'member/express'
             });
@@ -49,13 +49,13 @@ class DeliveryOrderMemberExpress extends Component {
                 return;
             }
 
-            values.delivery_order_id = this.state.delivery_order.delivery_order_id;
+            values.member_delivery_order_id = this.state.member_delivery_order.member_delivery_order_id;
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/express/' + constant.action + '/' + this.state.action,
+                url: '/member/delivery/order/admin/express/save',
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -78,7 +78,7 @@ class DeliveryOrderMemberExpress extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            delivery_order: {}
+            member_delivery_order: {}
         });
 
         this.props.form.resetFields();

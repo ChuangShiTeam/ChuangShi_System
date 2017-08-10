@@ -154,7 +154,7 @@ class DeliveryOrderIndex extends Component {
 
     handleView(member_delivery_order_id) {
         notification.emit('notification_delivery_order_detail_view', {
-            // member_delivery_order_id: member_delivery_order_id
+            member_delivery_order_id: member_delivery_order_id
         });
     }
 
@@ -344,6 +344,7 @@ class DeliveryOrderIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
+                       rowKey="member_delivery_order_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
                        dataSource={this.props.delivery_order.list} pagination={pagination}
