@@ -185,10 +185,10 @@ class FeijiuFastCreditCardIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '商品名称',
+            title: '信用卡名称',
             dataIndex: 'credit_card_name'
         }, {
-            title: '商品链接',
+            title: '信用卡链接',
             dataIndex: 'credit_card_link'
         }, {
             width: 100,
@@ -268,12 +268,12 @@ class FeijiuFastCreditCardIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="商品名称">
+                            }} className="content-search-item" label="信用卡名称">
                                 {
                                     getFieldDecorator('credit_card_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入商品名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入信用卡名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

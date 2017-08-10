@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -15,7 +16,8 @@ class FeijiuFastProductDetail extends Component {
             is_show: false,
             action: '',
             product_id: '',
-            system_version: ''
+            system_version: '',
+            product_category_list: []
         }
     }
 
@@ -36,6 +38,8 @@ class FeijiuFastProductDetail extends Component {
                 this.handleLoad();
             });
         });
+
+        this.handleLoadProductCategory();
     }
 
     componentWillUnmount() {
@@ -50,7 +54,7 @@ class FeijiuFastProductDetail extends Component {
         });
 
         http.request({
-            url: '/feijiu/fast/product/' + constant.action + '/find',
+            url: '/' + constant.action + '/feijiu/fast/product/find',
             data: {
                 product_id: this.state.product_id
             },
@@ -64,14 +68,42 @@ class FeijiuFastProductDetail extends Component {
                 this.props.form.setFieldsValue({
                     product_category_id: data.product_category_id,
                     product_name: data.product_name,
-                    product_image: data.product_image,
                     product_link: data.product_link,
                     product_content: data.product_content,
                     product_applicant_quantity: data.product_applicant_quantity,
                 });
 
+                let product_image = [];
+                if (data.product_image_file !== '') {
+                    product_image.push(data.product_image_file);
+                }
+                this.refs.product_image.handleSetValue(product_image);
+
                 this.setState({
                     system_version: data.system_version
+                });
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+
+            }.bind(this)
+        });
+    }
+
+    handleLoadProductCategory() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/feijiu/fast/product/category/list/all',
+            data: {
+            },
+            success: function (data) {
+                this.setState({
+                    product_category_list: data
                 });
             }.bind(this),
             complete: function () {
@@ -92,12 +124,19 @@ class FeijiuFastProductDetail extends Component {
             values.product_id = this.state.product_id;
             values.system_version = this.state.system_version;
 
+            let file_list = this.refs.product_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.product_image = '';
+            } else {
+                values.product_image = file_list[0].file_id;
+            }
+
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/feijiu/fast/product/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/feijiu/fast/product/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -184,7 +223,7 @@ class FeijiuFastProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品分类id">
+                                }} className="content-search-item" label="商品分类">
                                     {
                                         getFieldDecorator('product_category_id', {
                                             rules: [{
@@ -193,7 +232,16 @@ class FeijiuFastProductDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品分类id'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择商品分类">
+                                                {
+                                                    this.state.product_category_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.product_category_id}
+                                                                    value={item.product_category_id}>{item.product_category_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -224,18 +272,8 @@ class FeijiuFastProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品图片">
-                                    {
-                                        getFieldDecorator('product_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品图片'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-image-item form-required-item" label="商品图片">
+                                    <InputImage name="product_image" limit={1} ref="product_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -260,10 +298,10 @@ class FeijiuFastProductDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
+                                    labelCol: {span: 3},
+                                    wrapperCol: {span: 21}
                                 }} className="form-item" label="商品介绍">
                                     {
                                         getFieldDecorator('product_content', {
@@ -273,7 +311,7 @@ class FeijiuFastProductDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '商品介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -293,7 +331,7 @@ class FeijiuFastProductDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '申请人数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999999999} placeholder={constant.placeholder + '申请人数'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

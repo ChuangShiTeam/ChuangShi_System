@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -50,7 +51,7 @@ class FeijiuFastCreditCardDetail extends Component {
         });
 
         http.request({
-            url: '/feijiu/fast/credit/card/' + constant.action + '/find',
+            url: '/' + constant.action + '/feijiu/fast/credit/card/find',
             data: {
                 credit_card_id: this.state.credit_card_id
             },
@@ -63,10 +64,15 @@ class FeijiuFastCreditCardDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     credit_card_name: data.credit_card_name,
-                    credit_card_image: data.credit_card_image,
                     credit_card_link: data.credit_card_link,
                     credit_card_content: data.credit_card_content,
                 });
+
+                let credit_card_image = [];
+                if (data.credit_card_image_file !== '') {
+                    credit_card_image.push(data.credit_card_image_file);
+                }
+                this.refs.credit_card_image.handleSetValue(credit_card_image);
 
                 this.setState({
                     system_version: data.system_version
@@ -90,12 +96,19 @@ class FeijiuFastCreditCardDetail extends Component {
             values.credit_card_id = this.state.credit_card_id;
             values.system_version = this.state.system_version;
 
+            let file_list = this.refs.credit_card_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.credit_card_image = '';
+            } else {
+                values.credit_card_image = file_list[0].file_id;
+            }
+
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/feijiu/fast/credit/card/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/feijiu/fast/credit/card/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -182,7 +195,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品名称">
+                                }} className="form-item" label="信用卡名称">
                                     {
                                         getFieldDecorator('credit_card_name', {
                                             rules: [{
@@ -191,7 +204,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '信用卡名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -202,18 +215,8 @@ class FeijiuFastCreditCardDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品图片">
-                                    {
-                                        getFieldDecorator('credit_card_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品图片'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-image-item form-required-item" label="信用卡图片">
+                                    <InputImage name="credit_card_image" limit={1} ref="credit_card_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -222,7 +225,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品链接">
+                                }} className="form-item" label="信用卡链接">
                                     {
                                         getFieldDecorator('credit_card_link', {
                                             rules: [{
@@ -231,7 +234,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品链接'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '信用卡链接'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -242,7 +245,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品介绍">
+                                }} className="form-item" label="信用卡介绍">
                                     {
                                         getFieldDecorator('credit_card_content', {
                                             rules: [{
@@ -251,7 +254,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '信用卡介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

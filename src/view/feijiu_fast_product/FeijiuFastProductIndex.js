@@ -187,10 +187,7 @@ class FeijiuFastProductIndex extends Component {
         const columns = [{
             title: '商品名称',
             dataIndex: 'product_name'
-        }, {
-            title: '商品链接',
-            dataIndex: 'product_link'
-        }, {
+        },{
             title: '申请人数',
             dataIndex: 'product_applicant_quantity'
         }, {

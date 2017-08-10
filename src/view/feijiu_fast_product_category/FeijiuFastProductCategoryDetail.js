@@ -50,7 +50,7 @@ class FeijiuFastProductCategoryDetail extends Component {
         });
 
         http.request({
-            url: '/feijiu/fast/product/category/' + constant.action + '/find',
+            url: '/' + constant.action + '/feijiu/fast/product/category/find',
             data: {
                 product_category_id: this.state.product_category_id
             },
@@ -63,7 +63,6 @@ class FeijiuFastProductCategoryDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     product_category_name: data.product_category_name,
-                    product_category_content: data.product_category_content,
                     product_category_sort_number: data.product_category_sort_number,
                 });
 
@@ -94,7 +93,7 @@ class FeijiuFastProductCategoryDetail extends Component {
             });
 
             http.request({
-                url: '/feijiu/fast/product/category/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/feijiu/fast/product/category/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -191,26 +190,6 @@ class FeijiuFastProductCategoryDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '商品分类名称'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="商品分类介绍">
-                                    {
-                                        getFieldDecorator('product_category_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品分类介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
