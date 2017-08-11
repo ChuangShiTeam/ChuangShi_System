@@ -136,6 +136,8 @@ class FeijiuFastCreditCardDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.credit_card_image.handleReset();
     }
 
     render() {

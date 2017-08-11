@@ -164,6 +164,8 @@ class FeijiuFastProductDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.product_image.handleReset();
     }
 
     render() {
