@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "antd": "^2.12.2",
+    "antd": "^2.12.6",
     "dva": "^1.2.1",
     "prop-types": "^15.5.10",
     "rc-queue-anim": "^1.0.5",

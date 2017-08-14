@@ -255,10 +255,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_token">
                                     {
                                         getFieldDecorator('wechat_token', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_token'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -275,10 +271,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_encoding_aes_key">
                                     {
                                         getFieldDecorator('wechat_encoding_aes_key', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_encoding_aes_key'} onPressEnter={this.handleSubmit.bind(this)}/>

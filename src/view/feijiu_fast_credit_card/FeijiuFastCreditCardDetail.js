@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
@@ -66,6 +66,7 @@ class FeijiuFastCreditCardDetail extends Component {
                     credit_card_name: data.credit_card_name,
                     credit_card_link: data.credit_card_link,
                     credit_card_content: data.credit_card_content,
+                    credit_card_sort: data.credit_card_sort,
                 });
 
                 let credit_card_image = [];
@@ -261,7 +262,26 @@ class FeijiuFastCreditCardDetail extends Component {
                                     }
                                 </FormItem>
                             </Col>
-                        </Row>
+                        </Row><Row>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="form-item" label="信用卡排序">
+                                {
+                                    getFieldDecorator('credit_card_sort', {
+                                        rules: [{
+                                            required: true,
+                                            message: constant.required
+                                        }],
+                                        initialValue: 0
+                                    })(
+                                        <InputNumber min={0} max={999} placeholder={constant.placeholder + '信用卡排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                    </Row>
                     </form>
                 </Spin>
             </Modal>
