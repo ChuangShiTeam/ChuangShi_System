@@ -50,6 +50,7 @@ import WarehouseMemberDeliveryOrderIndex from "./view/warehouse_member_delivery_
 import CertificateIndex from "./view/certificate/CertificateIndex";
 import ArticleIndex from './view/article/ArticleIndex';
 import EnchashmentIndex from './view/enchashment/EnchashmentIndex';
+import ArticleCategoryIndex from './view/article_category/ArticleCategoryIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -125,6 +126,7 @@ function RouterConfig({history}) {
                     <Route path="certificate/index" component={CertificateIndex}/>
                     <Route path="article/index" component={ArticleIndex}/>
                     <Route path="enchashment/index" component={EnchashmentIndex}/>
+                    <Route path="article/category/index" component={ArticleCategoryIndex}/>
                 </Route>
             </Route>
         </Router>
