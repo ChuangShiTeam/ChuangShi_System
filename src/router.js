@@ -51,6 +51,8 @@ import CertificateIndex from "./view/certificate/CertificateIndex";
 import ArticleIndex from './view/article/ArticleIndex';
 import EnchashmentIndex from './view/enchashment/EnchashmentIndex';
 import ArticleCategoryIndex from './view/article_category/ArticleCategoryIndex';
+import JianglingPrizeIndex from './view/jiangling_prize/JianglingPrizeIndex';
+import JianglingMemberIndex from './view/jiangling_member/JianglingMemberIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -127,6 +129,8 @@ function RouterConfig({history}) {
                     <Route path="article/index" component={ArticleIndex}/>
                     <Route path="enchashment/index" component={EnchashmentIndex}/>
                     <Route path="article/category/index" component={ArticleCategoryIndex}/>
+                    <Route path="jiangling/prize/index" component={JianglingPrizeIndex}/>
+                    <Route path="jiangling/member/index" component={JianglingMemberIndex}/>
                 </Route>
             </Route>
         </Router>

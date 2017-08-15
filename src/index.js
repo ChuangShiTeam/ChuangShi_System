@@ -51,6 +51,8 @@ import certificate from "./model/certificate";
 import article from './model/article';
 import enchashment from './model/enchashment';
 import article_category from './model/article_category';
+import jiangling_prize from './model/jiangling_prize';
+import jiangling_member from './model/jiangling_member';
 
 document.title = constant.name;
 
@@ -111,6 +113,8 @@ app.model(certificate);
 app.model(article);
 app.model(enchashment);
 app.model(article_category);
+app.model(jiangling_prize);
+app.model(jiangling_member);
 
 app.router(Router);
 

@@ -2,7 +2,7 @@ export default {
     // host: 'http://localhost:8080',
     host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
-    is_menu: true,
+    is_show_menu: true,
     action: 'admin',
     platform: 'Admin',
     version: '9.9.9',
