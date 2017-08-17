@@ -21,7 +21,7 @@ class ArticleIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.article.app_id
+                app_id: this.props.article.app_id
             });
 
             this.handleLoadApp();
@@ -32,6 +32,8 @@ class ArticleIndex extends Component {
         });
 
         this.handleLoad();
+
+        this.handleLoadArticleCategory();
 
         notification.on('notification_article_index_load', this, function (data) {
             this.handleLoad();
@@ -111,6 +113,24 @@ class ArticleIndex extends Component {
                     is_load: false
                 });
             }.bind(this)
+        });
+    }
+
+    handleLoadArticleCategory() {
+        http.request({
+            url: '/' + constant.action + '/article/category/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'article/fetch',
+                    data: {
+                        article_category_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
         });
     }
 
@@ -270,7 +290,8 @@ class ArticleIndex extends Component {
                                     getFieldDecorator('article_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入文章名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入文章名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

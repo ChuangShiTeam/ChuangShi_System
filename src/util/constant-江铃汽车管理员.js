@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '上海星销信息技术有限公司--总控后台',
-    app_id: 'c1af3f1ae00e4e0da9b20f5bd41b4279',
-    index: 'product/index',
+    name: '江铃汽车--总控后台',
+    app_id: 'dad947bec0c54ff8b12586eda1c8e146',
+    index: '/jiangling/member/index',
     login: '/admin/login'
 };

@@ -133,24 +133,20 @@ class Main extends Component {
                                     {
                                         this.state.menu.map(function (item) {
                                             return (
-                                                constant.is_tree_menu ?
-                                                    <SubMenu key={item.menu_id}
-                                                             title={<span><Icon type={item.menu_image}/><span
-                                                                 className="nav-text">{item.menu_name}</span></span>}>
-                                                        {
-                                                            item.children.map(function (children) {
-                                                                return (
-                                                                    <Menu.Item key={children.menu_id}><Link
-                                                                        to={children.menu_url}><Icon
-                                                                        type="database"/>{children.menu_name}
-                                                                    </Link></Menu.Item>
-                                                                )
-                                                            })
-                                                        }
-                                                    </SubMenu>
-                                                    :
-                                                    <Menu.Item key={item.menu_id}><Link to={item.menu_url}><Icon
-                                                        type="database"/>{item.menu_name}</Link></Menu.Item>
+                                                <SubMenu key={item.menu_id}
+                                                         title={<span><Icon type={item.menu_image}/><span
+                                                             className="nav-text">{item.menu_name}</span></span>}>
+                                                    {
+                                                        item.children.map(function (children) {
+                                                            return (
+                                                                <Menu.Item key={children.menu_id}><Link
+                                                                    to={children.menu_url}><Icon
+                                                                    type="database"/>{children.menu_name}
+                                                                </Link></Menu.Item>
+                                                            )
+                                                        })
+                                                    }
+                                                </SubMenu>
                                             )
                                         })
                                     }

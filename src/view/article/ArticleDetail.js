@@ -74,7 +74,7 @@ class ArticleDetail extends Component {
                 this.refs.article_content.handleSetValue(data.article_content);
 
                 this.props.form.setFieldsValue({
-                    category_id: data.category_id,
+                    article_category_id: data.article_category_id,
                     article_name: data.article_name,
                     article_summary: data.article_summary,
                 });
@@ -229,10 +229,19 @@ class ArticleDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="分类编号">
                                     {
-                                        getFieldDecorator('category_id', {
+                                        getFieldDecorator('article_category_id', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类编号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择分类编号">
+                                                {
+                                                    this.props.article.article_category_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.article_category_id}
+                                                                    value={item.article_category_id}>{item.product_category_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
