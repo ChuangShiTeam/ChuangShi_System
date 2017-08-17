@@ -83,8 +83,7 @@ class WarehouseMemberDeliveryOrderDeliver extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            member_delivery_order: {},
-            warehouse_list: []
+            member_delivery_order: {}
         });
 
         this.props.form.resetFields();
