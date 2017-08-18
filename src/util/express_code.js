@@ -22,5 +22,9 @@ export default [
 	{
 		label: '中通速递',
 		value: 'ZTO'
+	},
+	{
+		label: '德邦物流',
+		value: 'DBL'
 	}
 ]
