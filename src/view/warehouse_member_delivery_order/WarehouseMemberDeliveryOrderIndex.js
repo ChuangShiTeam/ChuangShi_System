@@ -113,6 +113,27 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
         });
     }
 
+    handleExpressPull() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/express/' + constant.action + '/pull',
+            data: {
+
+            },
+            success: function (data) {
+                console.log(data);
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
@@ -211,6 +232,9 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                loading={this.state.is_load}
+                                onClick={this.handleExpressPull.bind(this)}>同步物流信息</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
