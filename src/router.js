@@ -53,6 +53,7 @@ import EnchashmentIndex from './view/enchashment/EnchashmentIndex';
 import ArticleCategoryIndex from './view/article_category/ArticleCategoryIndex';
 import JianglingPrizeIndex from './view/jiangling_prize/JianglingPrizeIndex';
 import JianglingMemberIndex from './view/jiangling_member/JianglingMemberIndex';
+import PageIndex from './view/page/PageIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -103,12 +104,9 @@ function RouterConfig({history}) {
                     <Route path="member/delivery/order/index" component={MemberDeliveryOrderIndex}/>
                     <Route path="express/index" component={ExpressIndex}/>
                     <Route path="qrcode/index" component={QrcodeIndex}/>
-
                     <Route path="trade/index" component={TradeIndex}/>
-
                     <Route path="customer/list" component={CustomerIndex}/>
                     <Route path="customer/attribute/index" component={CustomerAttributeIndex}/>
-
                     <Route path="guangqi/customer/index" component={GuangqiCustomerIndex}/>
                     <Route path="guangqi/prize/index" component={GuangqiPrizeIndex}/>
                     <Route path="feijiu/fast/credit/card/index" component={FeijiuFastCreditCardIndex}/>
@@ -117,20 +115,18 @@ function RouterConfig({history}) {
                     <Route path="feijiu/fast/product/category/index" component={FeijiuFastProductCategoryIndex}/>
                     <Route path="feijiu/recommend/customer/index" component={FeijiuRecommendCustomerIndex}/>
                     <Route path="feijiu/recommend/product/index" component={FeijiuRecommendProductIndex}/>
-
                     <Route path="bill/index" component={BillIndex}/>
                     <Route path="supplier/index" component={SupplierIndex}/>
                     <Route path="supplier/trade/index" component={SupplierTradeIndex}/>
-
                     <Route path="warehouse/index" component={WarehouseIndex}/>
                     <Route path="warehouse/member/delivery/order/index" component={WarehouseMemberDeliveryOrderIndex}/>
-
                     <Route path="certificate/index" component={CertificateIndex}/>
                     <Route path="article/index" component={ArticleIndex}/>
                     <Route path="enchashment/index" component={EnchashmentIndex}/>
                     <Route path="article/category/index" component={ArticleCategoryIndex}/>
                     <Route path="jiangling/prize/index" component={JianglingPrizeIndex}/>
                     <Route path="jiangling/member/index" component={JianglingMemberIndex}/>
+                    <Route path="page/index" component={PageIndex}/>
                 </Route>
             </Route>
         </Router>

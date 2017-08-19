@@ -53,6 +53,7 @@ import enchashment from './model/enchashment';
 import article_category from './model/article_category';
 import jiangling_prize from './model/jiangling_prize';
 import jiangling_member from './model/jiangling_member';
+import page from './model/page';
 
 document.title = constant.name;
 
@@ -85,12 +86,9 @@ app.model(app_stock_out);
 app.model(app_stock_replenish);
 app.model(express);
 app.model(qrcode);
-
 app.model(trade);
-
 app.model(customer);
 app.model(customer_attribute);
-
 app.model(guangqi_customer);
 app.model(guangqi_prize);
 app.model(feijiu_fast_credit_card);
@@ -103,18 +101,16 @@ app.model(bill);
 app.model(supplier);
 app.model(supplier_trade);
 app.model(cache);
-
 app.model(warehouse);
 app.model(warehouse_member_delivery_order);
-
 app.model(member_delivery_order);
-
 app.model(certificate);
 app.model(article);
 app.model(enchashment);
 app.model(article_category);
 app.model(jiangling_prize);
 app.model(jiangling_member);
+app.model(page);
 
 app.router(Router);
 
