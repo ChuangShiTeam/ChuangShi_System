@@ -170,17 +170,17 @@ class MemberDeliveryOrderIndex extends Component {
             render: (text, record, index) => (
                 <span>{record.member_delivery_order_receiver_name}({record.member_delivery_order_receiver_mobile})</span>
             )
-        }, {
-            title: '收货人地址',
-            dataIndex: 'member_delivery_order_receiver_address',
-            render: (text, record, index) => (
-                <span>
-                    {record.member_delivery_order_receiver_province}-
-                    {record.member_delivery_order_receiver_city}-
-                    {record.member_delivery_order_receiver_area}-
-                    {record.member_delivery_order_receiver_address}
-                </span>
-            )
+        // }, {
+        //     title: '收货人地址',
+        //     dataIndex: 'member_delivery_order_receiver_address',
+        //     render: (text, record, index) => (
+        //         <span>
+        //             {record.member_delivery_order_receiver_province}-
+        //             {record.member_delivery_order_receiver_city}-
+        //             {record.member_delivery_order_receiver_area}-
+        //             {record.member_delivery_order_receiver_address}
+        //         </span>
+        //     )
         }, {
             title: '发货数量',
             dataIndex: 'member_delivery_order_total_quantity'
@@ -192,7 +192,7 @@ class MemberDeliveryOrderIndex extends Component {
             )
 
         }, {
-            title: '是否付款',
+            title: '付款',
             dataIndex: 'member_delivery_order_is_pay',
             render: (text, record, index) => (
                 <div className="clearfix">
@@ -204,7 +204,7 @@ class MemberDeliveryOrderIndex extends Component {
                 </div>
             )
         }, {
-            title: '是否仓库代发',
+            title: '总仓库代发',
             dataIndex: 'member_delivery_order_is_warehouse_deliver',
             render: (text, record, index) => (
                 <div className="clearfix">
@@ -215,18 +215,18 @@ class MemberDeliveryOrderIndex extends Component {
                     }
                 </div>
             )
-        }, {
-            title: '是否完成',
-            dataIndex: 'member_delivery_order_is_complete',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.member_delivery_order_is_complete ?
-                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
-                        :
-                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
-                    }
-                </div>
-            )
+        // }, {
+        //     title: '是否完成',
+        //     dataIndex: 'member_delivery_order_is_complete',
+        //     render: (text, record, index) => (
+        //         <div className="clearfix">
+        //             {record.member_delivery_order_is_complete ?
+        //                 <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+        //                 :
+        //                 <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+        //             }
+        //         </div>
+        //     )
         }, {
             title: '当前流程',
             dataIndex: 'member_delivery_order_flow',
@@ -239,7 +239,10 @@ class MemberDeliveryOrderIndex extends Component {
                 </div>
             )
         }, {
-            width: 150,
+            title: '创建时间',
+            dataIndex: 'system_create_time'
+        }, {
+            width: 50,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (

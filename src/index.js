@@ -54,6 +54,7 @@ import article_category from './model/article_category';
 import jiangling_prize from './model/jiangling_prize';
 import jiangling_member from './model/jiangling_member';
 import page from './model/page';
+import captcha from './model/captcha';
 
 document.title = constant.name;
 
@@ -111,6 +112,7 @@ app.model(article_category);
 app.model(jiangling_prize);
 app.model(jiangling_member);
 app.model(page);
+app.model(captcha);
 
 app.router(Router);
 
