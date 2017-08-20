@@ -55,6 +55,8 @@ import jiangling_prize from './model/jiangling_prize';
 import jiangling_member from './model/jiangling_member';
 import page from './model/page';
 import captcha from './model/captcha';
+import jiangling_customer from './model/jiangling_customer';
+import jiangling_game from './model/jiangling_game';
 
 document.title = constant.name;
 
@@ -113,6 +115,8 @@ app.model(jiangling_prize);
 app.model(jiangling_member);
 app.model(page);
 app.model(captcha);
+app.model(jiangling_customer);
+app.model(jiangling_game);
 
 app.router(Router);
 
