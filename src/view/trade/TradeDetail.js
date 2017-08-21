@@ -47,6 +47,10 @@ class TradeDetail extends Component {
             });
         });
 
+        notification.on('notification_trade_detail_load', this, function (data) {
+            this.handleLoad();
+        });
+
         notification.on('notification_trade_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
