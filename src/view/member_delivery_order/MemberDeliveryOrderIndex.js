@@ -191,18 +191,18 @@ class MemberDeliveryOrderIndex extends Component {
                 <span>￥{record.member_delivery_order_amount}</span>
             )
 
-        }, {
-            title: '付款',
-            dataIndex: 'member_delivery_order_is_pay',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.member_delivery_order_is_pay ?
-                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
-                        :
-                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
-                    }
-                </div>
-            )
+        // }, {
+        //     title: '付款',
+        //     dataIndex: 'member_delivery_order_is_pay',
+        //     render: (text, record, index) => (
+        //         <div className="clearfix">
+        //             {record.member_delivery_order_is_pay ?
+        //                 <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+        //                 :
+        //                 <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+        //             }
+        //         </div>
+        //     )
         }, {
             title: '总仓库代发',
             dataIndex: 'member_delivery_order_is_warehouse_deliver',
