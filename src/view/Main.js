@@ -41,7 +41,7 @@ class Main extends Component {
 
                 for (let i = 0; i < data.length; i++) {
                     for (let k = 0; k < data[i].children.length; k++) {
-                        if (data[i].children[k].menu_url === '/' + this.props.routes[2].path) {
+                        if (data[i].children[k].menu_url === this.props.routes[2].path) {
                             open_key = [data[i].menu_id];
                             selected_key = [data[i].children[k].menu_id];
 
