@@ -239,6 +239,8 @@ class WarehouseMemberDeliveryOrderDetail extends Component {
                 </span>
             )
         }];
+        console.log('member_delivery_order', this.state.member_delivery_order);
+        console.log('is_direct_deliver', this.state.is_direct_deliver);
         return (
             <Modal title={<h3>会员发货单详情</h3>} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
@@ -352,15 +354,20 @@ class WarehouseMemberDeliveryOrderDetail extends Component {
                         <br/>
                         {
                             this.state.is_direct_deliver?
-                                <Row>
-                                    <Col span={8}></Col>
-                                    <Col span={16} className="content-button">
-                                        <Button type="primary" icon="plus-circle" size="default"
-                                                loading={this.state.is_load}
-                                                onClick={this.handleDeliver.bind(this)}>仓库发货</Button>
-                                    </Col>
-                                </Row>
-                                    :
+                                <span>
+                                {
+                                    this.state.member_delivery_order.member_delivery_order_flow === 'WAIT_WAREHOUSE_SEND'?
+                                    <Row>
+                                        <Col span={8}></Col>
+                                        <Col span={16} className="content-button">
+                                            <Button type="primary" icon="plus-circle" size="default"
+                                                    loading={this.state.is_load}
+                                                    onClick={this.handleDeliver.bind(this)}>仓库发货</Button>
+                                        </Col>
+                                    </Row>:null
+                                }
+                                </span>
+                                :
                                 <span>
                                     <Row>
                                         <Col span={8}>
