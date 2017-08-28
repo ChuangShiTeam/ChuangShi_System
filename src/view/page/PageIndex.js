@@ -155,6 +155,48 @@ class PageIndex extends Component {
         });
     }
 
+    handleAllWrite() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/page/all/write',
+            data: {
+
+            },
+            success: function (data) {
+                message.success(constant.success);
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
+    handleWrite(page_id) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/page/write',
+            data: {
+                page_id: page_id
+            },
+            success: function (data) {
+                message.success(constant.success);
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     handleDel(page_id, system_version) {
         this.setState({
             is_load: true
@@ -188,12 +230,23 @@ class PageIndex extends Component {
             title: '单页名称',
             dataIndex: 'page_name'
         }, {
-            width: 100,
+            title: '单页模板',
+            dataIndex: 'page_template'
+        }, {
+            title: '单页地址',
+            dataIndex: 'page_url'
+        }, {
+            title: '单页排序',
+            dataIndex: 'page_sort'
+        }, {
+            width: 135,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.page_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <a onClick={this.handleWrite.bind(this, record.page_id)}>生成</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -221,9 +274,12 @@ class PageIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">单页信息</div>
                     </Col>
                     <Col span={16} className="content-button">
+                        <Button type="default" icon="export" size="default" className="margin-right"
+                                loading={this.state.is_load}
+                                onClick={this.handleAllWrite.bind(this)}>全部生成</Button>
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>

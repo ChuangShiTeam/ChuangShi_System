@@ -21,7 +21,7 @@ class WebsiteMenuIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.website_menu.app_id
+                app_id: this.props.website_menu.app_id
             });
 
             this.handleLoadApp();
@@ -93,16 +93,16 @@ class WebsiteMenuIndex extends Component {
             url: '/' + constant.action + '/website/menu/list',
             data: {
                 app_id: this.props.website_menu.app_id,
-                website_menu_name: this.props.website_menu.website_menu_name,
-                page_index: this.props.website_menu.page_index,
-                page_size: this.props.website_menu.page_size
+                website_menu_name: this.props.website_menu.website_menu_name
             },
             success: function (data) {
+                let expandedRowKeys = this.setExpandedRowKeys(data);
+
                 this.props.dispatch({
                     type: 'website_menu/fetch',
                     data: {
-                        total: data.total,
-                        list: data.list
+                        list: data,
+                        expandedRowKeys: expandedRowKeys
                     }
                 });
             }.bind(this),
@@ -112,6 +112,20 @@ class WebsiteMenuIndex extends Component {
                 });
             }.bind(this)
         });
+    }
+
+    setExpandedRowKeys(list) {
+        let expandedRowKeys = [];
+
+        for (let i = 0; i < list.length; i++) {
+            expandedRowKeys.push(list[i].website_menu_id);
+
+            if (list[i].children) {
+                expandedRowKeys = expandedRowKeys.concat(this.setExpandedRowKeys(list[i].children));
+            }
+        }
+
+        return expandedRowKeys;
     }
 
     handleChangeIndex(page_index) {
@@ -145,8 +159,10 @@ class WebsiteMenuIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_website_menu_detail_add', {});
+    handleAdd(website_menu_parent_id) {
+        notification.emit('notification_website_menu_detail_add', {
+            website_menu_parent_id: website_menu_parent_id
+        });
     }
 
     handleEdit(website_menu_id) {
@@ -194,11 +210,13 @@ class WebsiteMenuIndex extends Component {
             title: '菜单排序',
             dataIndex: 'website_menu_sort'
         }, {
-            width: 100,
+            width: 135,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
+                  <a onClick={this.handleAdd.bind(this, record.website_menu_id)}>{constant.add}</a>
+                  <span className="divider"/>
                   <a onClick={this.handleEdit.bind(this, record.website_menu_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
@@ -210,31 +228,18 @@ class WebsiteMenuIndex extends Component {
             )
         }];
 
-        const pagination = {
-            size: 'defalut',
-            total: this.props.website_menu.total,
-            showTotal: function (total, range) {
-                return '总共' + total + '条数据';
-            },
-            current: this.props.website_menu.page_index,
-            pageSize: this.props.website_menu.page_size,
-            showSizeChanger: true,
-            onShowSizeChange: this.handleChangeSize.bind(this),
-            onChange: this.handleChangeIndex.bind(this)
-        };
-
         return (
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">菜单信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                onClick={this.handleAdd.bind(this, '')}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -276,7 +281,8 @@ class WebsiteMenuIndex extends Component {
                                     getFieldDecorator('website_menu_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入菜单名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入菜单名称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -288,8 +294,9 @@ class WebsiteMenuIndex extends Component {
                 <Table key="2"
                        rowKey="website_menu_id"
                        className="margin-top"
+                       expandedRowKeys={this.props.website_menu.expandedRowKeys}
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.website_menu.list} pagination={pagination}
+                       dataSource={this.props.website_menu.list} pagination={false}
                        bordered/>
                 <WebsiteMenuDetail/>
             </QueueAnim>

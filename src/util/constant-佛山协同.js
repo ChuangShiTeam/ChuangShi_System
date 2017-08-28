@@ -2,8 +2,8 @@ export default {
     // host: 'http://localhost:8080',
     host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
-    is_show_menu: true,
     action: 'admin',
+    is_show_menu: true,
     platform: 'Admin',
     version: '9.9.9',
     page_size: 10,
@@ -24,6 +24,6 @@ export default {
     detail_width: 1080,
     name: '佛山协同国际学校--总控后台',
     app_id: '749388e5dac3465f922c54e61d16a993',
-    index: '/trade/index',
+    index: '/article/index',
     login: '/admin/login'
 };

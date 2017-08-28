@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
 import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
@@ -68,6 +68,9 @@ class PageDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     page_name: data.page_name,
+                    page_template: data.page_template,
+                    page_url: data.page_url,
+                    page_sort: data.page_sort,
                 });
 
                 this.setState({
@@ -92,11 +95,11 @@ class PageDetail extends Component {
             values.page_id = this.state.page_id;
             values.system_version = this.state.system_version;
 
+            values.page_content = this.refs.page_content.handleGetValue();
+
             this.setState({
                 is_load: true
             });
-
-            values.page_content = this.refs.page_content.handleGetValue();
 
             http.request({
                 url: '/' + constant.action + '/page/' + this.state.action,
@@ -137,7 +140,7 @@ class PageDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'单页详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -198,6 +201,66 @@ class PageDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '单页名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="单页模板">
+                                    {
+                                        getFieldDecorator('page_template', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '单页模板'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="单页地址">
+                                    {
+                                        getFieldDecorator('page_url', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '单页地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="单页排序">
+                                    {
+                                        getFieldDecorator('page_sort', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '单页排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

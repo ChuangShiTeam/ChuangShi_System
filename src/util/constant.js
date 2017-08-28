@@ -1,9 +1,9 @@
 export default {
-    host: 'http://localhost:8080',
-    // host: 'http://api.chuangshi.nowui.com',
+    // host: 'http://localhost:8080',
+    host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
-    is_show_menu: true,
     action: 'admin',
+    is_show_menu: true,
     platform: 'Admin',
     version: '9.9.9',
     page_size: 10,
@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '上海星销信息技术有限公司--总控后台',
-    app_id: 'c1af3f1ae00e4e0da9b20f5bd41b4279',
-    index: '/member/delivery/order/index',
+    name: '久飞财富快速贷款--总控后台',
+    app_id: 'd49579df8f8342699657335868f90561',
+    index: '/feijiu/fast/product/index',
     login: '/admin/login'
 };

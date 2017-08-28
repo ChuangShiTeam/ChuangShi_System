@@ -28,7 +28,7 @@ class ArticleCategoryIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            product_category_name: this.props.article_category.product_category_name,
+            article_category_name: this.props.article_category.article_category_name,
         });
 
         this.handleLoad();
@@ -67,13 +67,13 @@ class ArticleCategoryIndex extends Component {
                 app_id = '';
             }
 
-            let product_category_name = this.props.form.getFieldValue('product_category_name');
+            let article_category_name = this.props.form.getFieldValue('article_category_name');
 
             this.props.dispatch({
                 type: 'article_category/fetch',
                 data: {
                     app_id: app_id,
-                    product_category_name: product_category_name,
+                    article_category_name: article_category_name,
                     page_index: 1
                 }
             });
@@ -93,7 +93,7 @@ class ArticleCategoryIndex extends Component {
             url: '/' + constant.action + '/article/category/list',
             data: {
                 app_id: this.props.article_category.app_id,
-                product_category_name: this.props.article_category.product_category_name,
+                article_category_name: this.props.article_category.article_category_name,
                 page_index: this.props.article_category.page_index,
                 page_size: this.props.article_category.page_size
             },
@@ -145,8 +145,10 @@ class ArticleCategoryIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd() {
-        notification.emit('notification_article_category_detail_add', {});
+    handleAdd(article_category_parent_id) {
+        notification.emit('notification_article_category_detail_add', {
+            article_category_parent_id: article_category_parent_id
+        });
     }
 
     handleEdit(article_category_id) {
@@ -186,10 +188,10 @@ class ArticleCategoryIndex extends Component {
 
         const columns = [{
             title: '分类名称',
-            dataIndex: 'product_category_name'
+            dataIndex: 'article_category_name'
         }, {
             title: '分类排序',
-            dataIndex: 'product_category_sort'
+            dataIndex: 'article_category_sort'
         }, {
             width: 100,
             title: constant.operation,
@@ -231,7 +233,7 @@ class ArticleCategoryIndex extends Component {
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                                onClick={this.handleAdd.bind(this, '')}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -270,7 +272,7 @@ class ArticleCategoryIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="分类名称">
                                 {
-                                    getFieldDecorator('product_category_name', {
+                                    getFieldDecorator('article_category_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入分类名称" onPressEnter={this.handleSearch.bind(this)}/>

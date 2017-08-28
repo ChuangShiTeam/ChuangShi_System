@@ -15,6 +15,7 @@ class ArticleCategoryDetail extends Component {
             is_show: false,
             action: '',
             article_category_id: '',
+            article_category_parent_id: '',
             system_version: ''
         }
     }
@@ -23,7 +24,8 @@ class ArticleCategoryDetail extends Component {
         notification.on('notification_article_category_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save'
+                action: 'save',
+                article_category_parent_id: data.article_category_parent_id
             });
         });
 
@@ -62,13 +64,12 @@ class ArticleCategoryDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    article_category_parent_id: data.article_category_parent_id,
-                    product_category_name: data.product_category_name,
-                    product_category_sort: data.product_category_sort,
-                    product_category_path: data.product_category_path,
+                    article_category_name: data.article_category_name,
+                    article_category_sort: data.article_category_sort,
                 });
 
                 this.setState({
+                    article_category_parent_id: data.article_category_parent_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -88,6 +89,7 @@ class ArticleCategoryDetail extends Component {
             }
 
             values.article_category_id = this.state.article_category_id;
+            values.article_category_parent_id = this.state.article_category_parent_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -182,29 +184,9 @@ class ArticleCategoryDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="上级编号">
-                                    {
-                                        getFieldDecorator('article_category_parent_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '上级编号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="分类名称">
                                     {
-                                        getFieldDecorator('product_category_name', {
+                                        getFieldDecorator('article_category_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
@@ -224,7 +206,7 @@ class ArticleCategoryDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="分类排序">
                                     {
-                                        getFieldDecorator('product_category_sort', {
+                                        getFieldDecorator('article_category_sort', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
@@ -232,26 +214,6 @@ class ArticleCategoryDetail extends Component {
                                             initialValue: 0
                                         })(
                                             <InputNumber min={0} max={999} placeholder={constant.placeholder + '分类排序'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="分类路径">
-                                    {
-                                        getFieldDecorator('product_category_path', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类路径'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

@@ -15,6 +15,7 @@ class WebsiteMenuDetail extends Component {
             is_show: false,
             action: '',
             website_menu_id: '',
+            website_menu_pawebsite_menu_parent_idrent_id: '',
             system_version: ''
         }
     }
@@ -23,7 +24,8 @@ class WebsiteMenuDetail extends Component {
         notification.on('notification_website_menu_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save'
+                action: 'save',
+                website_menu_parent_id: data.website_menu_parent_id
             });
         });
 
@@ -62,13 +64,13 @@ class WebsiteMenuDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    website_menu_parent_id: data.website_menu_parent_id,
                     website_menu_name: data.website_menu_name,
                     website_menu_url: data.website_menu_url,
                     website_menu_sort: data.website_menu_sort,
                 });
 
                 this.setState({
+                    website_menu_parent_id: data.website_menu_parent_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -88,6 +90,7 @@ class WebsiteMenuDetail extends Component {
             }
 
             values.website_menu_id = this.state.website_menu_id;
+            values.website_menu_parent_id = this.state.website_menu_parent_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -131,7 +134,7 @@ class WebsiteMenuDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'菜单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -177,26 +180,6 @@ class WebsiteMenuDetail extends Component {
                                 :
                                 ''
                         }
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="上一级编号">
-                                    {
-                                        getFieldDecorator('website_menu_parent_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '上一级编号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
