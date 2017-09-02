@@ -190,6 +190,9 @@ class FeijiuFastProductIndex extends Component {
         },{
             title: '申请人数',
             dataIndex: 'product_applicant_quantity'
+        },{
+            title: '商品排序',
+            dataIndex: 'product_sort'
         }, {
             width: 100,
             title: constant.operation,

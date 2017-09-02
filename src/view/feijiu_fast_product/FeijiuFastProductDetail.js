@@ -71,6 +71,7 @@ class FeijiuFastProductDetail extends Component {
                     product_link: data.product_link,
                     product_content: data.product_content,
                     product_applicant_quantity: data.product_applicant_quantity,
+                    product_sort: data.product_sort,
                 });
 
                 let product_image = [];
@@ -334,6 +335,26 @@ class FeijiuFastProductDetail extends Component {
                                             initialValue: 0
                                         })(
                                             <InputNumber min={0} max={999999999} placeholder={constant.placeholder + '申请人数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="商品排序">
+                                    {
+                                        getFieldDecorator('product_sort', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '商品排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
