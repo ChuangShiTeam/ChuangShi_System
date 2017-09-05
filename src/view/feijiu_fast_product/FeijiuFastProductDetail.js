@@ -75,10 +75,10 @@ class FeijiuFastProductDetail extends Component {
                 });
 
                 let product_image = [];
-                if (data.product_image_file === '' || typeof (data.product_image_file) === 'undefined') {
+                if (data.product_image_file !== null) {
                     product_image.push(data.product_image_file);
                 }
-                //this.refs.product_image.handleSetValue(product_image);
+                this.refs.product_image.handleSetValue(product_image);
 
                 this.setState({
                     system_version: data.system_version

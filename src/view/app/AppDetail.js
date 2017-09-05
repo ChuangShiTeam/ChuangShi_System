@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Switch, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -15,8 +15,7 @@ class AppDetail extends Component {
             is_show: false,
             action: '',
             app_id: '',
-            system_version: '',
-            app_is_create_warehouse: false
+            system_version: ''
         }
     }
 
@@ -51,11 +50,17 @@ class AppDetail extends Component {
         });
 
         http.request({
-            url: '/app/' + constant.action + '/find',
+            url: '/' + constant.action + '/app/find',
             data: {
                 app_id: this.state.app_id
             },
             success: function (data) {
+                if (constant.action === 'system') {
+                    this.props.form.setFieldsValue({
+                        app_id: data.app_id
+                    });
+                }
+
                 this.props.form.setFieldsValue({
                     app_name: data.app_name,
                     app_secret: data.app_secret,
@@ -69,12 +74,12 @@ class AppDetail extends Component {
                     app_is_delivery: data.app_is_delivery,
                     app_is_audit_member: data.app_is_audit_member,
                     app_is_commission: data.app_is_commission,
-                    app_commission_level: data.app_commission_level
+                    app_commission_level: data.app_commission_level,
+                    app_website_path: data.app_website_path,
                 });
 
                 this.setState({
-                    system_version: data.system_version,
-                    app_is_create_warehouse: data.app_is_create_warehouse
+                    system_version: data.system_version
                 });
             }.bind(this),
             complete: function () {
@@ -94,13 +99,13 @@ class AppDetail extends Component {
 
             values.app_id = this.state.app_id;
             values.system_version = this.state.system_version;
-            console.log('values', values);
+
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/app/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/app/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -132,10 +137,11 @@ class AppDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
+        const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'应用详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -147,12 +153,46 @@ class AppDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
+                        {
+                            constant.action === 'system' ?
+                                <Row>
+                                    <Col span={16}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="content-search-item" label="应用名称">
+                                            {
+                                                getFieldDecorator('app_id', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select allowClear placeholder="请选择应用">
+                                                        {
+                                                            this.props.app.app_list.map(function (item) {
+                                                                return (
+                                                                    <Option key={item.app_id}
+                                                                            value={item.app_id}>{item.app_name}</Option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Select>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                :
+                                ''
+                        }
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="app_name">
+                                }} className="form-item" label="应用名称">
                                     {
                                         getFieldDecorator('app_name', {
                                             rules: [{
@@ -161,36 +201,40 @@ class AppDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'app_name'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '应用名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="app_secret">
+                                }} className="form-item" label="应用密钥">
                                     {
                                         getFieldDecorator('app_secret', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'app_secret'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '应用密钥'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="wechat_app_id">
                                     {
                                         getFieldDecorator('wechat_app_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_app_id'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -200,13 +244,17 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="wechat_app_secret">
                                     {
                                         getFieldDecorator('wechat_app_secret', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_app_secret'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -216,13 +264,17 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="wechat_mch_id">
                                     {
                                         getFieldDecorator('wechat_mch_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_mch_id'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -232,13 +284,17 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="wechat_mch_key">
                                     {
                                         getFieldDecorator('wechat_mch_key', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_mch_key'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -248,13 +304,17 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="wechat_token">
                                     {
                                         getFieldDecorator('wechat_token', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_token'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -264,13 +324,17 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="wechat_encoding_aes_key">
                                     {
                                         getFieldDecorator('wechat_encoding_aes_key', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_encoding_aes_key'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -280,7 +344,7 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -290,14 +354,14 @@ class AppDetail extends Component {
                                             valuePropName: 'checked',
                                             initialValue: false
                                         })(
-                                            <Switch disabled={this.state.app_is_create_warehouse}/>
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -314,7 +378,7 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -331,7 +395,7 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -348,7 +412,7 @@ class AppDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={16}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -362,6 +426,22 @@ class AppDetail extends Component {
                                             initialValue: 0
                                         })(
                                             <InputNumber min={0} max={999} placeholder={constant.placeholder + '参与分成的上级层数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={16}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="网站路径">
+                                    {
+                                        getFieldDecorator('app_website_path', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '网站路径'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

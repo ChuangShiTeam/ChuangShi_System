@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Row, Col, Spin, Button, Select, message, InputNumber} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';

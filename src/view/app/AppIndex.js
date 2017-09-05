@@ -21,14 +21,14 @@ class AppIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.app.app_id
+            app_id: this.props.app.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            app_name: this.props.app.app_name
+            app_name: this.props.app.app_name,
         });
 
         this.handleLoad();
@@ -44,7 +44,7 @@ class AppIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -90,7 +90,7 @@ class AppIndex extends Component {
         });
 
         http.request({
-            url: '/app/' + constant.action + '/list',
+            url: '/' + constant.action + '/app/list',
             data: {
                 app_id: this.props.app.app_id,
                 app_name: this.props.app.app_name,
@@ -161,7 +161,7 @@ class AppIndex extends Component {
         });
 
         http.request({
-            url: '/app/' + constant.action + '/delete',
+            url: '/' + constant.action + '/app/delete',
             data: {
                 app_id: app_id,
                 system_version: system_version
@@ -185,14 +185,16 @@ class AppIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: 'app_name',
+            title: '应用名称',
             dataIndex: 'app_name'
         }, {
-            width: 250,
-            title: 'app_id',
-            dataIndex: 'app_id'
+            title: '应用密钥',
+            dataIndex: 'app_secret'
         }, {
-            width: 200,
+            title: 'wechat_app_id',
+            dataIndex: 'wechat_app_id'
+        }, {
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
@@ -225,7 +227,7 @@ class AppIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">应用信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -269,17 +271,15 @@ class AppIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="应用名称">
                                 {
                                     getFieldDecorator('app_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入应用名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={8}>
                         </Col>
                         <Col span={8}>
                         </Col>
@@ -301,4 +301,6 @@ AppIndex.propTypes = {};
 
 AppIndex = Form.create({})(AppIndex);
 
-export default connect(({app}) => ({app}))(AppIndex);
+export default connect(({app}) => ({
+    app
+}))(AppIndex);
