@@ -58,6 +58,8 @@ import CaptchaIndex from './view/captcha/CaptchaIndex';
 import JianglingCustomerIndex from './view/jiangling_customer/JianglingCustomerIndex';
 import JianglingGameIndex from './view/jiangling_game/JianglingGameIndex';
 import WebsiteMenuIndex from './view/website_menu/WebsiteMenuIndex';
+import AdvertisementIndex from './view/advertisement/AdvertisementIndex';
+import XietongArticleIndex from './view/xietong_article/XietongArticleIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -135,6 +137,8 @@ function RouterConfig({history}) {
                     <Route path="/jiangling/customer/index" component={JianglingCustomerIndex}/>
                     <Route path="/jiangling/game/index" component={JianglingGameIndex}/>
                     <Route path="/website/menu/index" component={WebsiteMenuIndex}/>
+                    <Route path="/advertisement/index" component={AdvertisementIndex}/>
+                    <Route path="/xietong/article/index" component={XietongArticleIndex}/>
                 </Route>
             </Route>
         </Router>

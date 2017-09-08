@@ -8,7 +8,7 @@ import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class ArticleDetail extends Component {
+class XietongArticleDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -126,7 +126,7 @@ class ArticleDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/article/' + this.state.action,
+                url: '/' + constant.action + '/xietong/article/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -346,8 +346,8 @@ class ArticleDetail extends Component {
     }
 }
 
-ArticleDetail.propTypes = {};
+XietongArticleDetail.propTypes = {};
 
-ArticleDetail = Form.create({})(ArticleDetail);
+XietongArticleDetail = Form.create({})(XietongArticleDetail);
 
-export default connect(({article}) => ({article}))(ArticleDetail);
+export default connect(({article}) => ({article}))(XietongArticleDetail);

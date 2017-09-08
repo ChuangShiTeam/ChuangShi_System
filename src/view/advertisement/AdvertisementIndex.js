@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table } from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import WarehouseMemberDeliveryOrderDetail from './WarehouseMemberDeliveryOrderDetail';
+import AdvertisementDetail from './AdvertisementDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class WarehouseMemberDeliveryOrderIndex extends Component {
+class AdvertisementIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,33 +21,35 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.member_delivery_order.app_id
+            app_id: this.props.advertisement.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            user_name: this.props.warehouse_member_delivery_order.user_name
+            advertisement_category_code: this.props.advertisement.advertisement_category_code,
+            advertisement_title: this.props.advertisement.advertisement_title,
         });
 
         this.handleLoad();
-        notification.on('notification_warehouse_member_delivery_order_index_load', this, function (data) {
+
+        notification.on('notification_advertisement_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_warehouse_member_delivery_order_index_load', this);
+        notification.remove('notification_advertisement_index_load', this);
     }
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'warehouse_member_delivery_order/fetch',
+                    type: 'advertisement/fetch',
                     data: {
                         app_list: data
                     }
@@ -66,13 +68,15 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
                 app_id = '';
             }
 
-            let user_name = this.props.form.getFieldValue('user_name');
+            let advertisement_category_code = this.props.form.getFieldValue('advertisement_category_code');
+            let advertisement_title = this.props.form.getFieldValue('advertisement_title');
 
             this.props.dispatch({
-                type: 'warehouse_member_delivery_order/fetch',
+                type: 'advertisement/fetch',
                 data: {
                     app_id: app_id,
-                    user_name: user_name,
+                    advertisement_category_code: advertisement_category_code,
+                    advertisement_title: advertisement_title,
                     page_index: 1
                 }
             });
@@ -89,16 +93,17 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
         });
 
         http.request({
-            url: '/member/delivery/order/' + constant.action + '/warehouse/deliver/list',
+            url: '/' + constant.action + '/advertisement/list',
             data: {
-                app_id: this.props.warehouse_member_delivery_order.app_id,
-                user_name: this.props.warehouse_member_delivery_order.user_name,
-                page_index: this.props.warehouse_member_delivery_order.page_index,
-                page_size: this.props.warehouse_member_delivery_order.page_size
+                app_id: this.props.advertisement.app_id,
+                advertisement_category_code: this.props.advertisement.advertisement_category_code,
+                advertisement_title: this.props.advertisement.advertisement_title,
+                page_index: this.props.advertisement.page_index,
+                page_size: this.props.advertisement.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'warehouse_member_delivery_order/fetch',
+                    type: 'advertisement/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -113,30 +118,10 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
         });
     }
 
-    handleExpressPull() {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/express/' + constant.action + '/pull',
-            data: {
-
-            },
-            success: function (data) {
-            },
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'warehouse_member_delivery_order/fetch',
+                type: 'advertisement/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -151,7 +136,7 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'warehouse_member_delivery_order/fetch',
+                type: 'advertisement/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -164,9 +149,37 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
         }.bind(this));
     }
 
-    handleView(member_delivery_order_id) {
-        notification.emit('notification_warehouse_member_delivery_order_detail_view', {
-            member_delivery_order_id: member_delivery_order_id
+    handleAdd() {
+        notification.emit('notification_advertisement_detail_add', {});
+    }
+
+    handleEdit(advertisement_id) {
+        notification.emit('notification_advertisement_detail_edit', {
+            advertisement_id: advertisement_id
+        });
+    }
+
+    handleDel(advertisement_id, system_version) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/advertisement/delete',
+            data: {
+                advertisement_id: advertisement_id,
+                system_version: system_version
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
         });
     }
 
@@ -176,46 +189,59 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '会员名称',
-            dataIndex: 'user_name'
+            title: '广告分类编码',
+            dataIndex: 'advertisement_category_code'
         }, {
-            title: '收货人',
-            dataIndex: 'member_delivery_order_receiver_name'
+            title: '广告标题',
+            dataIndex: 'advertisement_title'
         }, {
-            title: '发货数量',
-            dataIndex: 'member_delivery_order_total_quantity'
+            title: '广告位置',
+            dataIndex: 'advertisement_position'
         }, {
-            title: '发货金额',
-            dataIndex: 'member_delivery_order_amount'
-        }, {
-            title: '状态',
-            dataIndex: 'member_delivery_order_flow',
+            title: '广告图片',
+            dataIndex: 'advertisement_image_file',
             render: (text, record, index) => (
-                <span>
-                    {
-                        text === 'WAIT_WAREHOUSE_SEND'?'待发货':text === 'WAIT_RECEIVE'?'待收货':text === 'COMPLETE'?'已完成':text === 'CANCEL'?'已取消':null
-                    }
-                </span>
+                text?<span>
+                  <img alt="example" style={{width: 100}} src={constant.host + text.file_path} />
+                </span>:null
             )
         }, {
-            width: 150,
+            title: '广告链接',
+            dataIndex: 'advertisement_link'
+        }, {
+            title: '是否浮动广告',
+            dataIndex: 'advertisement_is_float',
+            render: (text, record, index) => (
+                text?'是':'否'
+            )
+        }, {
+            title: '排序',
+            dataIndex: 'advertisement_sort'
+        }, {
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleView.bind(this, record.member_delivery_order_id)}>查看</a>
+                  <a onClick={this.handleEdit.bind(this, record.advertisement_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.advertisement_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
                 </span>
             )
         }];
 
         const pagination = {
             size: 'defalut',
-            total: this.props.warehouse_member_delivery_order.total,
+            total: this.props.advertisement.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.warehouse_member_delivery_order.page_index,
-            pageSize: this.props.warehouse_member_delivery_order.page_size,
+            current: this.props.advertisement.page_index,
+            pageSize: this.props.advertisement.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -225,15 +251,14 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">会员发货单信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                loading={this.state.is_load}
-                                onClick={this.handleExpressPull.bind(this)}>同步物流信息</Button>
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -251,7 +276,7 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.warehouse_member_delivery_order.app_list.map(function (item) {
+                                                        this.props.advertisement.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -270,34 +295,50 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="会员名称">
+                            }} className="content-search-item" label="广告分类编码">
                                 {
-                                    getFieldDecorator('user_name', {
+                                    getFieldDecorator('advertisement_category_code', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入会员名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入广告分类编码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="广告标题">
+                                {
+                                    getFieldDecorator('advertisement_title', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入广告标题" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                        </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="member_delivery_order_id"
+                       rowKey="advertisement_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.warehouse_member_delivery_order.list} pagination={pagination}
+                       dataSource={this.props.advertisement.list} pagination={pagination}
                        bordered/>
-                <WarehouseMemberDeliveryOrderDetail/>
+                <AdvertisementDetail/>
             </QueueAnim>
         );
     }
 }
 
-WarehouseMemberDeliveryOrderIndex.propTypes = {};
+AdvertisementIndex.propTypes = {};
 
-WarehouseMemberDeliveryOrderIndex = Form.create({})(WarehouseMemberDeliveryOrderIndex);
+AdvertisementIndex = Form.create({})(AdvertisementIndex);
 
-export default connect(({warehouse_member_delivery_order}) => ({
-    warehouse_member_delivery_order
-}))(WarehouseMemberDeliveryOrderIndex);
+export default connect(({advertisement}) => ({
+    advertisement
+}))(AdvertisementIndex);
