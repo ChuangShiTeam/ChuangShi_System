@@ -124,8 +124,8 @@ class WarehouseMemberDeliveryOrderIndex extends Component {
 
             },
             success: function (data) {
-                console.log(data);
-            }.bind(this),
+
+            },
             complete: function () {
                 this.setState({
                     is_load: false

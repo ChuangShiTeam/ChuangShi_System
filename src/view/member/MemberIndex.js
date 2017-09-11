@@ -91,7 +91,7 @@ class MemberIndex extends Component {
         });
 
         http.request({
-            url: '/member/' + constant.action + '/list',
+            url: '/' + constant.action + '/member/list',
             data: {
                 app_id: this.props.member.app_id,
                 user_name: this.props.member.user_name,

@@ -23,7 +23,7 @@ export default {
     placeholder: '请输入',
     detail_width: 1080,
     name: '上海星销信息技术有限公司--总控后台',
-    app_id: '749388e5dac3465f922c54e61d16a993',
+    app_id: 'c1af3f1ae00e4e0da9b20f5bd41b4279',
     index: '/member/delivery/order/index',
     login: '/admin/login'
 };

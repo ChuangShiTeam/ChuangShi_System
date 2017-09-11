@@ -166,7 +166,7 @@ class JianglingMemberIndex extends Component {
             }.bind(this),
             complete: function () {
 
-            }.bind(this)
+            }
         });
     }
 
