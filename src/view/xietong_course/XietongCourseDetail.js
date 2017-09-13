@@ -6,6 +6,7 @@ import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import XietongStudentHelp from '../xietong_student/XietongStudentHelp';
 
 class XietongCourseDetail extends Component {
     constructor(props) {
@@ -47,12 +48,22 @@ class XietongCourseDetail extends Component {
                 this.handleBlackLoad(data.course_id);
             });
         });
+
+        notification.on('notification_xietong_course_student_return', this, function(data) {
+            if (data.type == 'white') {
+                this.handleWhiteSave(data.student_id);
+            } else if (data.type == 'black') {
+                this.handleBlackSave(data.student_id);
+            }
+        });
     }
 
     componentWillUnmount() {
         notification.remove('notification_xietong_course_detail_add', this);
 
         notification.remove('notification_xietong_course_detail_edit', this);
+
+        notification.remove('notification_xietong_course_student_return', this);
     }
 
     handleLoad() {
@@ -71,14 +82,19 @@ class XietongCourseDetail extends Component {
                         app_id: data.app_id
                     });
                 }
+                let course_image = [];
+                if (data.course_image_file !== null) {
+                    course_image.push(data.course_image_file);
+                }
+                this.refs.course_image.handleSetValue(course_image);
+
                 this.props.form.setFieldsValue({
                     clazz_id: JSON.parse(data.clazz_id),
                     course_teacher: data.course_teacher,
                     course_name: data.course_name,
-                    course_time: data.course_time,
+                    course_time: data.course_time.toString(),
                     course_apply_limit: data.course_apply_limit,
                     course_address: data.course_address,
-                    course_image: data.course_image,
                     course_content: data.course_content,
                 });
 
@@ -231,9 +247,16 @@ class XietongCourseDetail extends Component {
                 return;
             }
 
+            let file_list = this.refs.course_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.course_image = '';
+            } else {
+                values.course_image = file_list[0].file_id;
+            }
+
             values.course_id = this.state.course_id;
             values.system_version = this.state.system_version;
-
+            console.log('values', values);
             this.setState({
                 is_load: true
             });
@@ -263,18 +286,30 @@ class XietongCourseDetail extends Component {
             is_show: false,
             action: '',
             course_id: '',
+            clazz: [],
+            teacher: [],
+            white: [],
+            black: [],
             system_version: ''
         });
+
+        this.refs.course_image.handleReset();
 
         this.props.form.resetFields();
     }
 
     handleBlack() {
-
+        notification.emit('notification_xietong_student_help', {
+            type: 'black',
+            clazz: this.state.clazz
+        });
     }
 
     handleWhite() {
-
+        notification.emit('notification_xietong_student_help', {
+            type: 'white',
+            clazz: this.state.clazz
+        });
     }
 
     render() {
@@ -400,7 +435,7 @@ class XietongCourseDetail extends Component {
                                             }],
                                             initialValue: []
                                         })(
-                                            <Select multiple placeholder="请选择班级">
+                                            <Select mode="multiple" placeholder="请选择班级">
                                                 {
                                                     this.state.clazz.map(function (item) {
                                                         return (
@@ -465,16 +500,15 @@ class XietongCourseDetail extends Component {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
-                                            }],
-                                            initialValue: ''
+                                            }]
                                         })(
                                             <Select placeholder="请选择课程时间">
-                                                <Option value="17">星期一第七节</Option>
-                                                <Option value="27">星期二第七节</Option>
-                                                <Option value="28">星期二第八节</Option>
-                                                <Option value="47">星期四第七节</Option>
-                                                <Option value="48">星期四第八节</Option>
-                                                <Option value="56">星期五第六节</Option>
+                                                <Option key="17" value="17">星期一第七节</Option>
+                                                <Option key="27" value="27">星期二第七节</Option>
+                                                <Option key="28" value="28">星期二第八节</Option>
+                                                <Option key="47" value="47">星期四第七节</Option>
+                                                <Option key="48" value="48">星期四第八节</Option>
+                                                <Option key="56" value="56">星期五第六节</Option>
                                             </Select>
                                         )
                                     }
@@ -523,17 +557,7 @@ class XietongCourseDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="课程图片">
-                                    {
-                                        getFieldDecorator('course_image', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '课程图片'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                    <InputImage name="course_image" limit={1} ref="course_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -582,6 +606,7 @@ class XietongCourseDetail extends Component {
                                     </Row>
                                 </span>:null
                         }
+                        <XietongStudentHelp />
                     </form>
                 </Spin>
             </Modal>

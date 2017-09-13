@@ -179,10 +179,10 @@ class InputImage extends Component {
         return (
             <div>
                 {
-                    this.state.list.map(function (item) {
+                    this.state.list.map(function (item, index) {
                         const mask = item.status ? "item-mask item-mask-active" : "item-mask";
                         return (
-                            <div key={item.file_id} className="item">
+                            <div key={index} className="item">
                                 <div className="item-image"
                                      style={{backgroundImage: 'url(' + constant.host + item.file_path + ')'}}></div>
                                 <div onMouseOver={this.handleMouseOver.bind(this, item.file_id)}
