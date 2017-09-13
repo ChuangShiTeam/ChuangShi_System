@@ -60,6 +60,8 @@ import JianglingGameIndex from './view/jiangling_game/JianglingGameIndex';
 import WebsiteMenuIndex from './view/website_menu/WebsiteMenuIndex';
 import AdvertisementIndex from './view/advertisement/AdvertisementIndex';
 import XietongArticleIndex from './view/xietong_article/XietongArticleIndex';
+import InfinitiMemberIndex from './view/infiniti_member/InfinitiMemberIndex';
+import InfinitiPrizeIndex from './view/infiniti_prize/InfinitiPrizeIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -139,6 +141,8 @@ function RouterConfig({history}) {
                     <Route path="/website/menu/index" component={WebsiteMenuIndex}/>
                     <Route path="/advertisement/index" component={AdvertisementIndex}/>
                     <Route path="/xietong/article/index" component={XietongArticleIndex}/>
+                    <Route path="/infiniti/member/index" component={InfinitiMemberIndex}/>
+                    <Route path="/infiniti/prize/index" component={InfinitiPrizeIndex}/>
                 </Route>
             </Route>
         </Router>

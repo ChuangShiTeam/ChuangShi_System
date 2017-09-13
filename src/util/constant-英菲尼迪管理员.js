@@ -1,6 +1,6 @@
 export default {
-    host: 'http://localhost:8080',
-    // host: 'http://api.chuangshi.nowui.com',
+    // host: 'http://localhost:8080',
+    host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
     is_show_menu: true,
@@ -24,6 +24,6 @@ export default {
     detail_width: 1080,
     name: '上海星销信息技术有限公司--总控后台',
     app_id: '080155de94764857b1790ddff65b8113',
-    index: '/infiniti/member/index',
+    index: '/member/delivery/order/index',
     login: '/admin/login'
 };

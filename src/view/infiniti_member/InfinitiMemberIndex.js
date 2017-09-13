@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import ExceptionDetail from './ExceptionDetail';
+import InfinitiMemberDetail from './InfinitiMemberDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class ExceptionIndex extends Component {
+class InfinitiMemberIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,25 @@ class ExceptionIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.exception.app_id
+            app_id: this.props.infiniti_member.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            exception_is_confirm: this.props.exception.exception_is_confirm,
+            member_redeem_code: this.props.infiniti_member.member_redeem_code,
         });
 
         this.handleLoad();
 
-        notification.on('notification_exception_index_load', this, function (data) {
+        notification.on('notification_infiniti_member_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_exception_index_load', this);
+        notification.remove('notification_infiniti_member_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +48,7 @@ class ExceptionIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'exception/fetch',
+                    type: 'infiniti_member/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +67,13 @@ class ExceptionIndex extends Component {
                 app_id = '';
             }
 
-            let exception_is_confirm = this.props.form.getFieldValue('exception_is_confirm');
+            let member_redeem_code = this.props.form.getFieldValue('member_redeem_code');
 
             this.props.dispatch({
-                type: 'exception/fetch',
+                type: 'infiniti_member/fetch',
                 data: {
                     app_id: app_id,
-                    exception_is_confirm: exception_is_confirm,
+                    member_redeem_code: member_redeem_code,
                     page_index: 1
                 }
             });
@@ -90,16 +90,16 @@ class ExceptionIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/exception/list',
+            url: '/' + constant.action + '/infiniti/member/list',
             data: {
-                app_id: this.props.exception.app_id,
-                exception_is_confirm: this.props.exception.exception_is_confirm,
-                page_index: this.props.exception.page_index,
-                page_size: this.props.exception.page_size
+                app_id: this.props.infiniti_member.app_id,
+                member_redeem_code: this.props.infiniti_member.member_redeem_code,
+                page_index: this.props.infiniti_member.page_index,
+                page_size: this.props.infiniti_member.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'exception/fetch',
+                    type: 'infiniti_member/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +117,7 @@ class ExceptionIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'exception/fetch',
+                type: 'infiniti_member/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +132,7 @@ class ExceptionIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'exception/fetch',
+                type: 'infiniti_member/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +146,24 @@ class ExceptionIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_exception_detail_add', {});
+        notification.emit('notification_infiniti_member_detail_add', {});
     }
 
-    handleEdit(exception_id) {
-        notification.emit('notification_exception_detail_edit', {
-            exception_id: exception_id
+    handleEdit(user_id) {
+        notification.emit('notification_infiniti_member_detail_edit', {
+            user_id: user_id
         });
     }
 
-    handleDel(exception_id, system_version) {
+    handleDel(user_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/exception/delete',
+            url: '/' + constant.action + '/infiniti/member/delete',
             data: {
-                exception_id: exception_id,
+                user_id: user_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,22 +185,31 @@ class ExceptionIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '异常是否确认',
-            dataIndex: 'exception_is_confirm'
+            title: '会员姓名',
+            dataIndex: 'member_name'
         }, {
-            title: '',
-            dataIndex: 'system_create_time'
+            title: '会员电话',
+            dataIndex: 'member_mobile'
+        }, {
+            title: '会员地址',
+            dataIndex: 'member_address'
+        }, {
+            title: '兑换码',
+            dataIndex: 'member_redeem_code'
+        }, {
+            title: '是否兑换',
+            dataIndex: 'member_redeem_code_is_exchange'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.exception_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.user_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.exception_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.user_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -209,12 +218,12 @@ class ExceptionIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.exception.total,
+            total: this.props.infiniti_member.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.exception.page_index,
-            pageSize: this.props.exception.page_size,
+            current: this.props.infiniti_member.page_index,
+            pageSize: this.props.infiniti_member.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -230,8 +239,8 @@ class ExceptionIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                        {/*<Button type="primary" icon="plus-circle" size="default"*/}
+                                {/*onClick={this.handleAdd.bind(this)}>{constant.add}</Button>*/}
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -249,7 +258,7 @@ class ExceptionIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.exception.app_list.map(function (item) {
+                                                        this.props.infiniti_member.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -268,12 +277,12 @@ class ExceptionIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="异常是否确认">
+                            }} className="content-search-item" label="兑换码">
                                 {
-                                    getFieldDecorator('exception_is_confirm', {
+                                    getFieldDecorator('member_redeem_code', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入异常是否确认" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入兑换码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -283,21 +292,21 @@ class ExceptionIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="exception_id"
+                       rowKey="user_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.exception.list} pagination={pagination}
+                       dataSource={this.props.infiniti_member.list} pagination={pagination}
                        bordered/>
-                <ExceptionDetail/>
+                <InfinitiMemberDetail/>
             </QueueAnim>
         );
     }
 }
 
-ExceptionIndex.propTypes = {};
+InfinitiMemberIndex.propTypes = {};
 
-ExceptionIndex = Form.create({})(ExceptionIndex);
+InfinitiMemberIndex = Form.create({})(InfinitiMemberIndex);
 
-export default connect(({exception}) => ({
-    exception
-}))(ExceptionIndex);
+export default connect(({infiniti_member}) => ({
+    infiniti_member
+}))(InfinitiMemberIndex);

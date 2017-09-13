@@ -24,6 +24,6 @@ export default {
     detail_width: 1080,
     name: '佛山协同国际学校--总控后台',
     app_id: '749388e5dac3465f922c54e61d16a993',
-    index: '/article/index',
+    index: '/xietong/article/index',
     login: '/admin/login'
 };

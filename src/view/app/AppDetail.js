@@ -153,40 +153,6 @@ class AppDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
-                        {
-                            constant.action === 'system' ?
-                                <Row>
-                                    <Col span={16}>
-                                        <FormItem hasFeedback {...{
-                                            labelCol: {span: 6},
-                                            wrapperCol: {span: 18}
-                                        }} className="content-search-item" label="应用名称">
-                                            {
-                                                getFieldDecorator('app_id', {
-                                                    rules: [{
-                                                        required: true,
-                                                        message: constant.required
-                                                    }],
-                                                    initialValue: ''
-                                                })(
-                                                    <Select allowClear placeholder="请选择应用">
-                                                        {
-                                                            this.props.app.app_list.map(function (item) {
-                                                                return (
-                                                                    <Option key={item.app_id}
-                                                                            value={item.app_id}>{item.app_name}</Option>
-                                                                )
-                                                            })
-                                                        }
-                                                    </Select>
-                                                )
-                                            }
-                                        </FormItem>
-                                    </Col>
-                                </Row>
-                                :
-                                ''
-                        }
                         <Row>
                             <Col span={16}>
                                 <FormItem hasFeedback {...{
@@ -231,10 +197,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_app_id">
                                     {
                                         getFieldDecorator('wechat_app_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_app_id'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -251,10 +213,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_app_secret">
                                     {
                                         getFieldDecorator('wechat_app_secret', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_app_secret'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -271,10 +229,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_mch_id">
                                     {
                                         getFieldDecorator('wechat_mch_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_mch_id'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -291,10 +245,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_mch_key">
                                     {
                                         getFieldDecorator('wechat_mch_key', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_mch_key'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -311,10 +261,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_token">
                                     {
                                         getFieldDecorator('wechat_token', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_token'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -331,10 +277,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="wechat_encoding_aes_key">
                                     {
                                         getFieldDecorator('wechat_encoding_aes_key', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + 'wechat_encoding_aes_key'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -419,10 +361,6 @@ class AppDetail extends Component {
                                 }} className="form-item" label="参与分成的上级层数">
                                     {
                                         getFieldDecorator('app_commission_level', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: 0
                                         })(
                                             <InputNumber min={0} max={999} placeholder={constant.placeholder + '参与分成的上级层数'} onPressEnter={this.handleSubmit.bind(this)}/>

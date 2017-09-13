@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -50,12 +50,19 @@ class ExceptionDetail extends Component {
         });
 
         http.request({
-            url: '/exception/' + constant.action + '/find',
+            url: '/' + constant.action + '/exception/find',
             data: {
                 exception_id: this.state.exception_id
             },
             success: function (data) {
+                if (constant.action === 'system') {
+                    this.props.form.setFieldsValue({
+                        app_id: data.app_id
+                    });
+                }
+
                 this.props.form.setFieldsValue({
+                    http_id: data.http_id,
                     exception_content: data.exception_content,
                     exception_is_confirm: data.exception_is_confirm,
                     exception_remark: data.exception_remark,
@@ -75,7 +82,35 @@ class ExceptionDetail extends Component {
     }
 
     handleSubmit() {
-        this.handleCancel();
+        this.props.form.validateFieldsAndScroll((errors, values) => {
+            if (!!errors) {
+                return;
+            }
+
+            values.exception_id = this.state.exception_id;
+            values.system_version = this.state.system_version;
+
+            this.setState({
+                is_load: true
+            });
+
+            http.request({
+                url: '/' + constant.action + '/exception/' + this.state.action,
+                data: values,
+                success: function (data) {
+                    message.success(constant.success);
+
+                    notification.emit('notification_exception_index_load', {});
+
+                    this.handleCancel();
+                }.bind(this),
+                complete: function () {
+                    this.setState({
+                        is_load: false
+                    });
+                }.bind(this)
+            });
+        });
     }
 
     handleCancel() {
@@ -92,10 +127,11 @@ class ExceptionDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
+        const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'异常详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -107,6 +143,60 @@ class ExceptionDetail extends Component {
             >
                 <Spin spinning={this.state.is_load}>
                     <form>
+                        {
+                            constant.action === 'system' ?
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="content-search-item" label="应用名称">
+                                            {
+                                                getFieldDecorator('app_id', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Select allowClear placeholder="请选择应用">
+                                                        {
+                                                            this.props.exception.app_list.map(function (item) {
+                                                                return (
+                                                                    <Option key={item.app_id}
+                                                                            value={item.app_id}>{item.app_name}</Option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Select>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                :
+                                ''
+                        }
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="请求编号">
+                                    {
+                                        getFieldDecorator('http_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '请求编号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
@@ -132,16 +222,13 @@ class ExceptionDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="是否确认">
+                                }} className="form-item" label="异常是否确认">
                                     {
                                         getFieldDecorator('exception_is_confirm', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '是否确认'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>

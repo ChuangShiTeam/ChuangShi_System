@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Table, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import HttpDetail from './HttpDetail';
 import constant from '../../util/constant';
@@ -19,13 +19,20 @@ class HttpIndex extends Component {
     }
 
     componentDidMount() {
-        this.props.form.setFieldsValue({
+        if (constant.action === 'system') {
+            this.props.form.setFieldsValue({
             app_id: this.props.http.app_id
+            });
+
+            this.handleLoadApp();
+        }
+
+        this.props.form.setFieldsValue({
+            http_url: this.props.http.http_url,
+            http_code: this.props.http.http_code,
         });
 
         this.handleLoad();
-
-        this.handleLoadApp();
 
         notification.on('notification_http_index_load', this, function (data) {
             this.handleLoad();
@@ -38,7 +45,7 @@ class HttpIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -61,10 +68,15 @@ class HttpIndex extends Component {
                 app_id = '';
             }
 
+            let http_url = this.props.form.getFieldValue('http_url');
+            let http_code = this.props.form.getFieldValue('http_code');
+
             this.props.dispatch({
                 type: 'http/fetch',
                 data: {
                     app_id: app_id,
+                    http_url: http_url,
+                    http_code: http_code,
                     page_index: 1
                 }
             });
@@ -81,9 +93,11 @@ class HttpIndex extends Component {
         });
 
         http.request({
-            url: '/http/' + constant.action + '/list',
+            url: '/' + constant.action + '/http/list',
             data: {
                 app_id: this.props.http.app_id,
+                http_url: this.props.http.http_url,
+                http_code: this.props.http.http_code,
                 page_index: this.props.http.page_index,
                 page_size: this.props.http.page_size
             },
@@ -151,7 +165,7 @@ class HttpIndex extends Component {
         });
 
         http.request({
-            url: '/http/' + constant.action + '/delete',
+            url: '/' + constant.action + '/http/delete',
             data: {
                 http_id: http_id,
                 system_version: system_version
@@ -175,31 +189,25 @@ class HttpIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '地址',
+            title: '请求地址',
             dataIndex: 'http_url'
         }, {
-            width: 100,
-            title: '状态',
+            title: '请求状态码',
             dataIndex: 'http_code'
         }, {
-            width: 100,
-            title: '平台',
+            title: '请求平台',
             dataIndex: 'http_platform'
         }, {
-            width: 100,
-            title: '版本',
+            title: '请求版本',
             dataIndex: 'http_version'
         }, {
-            width: 120,
-            title: 'IP地址',
+            title: '请求IP地址',
             dataIndex: 'http_ip_address'
         }, {
-            width: 100,
-            title: '耗时(毫秒)',
+            title: '请求响应时间',
             dataIndex: 'http_run_time'
         }, {
-            width: 140,
-            title: '创建时间',
+            title: '',
             dataIndex: 'system_create_time'
         }, {
             width: 100,
@@ -207,7 +215,13 @@ class HttpIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.http_id)}>{constant.find}</a>
+                  <a onClick={this.handleEdit.bind(this, record.http_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.http_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
                 </span>
             )
         }];
@@ -229,42 +243,73 @@ class HttpIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">请求日志信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="primary" icon="search" size="default"
+                        <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        {/*<Button type="primary" icon="plus-circle" size="default"*/}
-                                {/*onClick={this.handleAdd.bind(this)}>{constant.add}</Button>*/}
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
                     <Row>
+                        {
+                            constant.action === 'system' ?
+                                <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                        labelCol: {span: 6},
+                                        wrapperCol: {span: 18}
+                                    }} className="content-search-item" label="应用名称">
+                                        {
+                                            getFieldDecorator('app_id', {
+                                                initialValue: ''
+                                            })(
+                                                <Select allowClear placeholder="请选择应用">
+                                                    {
+                                                        this.props.http.app_list.map(function (item) {
+                                                            return (
+                                                                <Option key={item.app_id}
+                                                                        value={item.app_id}>{item.app_name}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )
+                                        }
+                                    </FormItem>
+                                </Col>
+                                :
+                                ''
+                        }
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="应用名称">
+                            }} className="content-search-item" label="请求地址">
                                 {
-                                    getFieldDecorator('app_id', {
+                                    getFieldDecorator('http_url', {
                                         initialValue: ''
                                     })(
-                                        <Select allowClear placeholder="请选择应用">
-                                            {
-                                                this.props.http.app_list.map(function (item) {
-                                                    return (
-                                                        <Option key={item.app_id}
-                                                                value={item.app_id}>{item.app_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                        <Input type="text" placeholder="请输入请求地址" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="请求状态码">
+                                {
+                                    getFieldDecorator('http_code', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入请求状态码" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                         <Col span={8}>
                         </Col>
@@ -286,4 +331,6 @@ HttpIndex.propTypes = {};
 
 HttpIndex = Form.create({})(HttpIndex);
 
-export default connect(({http}) => ({http}))(HttpIndex);
+export default connect(({http}) => ({
+    http
+}))(HttpIndex);
