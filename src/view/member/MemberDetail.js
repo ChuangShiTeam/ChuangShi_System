@@ -50,7 +50,7 @@ class MemberDetail extends Component {
         });
 
         http.request({
-            url: '/member/' + constant.action + '/find',
+            url: '/' + constant.action + '/member/find',
             data: {
                 member_id: this.state.member_id
             },

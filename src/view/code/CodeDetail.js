@@ -176,7 +176,7 @@ class CodeDetail extends Component {
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
-                }.bind(this),
+                },
                 complete: function () {
                     this.setState({
                         is_load: false

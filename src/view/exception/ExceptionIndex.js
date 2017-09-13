@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import ExceptionDetail from './ExceptionDetail';
 import constant from '../../util/constant';
@@ -21,11 +21,15 @@ class ExceptionIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.exception.app_id
+            app_id: this.props.exception.app_id
             });
 
             this.handleLoadApp();
         }
+
+        this.props.form.setFieldsValue({
+            exception_is_confirm: this.props.exception.exception_is_confirm,
+        });
 
         this.handleLoad();
 
@@ -40,7 +44,7 @@ class ExceptionIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -63,13 +67,13 @@ class ExceptionIndex extends Component {
                 app_id = '';
             }
 
-            let http_id = this.props.form.getFieldValue('http_id');
+            let exception_is_confirm = this.props.form.getFieldValue('exception_is_confirm');
 
             this.props.dispatch({
                 type: 'exception/fetch',
                 data: {
                     app_id: app_id,
-                    http_id: http_id,
+                    exception_is_confirm: exception_is_confirm,
                     page_index: 1
                 }
             });
@@ -86,9 +90,10 @@ class ExceptionIndex extends Component {
         });
 
         http.request({
-            url: '/exception/' + constant.action + '/list',
+            url: '/' + constant.action + '/exception/list',
             data: {
                 app_id: this.props.exception.app_id,
+                exception_is_confirm: this.props.exception.exception_is_confirm,
                 page_index: this.props.exception.page_index,
                 page_size: this.props.exception.page_size
             },
@@ -156,7 +161,7 @@ class ExceptionIndex extends Component {
         });
 
         http.request({
-            url: '/exception/' + constant.action + '/delete',
+            url: '/' + constant.action + '/exception/delete',
             data: {
                 exception_id: exception_id,
                 system_version: system_version
@@ -180,19 +185,24 @@ class ExceptionIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '异常',
-            dataIndex: 'exception_content'
-        }, {
-            width: 100,
-            title: '是否处理',
+            title: '异常是否确认',
             dataIndex: 'exception_is_confirm'
+        }, {
+            title: '',
+            dataIndex: 'system_create_time'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.exception_id)}>{constant.find}</a>
+                  <a onClick={this.handleEdit.bind(this, record.exception_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.exception_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
                 </span>
             )
         }];
@@ -214,12 +224,14 @@ class ExceptionIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">异常信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="primary" icon="search" size="default"
+                        <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -256,12 +268,12 @@ class ExceptionIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="请求编号">
+                            }} className="content-search-item" label="异常是否确认">
                                 {
-                                    getFieldDecorator('http_id', {
+                                    getFieldDecorator('exception_is_confirm', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请求编号" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入异常是否确认" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -286,4 +298,6 @@ ExceptionIndex.propTypes = {};
 
 ExceptionIndex = Form.create({})(ExceptionIndex);
 
-export default connect(({exception}) => ({exception}))(ExceptionIndex);
+export default connect(({exception}) => ({
+    exception
+}))(ExceptionIndex);

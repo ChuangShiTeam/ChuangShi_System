@@ -167,7 +167,7 @@ class PageIndex extends Component {
             },
             success: function (data) {
                 message.success(constant.success);
-            }.bind(this),
+            },
             complete: function () {
                 this.setState({
                     is_load: false
@@ -188,7 +188,7 @@ class PageIndex extends Component {
             },
             success: function (data) {
                 message.success(constant.success);
-            }.bind(this),
+            },
             complete: function () {
                 this.setState({
                     is_load: false

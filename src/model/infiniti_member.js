@@ -2,12 +2,12 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'exception',
+    namespace: 'infiniti_member',
 
     state: {
         app_id: '',
         app_list: [],
-        exception_is_confirm: '',
+        member_redeem_code: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

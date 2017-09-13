@@ -3,14 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MemberDetail from './MemberDetail';
-import CertificateImageIndex from '../certificate/CertificateImageIndex';
+import InfinitiMemberDetail from './InfinitiMemberDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MemberIndex extends Component {
+class InfinitiMemberIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -22,34 +21,34 @@ class MemberIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.member.app_id
+            app_id: this.props.infiniti_member.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            user_name: this.props.member.user_name
+            member_redeem_code: this.props.infiniti_member.member_redeem_code,
         });
 
         this.handleLoad();
 
-        notification.on('notification_member_index_load', this, function (data) {
+        notification.on('notification_infiniti_member_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_member_index_load', this);
+        notification.remove('notification_infiniti_member_index_load', this);
     }
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member/fetch',
+                    type: 'infiniti_member/fetch',
                     data: {
                         app_list: data
                     }
@@ -68,13 +67,13 @@ class MemberIndex extends Component {
                 app_id = '';
             }
 
-            let user_name = this.props.form.getFieldValue('user_name');
+            let member_redeem_code = this.props.form.getFieldValue('member_redeem_code');
 
             this.props.dispatch({
-                type: 'member/fetch',
+                type: 'infiniti_member/fetch',
                 data: {
                     app_id: app_id,
-                    user_name: user_name,
+                    member_redeem_code: member_redeem_code,
                     page_index: 1
                 }
             });
@@ -91,16 +90,16 @@ class MemberIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/member/list',
+            url: '/' + constant.action + '/infiniti/member/list',
             data: {
-                app_id: this.props.member.app_id,
-                user_name: this.props.member.user_name,
-                page_index: this.props.member.page_index,
-                page_size: this.props.member.page_size
+                app_id: this.props.infiniti_member.app_id,
+                member_redeem_code: this.props.infiniti_member.member_redeem_code,
+                page_index: this.props.infiniti_member.page_index,
+                page_size: this.props.infiniti_member.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'member/fetch',
+                    type: 'infiniti_member/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -118,7 +117,7 @@ class MemberIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member/fetch',
+                type: 'infiniti_member/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -133,7 +132,7 @@ class MemberIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'member/fetch',
+                type: 'infiniti_member/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -147,30 +146,24 @@ class MemberIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_member_detail_add', {});
+        notification.emit('notification_infiniti_member_detail_add', {});
     }
 
-    handleEdit(member_id) {
-        notification.emit('notification_member_detail_edit', {
-            member_id: member_id
+    handleEdit(user_id) {
+        notification.emit('notification_infiniti_member_detail_edit', {
+            user_id: user_id
         });
     }
 
-    handleCertificateList(user_id) {
-        notification.emit('notification_certificate_image_list', {
-            user_id
-        });
-    }
-
-    handleDel(member_id, system_version) {
+    handleDel(user_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/member/' + constant.action + '/delete',
+            url: '/' + constant.action + '/infiniti/member/delete',
             data: {
-                member_id: member_id,
+                user_id: user_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -192,21 +185,31 @@ class MemberIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'user_name'
+            title: '会员姓名',
+            dataIndex: 'member_name'
         }, {
-            width: 150,
+            title: '会员电话',
+            dataIndex: 'member_mobile'
+        }, {
+            title: '会员地址',
+            dataIndex: 'member_address'
+        }, {
+            title: '兑换码',
+            dataIndex: 'member_redeem_code'
+        }, {
+            title: '是否兑换',
+            dataIndex: 'member_redeem_code_is_exchange'
+        }, {
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleCertificateList.bind(this, record.user_id)}>授权书</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.member_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.user_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.member_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.user_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -215,12 +218,12 @@ class MemberIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.member.total,
+            total: this.props.infiniti_member.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.member.page_index,
-            pageSize: this.props.member.page_size,
+            current: this.props.infiniti_member.page_index,
+            pageSize: this.props.infiniti_member.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -230,14 +233,14 @@ class MemberIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">会员信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                        {/*<Button type="primary" icon="plus-circle" size="default"*/}
+                                {/*onClick={this.handleAdd.bind(this)}>{constant.add}</Button>*/}
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -255,7 +258,7 @@ class MemberIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.member.app_list.map(function (item) {
+                                                        this.props.infiniti_member.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -274,13 +277,12 @@ class MemberIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="兑换码">
                                 {
-                                    getFieldDecorator('user_name', {
+                                    getFieldDecorator('member_redeem_code', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入兑换码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -290,22 +292,21 @@ class MemberIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="member_id"
+                       rowKey="user_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.member.list} pagination={pagination}
+                       dataSource={this.props.infiniti_member.list} pagination={pagination}
                        bordered/>
-                <MemberDetail/>
-                <CertificateImageIndex/>
+                <InfinitiMemberDetail/>
             </QueueAnim>
         );
     }
 }
 
-MemberIndex.propTypes = {};
+InfinitiMemberIndex.propTypes = {};
 
-MemberIndex = Form.create({})(MemberIndex);
+InfinitiMemberIndex = Form.create({})(InfinitiMemberIndex);
 
-export default connect(({member}) => ({
-    member
-}))(MemberIndex);
+export default connect(({infiniti_member}) => ({
+    infiniti_member
+}))(InfinitiMemberIndex);
