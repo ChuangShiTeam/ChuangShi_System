@@ -59,6 +59,9 @@ import jiangling_customer from './model/jiangling_customer';
 import jiangling_game from './model/jiangling_game';
 import website_menu from './model/website_menu';
 import advertisement from './model/advertisement';
+import xietong_course from './model/xietong_course';
+import xietong_student from './model/xietong_student';
+import xietong_clazz from './model/xietong_clazz';
 
 document.title = constant.name;
 
@@ -121,6 +124,9 @@ app.model(jiangling_customer);
 app.model(jiangling_game);
 app.model(website_menu);
 app.model(advertisement);
+app.model(xietong_course);
+app.model(xietong_student);
+app.model(xietong_clazz);
 
 app.router(Router);
 

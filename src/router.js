@@ -60,6 +60,9 @@ import JianglingGameIndex from './view/jiangling_game/JianglingGameIndex';
 import WebsiteMenuIndex from './view/website_menu/WebsiteMenuIndex';
 import AdvertisementIndex from './view/advertisement/AdvertisementIndex';
 import XietongArticleIndex from './view/xietong_article/XietongArticleIndex';
+import XietongCourseIndex from './view/xietong_course/XietongCourseIndex';
+import XietongStudentIndex from './view/xietong_student/XietongStudentIndex';
+import XietongClazzIndex from './view/xietong_clazz/XietongClazzIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -139,6 +142,9 @@ function RouterConfig({history}) {
                     <Route path="/website/menu/index" component={WebsiteMenuIndex}/>
                     <Route path="/advertisement/index" component={AdvertisementIndex}/>
                     <Route path="/xietong/article/index" component={XietongArticleIndex}/>
+                    <Route path="/xietong/course/index" component={XietongCourseIndex}/>
+                    <Route path="/xietong/student/index" component={XietongStudentIndex}/>
+                    <Route path="/xietong/clazz/index" component={XietongClazzIndex}/>
                 </Route>
             </Route>
         </Router>
