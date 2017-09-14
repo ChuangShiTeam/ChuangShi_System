@@ -1,75 +1,41 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message, Upload} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import XietongStudentDetail from './XietongStudentDetail';
+import XietongCourseConfigDetail from './XietongCourseConfigDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
-import storage from '../../util/storage';
 import http from '../../util/http';
 
-class XietongStudentIndex extends Component {
+class XietongCourseConfigIndex extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            is_load: false,
-            clazz: [],
-            selectedRowKeys: []
+            is_load: false
         }
     }
 
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.xietong_student.app_id
+            app_id: this.props.xietong_course_config.app_id
             });
 
             this.handleLoadApp();
         }
 
-        this.props.form.setFieldsValue({
-            student_name: this.props.xietong_student.student_name,
-            clazz_id: this.props.xietong_student.clazz_id,
-        });
-
         this.handleLoad();
 
-        this.handleClazzList();
-
-        notification.on('notification_xietong_student_index_load', this, function (data) {
+        notification.on('notification_xietong_course_config_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_xietong_student_index_load', this);
-    }
-
-    handleClazzList() {
-        http.request({
-            url: '/' + constant.action + '/xietong/clazz/all/list',
-            data: {
-            },
-            success: function (data) {
-                let array = [{
-                    clazz_id: '',
-                    clazz_name: '所有班级'
-                }];
-
-                for (let i = 0; i < data.length; i++) {
-                    array.push(data[i]);
-                }
-
-                this.setState({
-                    clazz: array
-                });
-            }.bind(this),
-            complete: function () {
-            }.bind(this)
-        });
+        notification.remove('notification_xietong_course_config_index_load', this);
     }
 
     handleLoadApp() {
@@ -78,7 +44,7 @@ class XietongStudentIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'xietong_student/fetch',
+                    type: 'xietong_course_config/fetch',
                     data: {
                         app_list: data
                     }
@@ -97,15 +63,10 @@ class XietongStudentIndex extends Component {
                 app_id = '';
             }
 
-            let student_name = this.props.form.getFieldValue('student_name');
-            let clazz_id = this.props.form.getFieldValue('clazz_id');
-
             this.props.dispatch({
-                type: 'xietong_student/fetch',
+                type: 'xietong_course_config/fetch',
                 data: {
                     app_id: app_id,
-                    student_name: student_name,
-                    clazz_id: clazz_id,
                     page_index: 1
                 }
             });
@@ -122,17 +83,15 @@ class XietongStudentIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/xietong/student/list',
+            url: '/' + constant.action + '/xietong/course/config/list',
             data: {
-                app_id: this.props.xietong_student.app_id,
-                student_name: this.props.xietong_student.student_name,
-                clazz_id: this.props.xietong_student.clazz_id,
-                page_index: this.props.xietong_student.page_index,
-                page_size: this.props.xietong_student.page_size
+                app_id: this.props.xietong_course_config.app_id,
+                page_index: this.props.xietong_course_config.page_index,
+                page_size: this.props.xietong_course_config.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'xietong_student/fetch',
+                    type: 'xietong_course_config/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -150,7 +109,7 @@ class XietongStudentIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'xietong_student/fetch',
+                type: 'xietong_course_config/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -165,7 +124,7 @@ class XietongStudentIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'xietong_student/fetch',
+                type: 'xietong_course_config/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -179,25 +138,24 @@ class XietongStudentIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_xietong_student_detail_add', {clazz: this.state.clazz});
+        notification.emit('notification_xietong_course_config_detail_add', {});
     }
 
-    handleEdit(student_id) {
-        notification.emit('notification_xietong_student_detail_edit', {
-            student_id: student_id,
-            clazz: this.state.clazz
+    handleEdit(course_config_id) {
+        notification.emit('notification_xietong_course_config_detail_edit', {
+            course_config_id: course_config_id
         });
     }
 
-    handleDel(student_id, system_version) {
+    handleDel(course_config_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/xietong/student/delete',
+            url: '/' + constant.action + '/xietong/course/config/delete',
             data: {
-                student_id: student_id,
+                course_config_id: course_config_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -213,18 +171,16 @@ class XietongStudentIndex extends Component {
         });
     }
 
-    handleDeleteAll() {
+    handleCourseStudentSave() {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/admin/xietong/student/all/delete',
+            url: '/admin/xietong/course/student/white/apply/save',
             data: {},
             success: function (json) {
                 message.success(constant.success);
-
-                this.handleLoad();
             }.bind(this),
             complete: function () {
                 this.setState({
@@ -234,24 +190,23 @@ class XietongStudentIndex extends Component {
         });
     }
 
-    handleChange(info) {
-        if (info.file.status === 'done') {
-            if (info.file.response.code == 200) {
+    handleCourseApplyDelete() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/admin/xietong/course/apply/all/delete',
+            data: {},
+            success: function (json) {
                 message.success(constant.success);
-            } else {
-                message.error(info.file.response.message);
-            }
-
-            this.setState({
-                is_load: false
-            });
-
-            this.handleLoad();
-        } else {
-            this.setState({
-                is_load: true
-            });
-        }
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
     }
 
     render() {
@@ -259,64 +214,37 @@ class XietongStudentIndex extends Component {
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
-        const props = {
-            name: 'file',
-            multiple: false,
-            showUploadList: false,
-            accept: '.xls,.xlsx',
-            action: constant.host + '/admin/xietong/student/upload',
-            headers: {
-                'app_id': constant.app_id,
-                'token': storage.getToken(),
-                'platform': constant.platform,
-                'version': constant.version
-            },
-            onChange: this.handleChange.bind(this)
-        };
-
         const columns = [{
-            title: '班级',
-            dataIndex: 'clazz_name'
+            title: '选课开始时间',
+            dataIndex: 'course_config_apply_start_time'
         }, {
-            title: '学生姓名',
-            dataIndex: 'student_name'
-        }, {
-            title: '学生学号',
-            dataIndex: 'student_number'
+            title: '选课结束时间',
+            dataIndex: 'course_config_apply_end_time'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.student_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.course_config_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.student_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.course_config_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
             )
         }];
 
-        const rowSelection = {
-            selectedRowKeys: this.state.selectedRowKeys,
-            onChange: (selectedRowKeys, selectedRows) => {
-                this.setState({
-                    selectedRowKeys: selectedRowKeys
-                });
-            }
-        };
-
         const pagination = {
             size: 'defalut',
-            total: this.props.xietong_student.total,
+            total: this.props.xietong_course_config.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.xietong_student.page_index,
-            pageSize: this.props.xietong_student.page_size,
+            current: this.props.xietong_course_config.page_index,
+            pageSize: this.props.xietong_course_config.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -326,18 +254,20 @@ class XietongStudentIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">学生信息</div>
+                        <div className="">选课配置信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        {/*<Button type="default" icon="delete" size="default" className="margin-right"*/}
-                        {/*loading={this.state.is_load}*/}
-                        {/*onClick={this.handleDeleteAll.bind(this)}>删除所有学生</Button>*/}
-                        <Upload className="margin-right" {...props}>
-                            <Button type="default" icon="upload" size="default" className="button-reload">导入学生资料</Button>
-                        </Upload>
+                        <Button type="default" icon="lock" size="default" className="margin-right"
+                            loading={this.state.is_load}
+                            onClick={this.handleCourseStudentSave.bind(this)}>设置课程白名单</Button>
+                        <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                            cancelText={constant.popconfirm_cancel}
+                            onConfirm={this.handleCourseApplyDelete.bind(this)}>
+                            <Button type="default" icon="delete" size="default" className="margin-right">删除选课数据</Button>
+                        </Popconfirm>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
@@ -357,7 +287,7 @@ class XietongStudentIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.xietong_student.app_list.map(function (item) {
+                                                        this.props.xietong_course_config.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -373,60 +303,29 @@ class XietongStudentIndex extends Component {
                                 ''
                         }
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="学生姓名">
-                                {
-                                    getFieldDecorator('student_name', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入学生姓名" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
                         </Col>
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="所属班级">                                {
-                                    getFieldDecorator('clazz_id', {
-                                        initialValue: ''
-                                    })(
-                                        <Select placeholder="请选择班级">
-                                            {
-                                                this.state.clazz.map(function (item) {
-                                                    return (
-                                                        <Option key={item.clazz_id} value={item.clazz_id}>{item.clazz_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                    )
-                                }
-                            </FormItem>
                         </Col>
                         <Col span={8}>
                         </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="student_id"
+                       rowKey="course_config_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.xietong_student.list} pagination={pagination}
+                       dataSource={this.props.xietong_course_config.list} pagination={pagination}
                        bordered/>
-                <XietongStudentDetail/>
+                <XietongCourseConfigDetail/>
             </QueueAnim>
         );
     }
 }
 
-XietongStudentIndex.propTypes = {};
+XietongCourseConfigIndex.propTypes = {};
 
-XietongStudentIndex = Form.create({})(XietongStudentIndex);
+XietongCourseConfigIndex = Form.create({})(XietongCourseConfigIndex);
 
-export default connect(({xietong_student}) => ({
-    xietong_student
-}))(XietongStudentIndex);
+export default connect(({xietong_course_config}) => ({
+    xietong_course_config
+}))(XietongCourseConfigIndex);

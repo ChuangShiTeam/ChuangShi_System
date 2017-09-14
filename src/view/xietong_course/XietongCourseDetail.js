@@ -213,14 +213,16 @@ class XietongCourseDetail extends Component {
         });
     }
 
-    handleStudentDelete(course_student_id, type) {
+    handleStudentDelete(course_student_id, type, system_version) {
         this.setState({
             is_load: true
         });
         http.request({
             url: '/' + constant.action + '/xietong/course/student/delete',
             data: {
-                course_student_id: course_student_id
+                course_id: this.state.course_id,
+                course_student_id: course_student_id,
+                system_version: system_version
             },
             success: function (json) {
                 message.success(constant.success);
@@ -323,6 +325,7 @@ class XietongCourseDetail extends Component {
             dataIndex: 'clazz_name',
             key: 'clazz_name'
         }, {
+            width: 150,
             title: '学生姓名',
             dataIndex: 'student_name',
             key: 'student_name'
@@ -331,15 +334,15 @@ class XietongCourseDetail extends Component {
             title: '学号',
             dataIndex: 'student_number'
         }, {
-            width: 90,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleStudentDelete.bind(this, record.course_student_id, 'white')}>
-                    <a>{constant.delete}</a>
+                              onConfirm={this.handleStudentDelete.bind(this, record.course_student_id, 'white', record.system_version)}>
+                    <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
             )
@@ -351,6 +354,7 @@ class XietongCourseDetail extends Component {
             dataIndex: 'clazz_name',
             key: 'clazz_name'
         }, {
+            width: 150,
             title: '学生姓名',
             dataIndex: 'student_name',
             key: 'student_name'
@@ -359,15 +363,15 @@ class XietongCourseDetail extends Component {
             title: '学号',
             dataIndex: 'student_number'
         }, {
-            width: 90,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleStudentDelete.bind(this, record.course_student_id, 'black')}>
-                    <a>{constant.delete}</a>
+                              onConfirm={this.handleStudentDelete.bind(this, record.course_student_id, 'black', record.system_version)}>
+                    <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
             )

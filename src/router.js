@@ -63,6 +63,7 @@ import XietongArticleIndex from './view/xietong_article/XietongArticleIndex';
 import XietongCourseIndex from './view/xietong_course/XietongCourseIndex';
 import XietongStudentIndex from './view/xietong_student/XietongStudentIndex';
 import XietongClazzIndex from './view/xietong_clazz/XietongClazzIndex';
+import XietongCourseConfigIndex from './view/xietong_course_config/XietongCourseConfigIndex';
 import InfinitiMemberIndex from './view/infiniti_member/InfinitiMemberIndex';
 import InfinitiPrizeIndex from './view/infiniti_prize/InfinitiPrizeIndex';
 
@@ -149,6 +150,7 @@ function RouterConfig({history}) {
                     <Route path="/xietong/course/index" component={XietongCourseIndex}/>
                     <Route path="/xietong/student/index" component={XietongStudentIndex}/>
                     <Route path="/xietong/clazz/index" component={XietongClazzIndex}/>
+                    <Route path="/xietong/course/config/index" component={XietongCourseConfigIndex}/>
                 </Route>
             </Route>
         </Router>
