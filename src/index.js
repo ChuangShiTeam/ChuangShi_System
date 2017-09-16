@@ -61,6 +61,10 @@ import website_menu from './model/website_menu';
 import advertisement from './model/advertisement';
 import infiniti_member from './model/infiniti_member';
 import infiniti_prize from './model/infiniti_prize';
+import xietong_course from './model/xietong_course';
+import xietong_student from './model/xietong_student';
+import xietong_clazz from './model/xietong_clazz';
+import xietong_course_config from './model/xietong_course_config';
 
 document.title = constant.name;
 
@@ -125,6 +129,10 @@ app.model(website_menu);
 app.model(advertisement);
 app.model(infiniti_member);
 app.model(infiniti_prize);
+app.model(xietong_course);
+app.model(xietong_student);
+app.model(xietong_clazz);
+app.model(xietong_course_config);
 
 app.router(Router);
 
