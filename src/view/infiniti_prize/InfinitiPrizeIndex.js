@@ -90,7 +90,7 @@ class InfinitiPrizeIndex extends Component {
         });
 
         http.request({
-            url: '/mobile/infiniti/member/1/draw',
+            url: '/admin/infiniti/prize/list',
             data: {
                 app_id: this.props.infiniti_prize.app_id,
                 prize_name: this.props.infiniti_prize.prize_name,
@@ -98,13 +98,13 @@ class InfinitiPrizeIndex extends Component {
                 page_size: this.props.infiniti_prize.page_size
             },
             success: function (data) {
-                // this.props.dispatch({
-                //     type: 'infiniti_prize/fetch',
-                //     data: {
-                //         total: data.total,
-                //         list: data.list
-                //     }
-                // });
+                this.props.dispatch({
+                    type: 'infiniti_prize/fetch',
+                    data: {
+                        total: data.total,
+                        list: data.list
+                    }
+                });
             }.bind(this),
             complete: function () {
                 this.setState({

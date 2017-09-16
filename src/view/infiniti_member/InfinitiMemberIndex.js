@@ -199,21 +199,21 @@ class InfinitiMemberIndex extends Component {
         }, {
             title: '是否兑换',
             dataIndex: 'member_redeem_code_is_exchange'
-        }, {
-            width: 100,
-            title: constant.operation,
-            dataIndex: '',
-            render: (text, record, index) => (
-                <span>
-                  <a onClick={this.handleEdit.bind(this, record.user_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.user_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
-                </span>
-            )
+        // }, {
+        //     width: 100,
+        //     title: constant.operation,
+        //     dataIndex: '',
+        //     render: (text, record, index) => (
+        //         <span>
+        //           <a onClick={this.handleEdit.bind(this, record.user_id)}>{constant.edit}</a>
+        //           <span className="divider"/>
+        //           <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+        //                       cancelText={constant.popconfirm_cancel}
+        //                       onConfirm={this.handleDel.bind(this, record.user_id, record.system_version)}>
+        //             <a>{constant.del}</a>
+        //           </Popconfirm>
+        //         </span>
+        //     )
         }];
 
         const pagination = {
