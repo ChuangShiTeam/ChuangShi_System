@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Table, Popconfirm, message} from 'antd';
 
 import XietongCourseConfigDetail from './XietongCourseConfigDetail';
 import constant from '../../util/constant';
@@ -181,7 +181,7 @@ class XietongCourseConfigIndex extends Component {
             data: {},
             success: function (json) {
                 message.success(constant.success);
-            }.bind(this),
+            },
             complete: function () {
                 this.setState({
                     is_load: false
@@ -200,7 +200,7 @@ class XietongCourseConfigIndex extends Component {
             data: {},
             success: function (json) {
                 message.success(constant.success);
-            }.bind(this),
+            },
             complete: function () {
                 this.setState({
                     is_load: false

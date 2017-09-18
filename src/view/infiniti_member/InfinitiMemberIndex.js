@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
 
 import InfinitiMemberDetail from './InfinitiMemberDetail';
 import constant from '../../util/constant';
@@ -179,6 +179,10 @@ class InfinitiMemberIndex extends Component {
         });
     }
 
+    handleExcel() {
+        window.open(constant.host + '/admin/infiniti/member/export')
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -197,8 +201,8 @@ class InfinitiMemberIndex extends Component {
             title: '兑换码',
             dataIndex: 'member_redeem_code'
         }, {
-            title: '是否兑换',
-            dataIndex: 'member_redeem_code_is_exchange'
+            title: '创建时间',
+            dataIndex: 'system_create_time'
         // }, {
         //     width: 100,
         //     title: constant.operation,
@@ -239,8 +243,8 @@ class InfinitiMemberIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        {/*<Button type="primary" icon="plus-circle" size="default"*/}
-                                {/*onClick={this.handleAdd.bind(this)}>{constant.add}</Button>*/}
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleExcel.bind(this)}>导出选课数据</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

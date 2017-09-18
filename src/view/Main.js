@@ -5,6 +5,7 @@ import {Layout, Menu, Icon, Spin} from 'antd';
 
 import constant from '../util/constant';
 import http from '../util/http';
+import validate from '../util/validate';
 
 class Main extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class Main extends Component {
 
         this.state = {
             is_load: false,
-            collapsed: false,
+            collapsed: validate.isMobileDevice(),
             openKeys: [],
             selectedKeys: [],
             menu: []
@@ -99,6 +100,12 @@ class Main extends Component {
         });
     }
 
+    handleCollapse() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
+    }
+
     handleLogout() {
         this.props.dispatch(routerRedux.push({
             pathname: '/login',
@@ -118,7 +125,7 @@ class Main extends Component {
                 </Header>
                 <Layout>
                     {constant.is_show_menu ?
-                        <Sider className="sider">
+                        <Sider collapsible className="sider" collapsed={this.state.collapsed} onCollapse={this.handleCollapse.bind(this)}>
                             <Spin spinning={this.state.is_load}>
                                 <Menu
                                     mode="inline"
@@ -155,12 +162,15 @@ class Main extends Component {
                         :
                         ""
                     }
-                    <Layout className="layout">
+                    <Layout className="layout" style={{
+                        overflow: 'visible',
+                        overflowX: 'auto',
+                    }}>
                         <Content style={{
                             background: '#ffffff',
                             padding: 10,
                             margin: 0,
-                            minHeight: document.documentElement.clientHeight - 64 - 20
+                            minHeight: document.documentElement.clientHeight - 64 - 20,
                         }}>
                             {this.props.children}
                         </Content>

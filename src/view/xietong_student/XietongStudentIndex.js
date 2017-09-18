@@ -24,7 +24,7 @@ class XietongStudentIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.xietong_student.app_id
+                app_id: this.props.xietong_student.app_id
             });
 
             this.handleLoadApp();
@@ -51,8 +51,7 @@ class XietongStudentIndex extends Component {
     handleClazzList() {
         http.request({
             url: '/' + constant.action + '/xietong/clazz/all/list',
-            data: {
-            },
+            data: {},
             success: function (data) {
                 let array = [{
                     clazz_id: '',
@@ -68,7 +67,8 @@ class XietongStudentIndex extends Component {
                 });
             }.bind(this),
             complete: function () {
-            }.bind(this)
+
+            }
         });
     }
 
@@ -236,7 +236,7 @@ class XietongStudentIndex extends Component {
 
     handleChange(info) {
         if (info.file.status === 'done') {
-            if (info.file.response.code == 200) {
+            if (info.file.response.code === 200) {
                 message.success(constant.success);
             } else {
                 message.error(info.file.response.message);
@@ -300,15 +300,6 @@ class XietongStudentIndex extends Component {
             )
         }];
 
-        const rowSelection = {
-            selectedRowKeys: this.state.selectedRowKeys,
-            onChange: (selectedRowKeys, selectedRows) => {
-                this.setState({
-                    selectedRowKeys: selectedRowKeys
-                });
-            }
-        };
-
         const pagination = {
             size: 'defalut',
             total: this.props.xietong_student.total,
@@ -336,7 +327,8 @@ class XietongStudentIndex extends Component {
                         {/*loading={this.state.is_load}*/}
                         {/*onClick={this.handleDeleteAll.bind(this)}>删除所有学生</Button>*/}
                         <Upload className="margin-right" {...props}>
-                            <Button type="default" icon="upload" size="default" className="button-reload">导入学生资料</Button>
+                            <Button type="default" icon="upload" size="default"
+                                    className="button-reload">导入学生资料</Button>
                         </Upload>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
@@ -381,7 +373,8 @@ class XietongStudentIndex extends Component {
                                     getFieldDecorator('student_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入学生姓名" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入学生姓名"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -391,20 +384,21 @@ class XietongStudentIndex extends Component {
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="所属班级">                                {
-                                    getFieldDecorator('clazz_id', {
-                                        initialValue: ''
-                                    })(
-                                        <Select placeholder="请选择班级">
-                                            {
-                                                this.state.clazz.map(function (item) {
-                                                    return (
-                                                        <Option key={item.clazz_id} value={item.clazz_id}>{item.clazz_name}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                    )
-                                }
+                                getFieldDecorator('clazz_id', {
+                                    initialValue: ''
+                                })(
+                                    <Select placeholder="请选择班级">
+                                        {
+                                            this.state.clazz.map(function (item) {
+                                                return (
+                                                    <Option key={item.clazz_id}
+                                                            value={item.clazz_id}>{item.clazz_name}</Option>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                )
+                            }
                             </FormItem>
                         </Col>
                         <Col span={8}>

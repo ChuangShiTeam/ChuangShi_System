@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
 
 import EnchashmentDetail from './EnchashmentDetail';
 import constant from '../../util/constant';
