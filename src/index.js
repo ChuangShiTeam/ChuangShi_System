@@ -57,6 +57,7 @@ import page from './model/page';
 import captcha from './model/captcha';
 import jiangling_customer from './model/jiangling_customer';
 import jiangling_game from './model/jiangling_game';
+import jiangling_lottery from './model/jiangling_lottery';
 import website_menu from './model/website_menu';
 import advertisement from './model/advertisement';
 import infiniti_member from './model/infiniti_member';
@@ -65,6 +66,8 @@ import xietong_course from './model/xietong_course';
 import xietong_student from './model/xietong_student';
 import xietong_clazz from './model/xietong_clazz';
 import xietong_course_config from './model/xietong_course_config';
+import xietong_teacher_recruitment from './model/xietong_teacher_recruitment';
+import xietong_admissions from './model/xietong_admissions';
 
 document.title = constant.name;
 
@@ -125,6 +128,7 @@ app.model(page);
 app.model(captcha);
 app.model(jiangling_customer);
 app.model(jiangling_game);
+app.model(jiangling_lottery);
 app.model(website_menu);
 app.model(advertisement);
 app.model(infiniti_member);
@@ -133,6 +137,8 @@ app.model(xietong_course);
 app.model(xietong_student);
 app.model(xietong_clazz);
 app.model(xietong_course_config);
+app.model(xietong_teacher_recruitment);
+app.model(xietong_admissions);
 
 app.router(Router);
 
