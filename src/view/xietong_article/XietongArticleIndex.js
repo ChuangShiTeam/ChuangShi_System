@@ -199,6 +199,29 @@ class XietongArticleIndex extends Component {
         });
     }
 
+    handlePublish(article_id) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/xietong/article/publish',
+            data: {
+                article_id: article_id
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -208,12 +231,14 @@ class XietongArticleIndex extends Component {
             title: '文章名称',
             dataIndex: 'article_name'
         }, {
-            width: 100,
+            width: 150,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.article_id)}>{constant.edit}</a>
+                    <span className="divider"/>
+                  <a onClick={this.handlePublish.bind(this, record.article_id)}>发布</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
