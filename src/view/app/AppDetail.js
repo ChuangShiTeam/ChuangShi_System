@@ -137,7 +137,6 @@ class AppDetail extends Component {
 
     render() {
         const FormItem = Form.Item;
-        const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         return (

@@ -194,6 +194,27 @@ class CacheIndex extends Component {
         });
     }
 
+    handleRefreshAccessToken() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/refresh/access/token',
+            data: {},
+            success: function (data) {
+                message.success(constant.success);
+
+                //this.handleLoad().bind(this);
+            },
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -206,8 +227,10 @@ class CacheIndex extends Component {
                         <div className="">缓存信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="primary" icon="plus-circle" size="default"
+                        <Button type="primary" icon="plus-circle" size="default" className="margin-right"
                                 onClick={this.handleRemoveAllCache.bind(this,)}>清空缓存</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleRefreshAccessToken.bind(this,)}>刷新token</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

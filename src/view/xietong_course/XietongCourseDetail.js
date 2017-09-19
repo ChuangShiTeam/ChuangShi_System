@@ -50,9 +50,9 @@ class XietongCourseDetail extends Component {
         });
 
         notification.on('notification_xietong_course_student_return', this, function(data) {
-            if (data.type == 'white') {
+            if (data.type === 'white') {
                 this.handleWhiteSave(data.student_id);
-            } else if (data.type == 'black') {
+            } else if (data.type === 'black') {
                 this.handleBlackSave(data.student_id);
             }
         });
@@ -228,7 +228,7 @@ class XietongCourseDetail extends Component {
                 message.success(constant.success);
 
                 setTimeout(function () {
-                    if (type == 'white') {
+                    if (type === 'white') {
                         this.handleWhiteLoad(this.state.course_id);
                     } else {
                         this.handleBlackLoad(this.state.course_id);

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, message} from 'antd';
 
 import EnchashmentDetail from './EnchashmentDetail';
 import constant from '../../util/constant';
@@ -28,8 +28,7 @@ class EnchashmentIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            user_id: this.props.enchashment.user_id,
-            enchashment_status: this.props.enchashment.enchashment_status,
+            user_name: this.props.enchashment.user_name
         });
 
         this.handleLoad();
@@ -68,15 +67,13 @@ class EnchashmentIndex extends Component {
                 app_id = '';
             }
 
-            let user_id = this.props.form.getFieldValue('user_id');
-            let enchashment_status = this.props.form.getFieldValue('enchashment_status');
+            let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
                 type: 'enchashment/fetch',
                 data: {
                     app_id: app_id,
-                    user_id: user_id,
-                    enchashment_status: enchashment_status,
+                    user_name: user_name,
                     page_index: 1
                 }
             });
@@ -96,8 +93,7 @@ class EnchashmentIndex extends Component {
             url: '/' + constant.action + '/enchashment/list',
             data: {
                 app_id: this.props.enchashment.app_id,
-                user_id: this.props.enchashment.user_id,
-                enchashment_status: this.props.enchashment.enchashment_status,
+                user_name: this.props.enchashment.user_name,
                 page_index: this.props.enchashment.page_index,
                 page_size: this.props.enchashment.page_size
             },
@@ -189,29 +185,14 @@ class EnchashmentIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '用户编号',
-            dataIndex: 'user_id'
+            title: '用户姓名',
+            dataIndex: 'user_name'
         }, {
-            title: '取现金额',
+            title: '提现金额',
             dataIndex: 'enchashment_amount'
         }, {
-            title: '取现状态',
-            dataIndex: 'enchashment_status'
-        }, {
-            width: 100,
-            title: constant.operation,
-            dataIndex: '',
-            render: (text, record, index) => (
-                <span>
-                  <a onClick={this.handleEdit.bind(this, record.enchashment_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.enchashment_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
-                </span>
-            )
+            title: '提现时间',
+            dataIndex: 'system_create_time'
         }];
 
         const pagination = {
@@ -231,7 +212,7 @@ class EnchashmentIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">提现信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -277,7 +258,7 @@ class EnchashmentIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="用户编号">
                                 {
-                                    getFieldDecorator('user_id', {
+                                    getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入用户编号" onPressEnter={this.handleSearch.bind(this)}/>
@@ -286,18 +267,6 @@ class EnchashmentIndex extends Component {
                             </FormItem>
                         </Col>
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="取现状态">
-                                {
-                                    getFieldDecorator('enchashment_status', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入取现状态" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
                         </Col>
                         <Col span={8}>
                         </Col>
