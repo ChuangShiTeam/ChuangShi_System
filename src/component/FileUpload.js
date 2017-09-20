@@ -20,20 +20,28 @@ class FileUpload extends Component {
 	}
 
 	componentWillUnmount() {
-
+		this.handleReset();
 	}
 
 	handleGetValue() {
-		return this.state.fileList;
+		let fileList = this.state.fileList.map(file => {
+			return {
+				file_id: file.uid,
+				file_name: file.name,
+				file_path: file.url
+			}
+		});
+		return fileList;
 	}
 
 	handleSetValue(data) {
 		let array = [];
 		for (let i = 0; i < data.length; i++) {
 			array.push({
-				file_id: data[i].file_id,
-				file_path: data[i].file_path,
-				status: false
+				uid: data[i].file_id,
+				name: data[i].file_name,
+				url: constant.host + data[i].file_path,
+				status: 'done'
 			});
 		}
 
@@ -42,15 +50,14 @@ class FileUpload extends Component {
 		});
 	}
 
-	handleBeforeUpload = (file) => {
-		console.log('file', file);
-		if (!(this.props.limit === 0) && this.props.limit <= this.state.fileList.length) {
-			message.error('文件数量超过限制');
+	handleBeforeUpload = (file, fileList) => {
+		if (!(this.props.limit === 0) && this.props.limit < fileList.length + this.state.fileList.length) {
+			message.error(`文件上传数量限制为${this.props.limit}个！`);
 			return false;
 		}
 
-		if (file.size > 1024 * 1024 * 2) {
-			message.error('文件大小超过2M');
+		if (file.size > 1024 * 1024 * this.props.size) {
+			message.error(`文件大小超过${this.props.size}M！`);
 
 			return false;
 		}
@@ -60,23 +67,17 @@ class FileUpload extends Component {
 
 	handleChange = (info) => {
 		let fileList = info.fileList;
-
 		if (info.file.status === 'done') {
 			if (info.file.response.code === 200) {
 				message.success(constant.success);
 				fileList = fileList.map((file) => {
 					if (file.response) {
-						file.url = file.response.data.file_path;
+						file.url = constant.host + file.response.data[0].file_path;
+						file.uid = file.response.data[0].file_id;
 					}
 					return file;
 				});
 
-				fileList = fileList.filter((file) => {
-					if (file.response) {
-						return file.response.code === 200;
-					}
-					return true;
-				});
 			} else {
 				message.error(info.file.response.message);
 			}
@@ -89,10 +90,29 @@ class FileUpload extends Component {
 				is_load: true
 			});
 		} else if (info.file.status === 'error') {
-			message.error(info.file.name + ' file upload failed');
+			this.setState({
+				is_load: false
+			});
+			message.error(info.file.name + ' 文件上传失败！');
 		}
-
+		fileList = fileList.filter((file) => {
+			if (file.response) {
+				return file.response.code === 200;
+			}
+			return true;
+		});
 		this.setState({ fileList });
+	};
+
+	handlePreview = (file) => {
+		return true;
+	};
+
+	handleReset() {
+		this.setState({
+			is_load: false,
+			fileList: []
+		});
 	}
 
 	render() {
@@ -109,14 +129,13 @@ class FileUpload extends Component {
 			},
 			onChange: this.handleChange.bind(this),
 			beforeUpload: this.handleBeforeUpload,
-			disabled: this.props.limit === 0?false:(this.props.limit <= this.state.fileList.length?true:false),
 			fileList: this.state.fileList
 		};
 
 		return (
 			<Upload {...props}>
 				<Button loading={this.state.is_load}>
-					<Icon type="upload" /> 上传
+					<Icon type="upload" /> 上传(文件大小不超过{this.props.size}M)
 				</Button>
 			</Upload>
 		);
@@ -126,12 +145,14 @@ class FileUpload extends Component {
 FileUpload.propTypes = {
 	name: PropTypes.string.isRequired,
 	type: PropTypes.string,
-	limit: PropTypes.number.isRequired
+	size: PropTypes.number,
+	limit: PropTypes.number
 };
 
 FileUpload.defaultProps = {
 	type: '',
-	limit: 0
+	limit: 0,
+	size: 2
 };
 
 export default FileUpload;

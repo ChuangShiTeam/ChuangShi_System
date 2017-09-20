@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message, DatePicker, Upload} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message, DatePicker} from 'antd';
+import moment from 'moment';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 import FileUpload from '../../component/FileUpload';
+
 
 class XietongTeacherRecruitmentDetail extends Component {
     constructor(props) {
@@ -61,11 +63,15 @@ class XietongTeacherRecruitmentDetail extends Component {
                         app_id: data.app_id
                     });
                 }
-
+                let teacher_recruitment_file = [];
+                if (data.teacher_recruitment_file_file !== null) {
+                    teacher_recruitment_file.push(data.teacher_recruitment_file_file);
+                }
+                this.refs.teacher_recruitment_file.handleSetValue(teacher_recruitment_file);
                 this.props.form.setFieldsValue({
                     teacher_recruitment_name: data.teacher_recruitment_name,
                     teacher_recruitment_sex: data.teacher_recruitment_sex,
-                    teacher_recruitment_birthday: data.teacher_recruitment_birthday,
+                    teacher_recruitment_birthday: data.teacher_recruitment_birthday?moment(data.teacher_recruitment_birthday):null,
                     teacher_recruitment_mobile: data.teacher_recruitment_mobile,
                     teacher_recruitment_email: data.teacher_recruitment_email,
                     teacher_recruitment_faculty: data.teacher_recruitment_faculty,
@@ -82,7 +88,6 @@ class XietongTeacherRecruitmentDetail extends Component {
                     teacher_recruitment_work_experience: data.teacher_recruitment_work_experience,
                     teacher_recruitment_representative_honor: data.teacher_recruitment_representative_honor,
                     teacher_recruitment_now_address: data.teacher_recruitment_now_address,
-                    teacher_recruitment_file: data.teacher_recruitment_file,
                 });
 
                 this.setState({
@@ -104,6 +109,14 @@ class XietongTeacherRecruitmentDetail extends Component {
                 return;
             }
 
+            let file_list = this.refs.teacher_recruitment_file.handleGetValue();
+            if (file_list.length === 0) {
+                values.teacher_recruitment_file = '';
+            } else {
+                values.teacher_recruitment_file = file_list[0].file_id;
+            }
+
+            values.teacher_recruitment_birthday = values.teacher_recruitment_birthday.format('YYYY-MM-DD');
             values.teacher_recruitment_id = this.state.teacher_recruitment_id;
             values.system_version = this.state.system_version;
 
@@ -140,6 +153,8 @@ class XietongTeacherRecruitmentDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.teacher_recruitment_file.handleReset();
     }
 
     render() {
@@ -149,7 +164,7 @@ class XietongTeacherRecruitmentDetail extends Component {
         const { TextArea } = Input;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'招聘详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"

@@ -82,7 +82,7 @@ class XietongCourseIndex extends Component {
             }.bind(this),
             complete: function () {
 
-            }.bind(this)
+            }
         });
     }
 
@@ -97,7 +97,7 @@ class XietongCourseIndex extends Component {
             }.bind(this),
             complete: function () {
 
-            }.bind(this)
+            }
         });
     }
 
@@ -227,7 +227,7 @@ class XietongCourseIndex extends Component {
 
     handleChange(info) {
         if (info.file.status === 'done') {
-            if (info.file.response.code == 200) {
+            if (info.file.response.code === 200) {
                 message.success(constant.success);
             } else {
                 message.error(info.file.response.message);
@@ -281,22 +281,22 @@ class XietongCourseIndex extends Component {
             render: (text, record, index) => (
                 <span>
                     {
-                        text == 17 ? '星期一第七节' : ''
+                        text === 17 ? '星期一第七节' : ''
                     }
                     {
-                        text == 27 ? '星期二第七节' : ''
+                        text === 27 ? '星期二第七节' : ''
                     }
                     {
-                        text == 28 ? '星期二第八节' : ''
+                        text === 28 ? '星期二第八节' : ''
                     }
                     {
-                        text == 47 ? '星期四第七节' : ''
+                        text === 47 ? '星期四第七节' : ''
                     }
                     {
-                        text == 48 ? '星期四第七节' : ''
+                        text === 48 ? '星期四第七节' : ''
                     }
                     {
-                        text == 56 ? '星期五第六节' : ''
+                        text === 56 ? '星期五第六节' : ''
                     }
                 </span>
             )

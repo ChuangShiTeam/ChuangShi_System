@@ -279,7 +279,7 @@ class XietongStudentDetail extends Component {
                                     {
                                         getFieldDecorator('user_password', {
                                             rules: [{
-                                                required: this.state.action == 'save',
+                                                required: this.state.action === 'save',
                                                 message: constant.required
                                             }],
                                             initialValue: ''
