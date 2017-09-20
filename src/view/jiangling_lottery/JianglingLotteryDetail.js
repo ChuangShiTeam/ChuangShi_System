@@ -20,14 +20,7 @@ class JianglingLotteryDetail extends Component {
     }
 
     componentDidMount() {
-        notification.on('notification_jiangling_lottery_detail_add', this, function (data) {
-            this.setState({
-                is_show: true,
-                action: 'save'
-            });
-        });
-
-        notification.on('notification_jiangling_lottery_detail_edit', this, function (data) {
+        notification.on('notification_jiangling_lottery_detail_view', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
@@ -62,6 +55,7 @@ class JianglingLotteryDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
+                    user_name: data.user_name,
                     lottery_number: data.lottery_number,
                     lottery_user_sex: data.lottery_user_sex,
                     lottery_user_mobile: data.lottery_user_mobile,
@@ -136,10 +130,7 @@ class JianglingLotteryDetail extends Component {
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>关闭</Button>,
-                       <Button key="submit" type="primary" size="default" icon="check-circle"
-                               loading={this.state.is_load}
-                               onClick={this.handleSubmit.bind(this)}>确定</Button>
+                               onClick={this.handleCancel.bind(this)}>关闭</Button>
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
@@ -183,16 +174,28 @@ class JianglingLotteryDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="用户名称">
+                                    {
+                                        getFieldDecorator('user_name', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '抽签号码'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="抽签号码">
                                     {
                                         getFieldDecorator('lottery_number', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '抽签号码'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '抽签号码'}/>
                                         )
                                     }
                                 </FormItem>
@@ -209,7 +212,7 @@ class JianglingLotteryDetail extends Component {
                                             valuePropName: 'checked',
                                             initialValue: false
                                         })(
-                                            <Switch />
+                                            <Switch checkedChildren="男" unCheckedChildren="女"/>
                                         )
                                     }
                                 </FormItem>
@@ -223,13 +226,9 @@ class JianglingLotteryDetail extends Component {
                                 }} className="form-item" label="抽签用户手机号码">
                                     {
                                         getFieldDecorator('lottery_user_mobile', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '抽签用户手机号码'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '抽签用户手机号码'}/>
                                         )
                                     }
                                 </FormItem>
@@ -243,13 +242,9 @@ class JianglingLotteryDetail extends Component {
                                 }} className="form-item" label="抽签次数">
                                     {
                                         getFieldDecorator('lottery_time', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '抽签次数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '抽签次数'}/>
                                         )
                                     }
                                 </FormItem>
@@ -266,7 +261,7 @@ class JianglingLotteryDetail extends Component {
                                             valuePropName: 'checked',
                                             initialValue: false
                                         })(
-                                            <Switch />
+                                            <Switch checkedChildren="是" unCheckedChildren="否"/>
                                         )
                                     }
                                 </FormItem>

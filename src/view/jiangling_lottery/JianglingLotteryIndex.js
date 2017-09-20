@@ -29,6 +29,7 @@ class JianglingLotteryIndex extends Component {
 
         this.props.form.setFieldsValue({
             lottery_number: this.props.jiangling_lottery.lottery_number,
+            user_name: this.props.jiangling_lottery.user_name
         });
 
         this.handleLoad();
@@ -68,12 +69,14 @@ class JianglingLotteryIndex extends Component {
             }
 
             let lottery_number = this.props.form.getFieldValue('lottery_number');
+            let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
                 type: 'jiangling_lottery/fetch',
                 data: {
                     app_id: app_id,
                     lottery_number: lottery_number,
+                    user_name: user_name,
                     page_index: 1
                 }
             });
@@ -94,6 +97,7 @@ class JianglingLotteryIndex extends Component {
             data: {
                 app_id: this.props.jiangling_lottery.app_id,
                 lottery_number: this.props.jiangling_lottery.lottery_number,
+                user_name: this.props.jiangling_lottery.user_name,
                 page_index: this.props.jiangling_lottery.page_index,
                 page_size: this.props.jiangling_lottery.page_size
             },
@@ -149,8 +153,8 @@ class JianglingLotteryIndex extends Component {
         notification.emit('notification_jiangling_lottery_detail_add', {});
     }
 
-    handleEdit(user_id) {
-        notification.emit('notification_jiangling_lottery_detail_edit', {
+    handleView(user_id) {
+        notification.emit('notification_jiangling_lottery_detail_view', {
             user_id: user_id
         });
     }
@@ -185,11 +189,19 @@ class JianglingLotteryIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
+            title: '用户名称',
+            dataIndex: 'user_name'
+        }, {
             title: '抽签号码',
             dataIndex: 'lottery_number'
         }, {
             title: '抽签用户性别',
-            dataIndex: 'lottery_user_sex'
+            dataIndex: 'lottery_user_sex',
+            render: (text, record, index) => (
+                <span>
+                    {text?'男':'女'}
+                </span>
+            )
         }, {
             title: '抽签用户手机号码',
             dataIndex: 'lottery_user_mobile'
@@ -198,14 +210,19 @@ class JianglingLotteryIndex extends Component {
             dataIndex: 'lottery_time'
         }, {
             title: '是否抽签',
-            dataIndex: 'lottery_status'
+            dataIndex: 'lottery_status',
+            render: (text, record, index) => (
+                <span>
+                    {text?'是':'否'}
+                </span>
+            )
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.user_id)}>{constant.edit}</a>
+                  <a onClick={this.handleView.bind(this, record.user_id)}>查看</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -239,8 +256,6 @@ class JianglingLotteryIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -277,6 +292,20 @@ class JianglingLotteryIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
+                            }} className="content-search-item" label="用户名称">
+                                {
+                                    getFieldDecorator('user_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入用户名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
                             }} className="content-search-item" label="抽签号码">
                                 {
                                     getFieldDecorator('lottery_number', {
@@ -286,8 +315,6 @@ class JianglingLotteryIndex extends Component {
                                     )
                                 }
                             </FormItem>
-                        </Col>
-                        <Col span={8}>
                         </Col>
                     </Row>
                 </Form>
