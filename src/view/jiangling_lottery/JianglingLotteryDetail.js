@@ -55,12 +55,11 @@ class JianglingLotteryDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    user_name: data.user_name,
                     lottery_number: data.lottery_number,
                     lottery_user_sex: data.lottery_user_sex,
                     lottery_user_mobile: data.lottery_user_mobile,
                     lottery_time: data.lottery_time,
-                    lottery_status: data.lottery_status,
+                    lottery_status: data.lottery_status
                 });
 
                 this.setState({
@@ -169,22 +168,6 @@ class JianglingLotteryDetail extends Component {
                                 :
                                 ''
                         }
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="用户名称">
-                                    {
-                                        getFieldDecorator('user_name', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '抽签号码'}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

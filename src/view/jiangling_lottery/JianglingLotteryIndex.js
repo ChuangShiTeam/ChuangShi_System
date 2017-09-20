@@ -29,7 +29,7 @@ class JianglingLotteryIndex extends Component {
 
         this.props.form.setFieldsValue({
             lottery_number: this.props.jiangling_lottery.lottery_number,
-            user_name: this.props.jiangling_lottery.user_name
+            lottery_user_mobile: this.props.jiangling_lottery.lottery_user_mobile
         });
 
         this.handleLoad();
@@ -69,14 +69,14 @@ class JianglingLotteryIndex extends Component {
             }
 
             let lottery_number = this.props.form.getFieldValue('lottery_number');
-            let user_name = this.props.form.getFieldValue('user_name');
+            let lottery_user_mobile = this.props.form.getFieldValue('lottery_user_mobile');
 
             this.props.dispatch({
                 type: 'jiangling_lottery/fetch',
                 data: {
                     app_id: app_id,
                     lottery_number: lottery_number,
-                    user_name: user_name,
+                    lottery_user_mobile: lottery_user_mobile,
                     page_index: 1
                 }
             });
@@ -97,7 +97,7 @@ class JianglingLotteryIndex extends Component {
             data: {
                 app_id: this.props.jiangling_lottery.app_id,
                 lottery_number: this.props.jiangling_lottery.lottery_number,
-                user_name: this.props.jiangling_lottery.user_name,
+                lottery_user_mobile: this.props.jiangling_lottery.lottery_user_mobile,
                 page_index: this.props.jiangling_lottery.page_index,
                 page_size: this.props.jiangling_lottery.page_size
             },
@@ -189,22 +189,19 @@ class JianglingLotteryIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '用户名称',
-            dataIndex: 'user_name'
-        }, {
             title: '抽签号码',
             dataIndex: 'lottery_number'
         }, {
-            title: '抽签用户性别',
+            title: '手机号码',
+            dataIndex: 'lottery_user_mobile'
+        }, {
+            title: '用户性别',
             dataIndex: 'lottery_user_sex',
             render: (text, record, index) => (
                 <span>
                     {text?'男':'女'}
                 </span>
             )
-        }, {
-            title: '抽签用户手机号码',
-            dataIndex: 'lottery_user_mobile'
         }, {
             title: '抽签次数',
             dataIndex: 'lottery_time'
@@ -292,12 +289,12 @@ class JianglingLotteryIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="用户名称">
+                            }} className="content-search-item" label="手机号码">
                                 {
-                                    getFieldDecorator('user_name', {
+                                    getFieldDecorator('lottery_user_mobile', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入用户名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入手机号码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
