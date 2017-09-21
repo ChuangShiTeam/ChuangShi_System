@@ -55,7 +55,7 @@ class ImageHelp extends Component {
         });
 
         http.request({
-            url: '/file/' + constant.action + '/image/list',
+            url: '/' + constant.action + '/file/image/list',
             data: {
                 file_name: '',
                 page_index: page_index,
@@ -270,7 +270,7 @@ class ImageHelp extends Component {
             name: 'file',
             multiple: true,
             showUploadList: false,
-            action: constant.host + '/file/admin/upload',
+            action: constant.host + '/admin/file/upload',
             accept: 'image/jpg,image/jpeg,image/png',
             headers: {
                 'app_id': constant.app_id,

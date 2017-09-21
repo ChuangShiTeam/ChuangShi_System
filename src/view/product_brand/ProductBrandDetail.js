@@ -68,10 +68,13 @@ class ProductBrandDetail extends Component {
                 });
 
                 let product_brand_image = [];
-                if (typeof (data.product_brand_image_file) === 'undefined' || data.product_brand_image_file === '' || data.product_brand_image_file === null) {
+                if (data.file_id === '') {
 
                 } else {
-                    product_brand_image.push(data.product_brand_image_file);
+                    product_brand_image.push({
+                        file_id: data.file_id,
+                        file_path: data.file_path
+                    });
                 }
                 this.refs.product_brand_image.handleSetValue(product_brand_image);
 
@@ -109,7 +112,7 @@ class ProductBrandDetail extends Component {
             });
 
             http.request({
-                url: '/product/brand/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/product/brand/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
