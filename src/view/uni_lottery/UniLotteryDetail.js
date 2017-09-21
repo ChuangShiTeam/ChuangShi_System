@@ -6,7 +6,7 @@ import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class JianglingLotteryDetail extends Component {
+class UniLotteryDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -20,7 +20,7 @@ class JianglingLotteryDetail extends Component {
     }
 
     componentDidMount() {
-        notification.on('notification_jiangling_lottery_detail_view', this, function (data) {
+        notification.on('notification_uni_lottery_detail_view', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
@@ -32,9 +32,9 @@ class JianglingLotteryDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_jiangling_lottery_detail_add', this);
+        notification.remove('notification_uni_lottery_detail_add', this);
 
-        notification.remove('notification_jiangling_lottery_detail_edit', this);
+        notification.remove('notification_uni_lottery_detail_edit', this);
     }
 
     handleLoad() {
@@ -43,7 +43,7 @@ class JianglingLotteryDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/jiangling/lottery/find',
+            url: '/' + constant.action + '/uni/lottery/find',
             data: {
                 user_id: this.state.user_id
             },
@@ -89,12 +89,12 @@ class JianglingLotteryDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/jiangling/lottery/' + this.state.action,
+                url: '/' + constant.action + '/uni/lottery/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_jiangling_lottery_index_load', {});
+                    notification.emit('notification_uni_lottery_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -152,7 +152,7 @@ class JianglingLotteryDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.jiangling_lottery.app_list.map(function (item) {
+                                                            this.props.uni_lottery.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -257,8 +257,8 @@ class JianglingLotteryDetail extends Component {
     }
 }
 
-JianglingLotteryDetail.propTypes = {};
+UniLotteryDetail.propTypes = {};
 
-JianglingLotteryDetail = Form.create({})(JianglingLotteryDetail);
+UniLotteryDetail = Form.create({})(UniLotteryDetail);
 
-export default connect(({jiangling_lottery}) => ({jiangling_lottery}))(JianglingLotteryDetail);
+export default connect(({uni_lottery}) => ({uni_lottery}))(UniLotteryDetail);

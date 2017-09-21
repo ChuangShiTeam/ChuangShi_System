@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import JianglingLotteryDetail from './JianglingLotteryDetail';
+import UniLotteryDetail from './UniLotteryDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class JianglingLotteryIndex extends Component {
+class UniLotteryIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,26 +21,26 @@ class JianglingLotteryIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.jiangling_lottery.app_id
+            app_id: this.props.uni_lottery.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            lottery_number: this.props.jiangling_lottery.lottery_number,
-            lottery_user_mobile: this.props.jiangling_lottery.lottery_user_mobile
+            lottery_number: this.props.uni_lottery.lottery_number,
+            lottery_user_mobile: this.props.uni_lottery.lottery_user_mobile
         });
 
         this.handleLoad();
 
-        notification.on('notification_jiangling_lottery_index_load', this, function (data) {
+        notification.on('notification_uni_lottery_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_jiangling_lottery_index_load', this);
+        notification.remove('notification_uni_lottery_index_load', this);
     }
 
     handleLoadApp() {
@@ -49,7 +49,7 @@ class JianglingLotteryIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'jiangling_lottery/fetch',
+                    type: 'uni_lottery/fetch',
                     data: {
                         app_list: data
                     }
@@ -72,7 +72,7 @@ class JianglingLotteryIndex extends Component {
             let lottery_user_mobile = this.props.form.getFieldValue('lottery_user_mobile');
 
             this.props.dispatch({
-                type: 'jiangling_lottery/fetch',
+                type: 'uni_lottery/fetch',
                 data: {
                     app_id: app_id,
                     lottery_number: lottery_number,
@@ -93,17 +93,17 @@ class JianglingLotteryIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/jiangling/lottery/list',
+            url: '/' + constant.action + '/uni/lottery/list',
             data: {
-                app_id: this.props.jiangling_lottery.app_id,
-                lottery_number: this.props.jiangling_lottery.lottery_number,
-                lottery_user_mobile: this.props.jiangling_lottery.lottery_user_mobile,
-                page_index: this.props.jiangling_lottery.page_index,
-                page_size: this.props.jiangling_lottery.page_size
+                app_id: this.props.uni_lottery.app_id,
+                lottery_number: this.props.uni_lottery.lottery_number,
+                lottery_user_mobile: this.props.uni_lottery.lottery_user_mobile,
+                page_index: this.props.uni_lottery.page_index,
+                page_size: this.props.uni_lottery.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'jiangling_lottery/fetch',
+                    type: 'uni_lottery/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -121,7 +121,7 @@ class JianglingLotteryIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'jiangling_lottery/fetch',
+                type: 'uni_lottery/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -136,7 +136,7 @@ class JianglingLotteryIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'jiangling_lottery/fetch',
+                type: 'uni_lottery/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -150,11 +150,11 @@ class JianglingLotteryIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_jiangling_lottery_detail_add', {});
+        notification.emit('notification_uni_lottery_detail_add', {});
     }
 
     handleView(user_id) {
-        notification.emit('notification_jiangling_lottery_detail_view', {
+        notification.emit('notification_uni_lottery_detail_view', {
             user_id: user_id
         });
     }
@@ -165,7 +165,7 @@ class JianglingLotteryIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/jiangling/lottery/delete',
+            url: '/' + constant.action + '/uni/lottery/delete',
             data: {
                 user_id: user_id,
                 system_version: system_version
@@ -232,12 +232,12 @@ class JianglingLotteryIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.jiangling_lottery.total,
+            total: this.props.uni_lottery.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.jiangling_lottery.page_index,
-            pageSize: this.props.jiangling_lottery.page_size,
+            current: this.props.uni_lottery.page_index,
+            pageSize: this.props.uni_lottery.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -270,7 +270,7 @@ class JianglingLotteryIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.jiangling_lottery.app_list.map(function (item) {
+                                                        this.props.uni_lottery.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -319,18 +319,18 @@ class JianglingLotteryIndex extends Component {
                        rowKey="user_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.jiangling_lottery.list} pagination={pagination}
+                       dataSource={this.props.uni_lottery.list} pagination={pagination}
                        bordered/>
-                <JianglingLotteryDetail/>
+                <UniLotteryDetail/>
             </QueueAnim>
         );
     }
 }
 
-JianglingLotteryIndex.propTypes = {};
+UniLotteryIndex.propTypes = {};
 
-JianglingLotteryIndex = Form.create({})(JianglingLotteryIndex);
+UniLotteryIndex = Form.create({})(UniLotteryIndex);
 
-export default connect(({jiangling_lottery}) => ({
-    jiangling_lottery
-}))(JianglingLotteryIndex);
+export default connect(({uni_lottery}) => ({
+    uni_lottery
+}))(UniLotteryIndex);
