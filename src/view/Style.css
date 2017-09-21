@@ -76,7 +76,7 @@
 }
 
 .ant-layout-sider-trigger {
-    background: #f7f7f7;
+    background: #f7f7f7 !important;
     border-right: 1px solid #e9e9e9;
 }
 

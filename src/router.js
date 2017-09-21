@@ -72,7 +72,16 @@ import constant from "./util/constant";
 
 function RouterConfig({history}) {
 
-    const validate = function (next, replace, callback) {
+    const handleEnter = function (next, replace, callback) {
+        if ((storage.getToken() === '' || storage.getToken() === null) && next.location.pathname !== '/login') {
+
+            replace('/login');
+        }
+
+        callback();
+    };
+
+    const handleChange = function (next, replace, callback) {
         if ((storage.getToken() === '' || storage.getToken() === null) && next.location.pathname !== '/login') {
 
             replace('/login');
@@ -86,7 +95,7 @@ function RouterConfig({history}) {
             <Route path="/">
                 <IndexRedirect to={constant.index}/>
                 <Route path="/login" component={Login}/>
-                <Route component={Main} onEnter={validate}>
+                <Route component={Main} onEnter={handleEnter} onChange={handleChange}>
                     <Route path="/cache/index" component={CacheIndex}/>
                     <Route path="/code/index" component={CodeIndex}/>
                     <Route path="/http/index" component={HttpIndex}/>
