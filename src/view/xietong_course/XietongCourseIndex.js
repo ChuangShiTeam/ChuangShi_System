@@ -290,10 +290,16 @@ class XietongCourseIndex extends Component {
                         text === 28 ? '星期二第八节' : ''
                     }
                     {
+                        text === 29 ? '星期二第九节' : ''
+                    }
+                    {
                         text === 47 ? '星期四第七节' : ''
                     }
                     {
                         text === 48 ? '星期四第七节' : ''
+                    }
+                    {
+                        text === 49 ? '星期四第九节' : ''
                     }
                     {
                         text === 56 ? '星期五第六节' : ''
