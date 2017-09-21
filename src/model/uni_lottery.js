@@ -2,7 +2,7 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'jiangling_lottery',
+    namespace: 'uni_lottery',
 
     state: {
         app_id: '',
