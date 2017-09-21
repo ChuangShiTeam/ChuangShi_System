@@ -82,6 +82,7 @@ class ArticleDetail extends Component {
                 this.props.form.setFieldsValue({
                     article_category_id: data.article_category_id,
                     article_name: data.article_name,
+                    article_author: data.article_author,
                     article_summary: data.article_summary,
                     article_outer_link: data.article_outer_link,
                     article_is_float_advert: data.article_is_float_advert
@@ -262,6 +263,22 @@ class ArticleDetail extends Component {
                                                     })
                                                 }
                                             </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="文章作者">
+                                    {
+                                        getFieldDecorator('article_author', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '文章作者'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class XietongStudentDetail extends Component {
+class UniLotteryDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,27 +14,17 @@ class XietongStudentDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            student_id: '',
-            system_version: '',
-            clazz: []
+            user_id: '',
+            system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_xietong_student_detail_add', this, function (data) {
-            this.setState({
-                is_show: true,
-                action: 'save',
-                clazz: data.clazz
-            });
-        });
-
-        notification.on('notification_xietong_student_detail_edit', this, function (data) {
+        notification.on('notification_uni_lottery_detail_view', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                clazz: data.clazz,
-                student_id: data.student_id
+                user_id: data.user_id
             }, function () {
                 this.handleLoad();
             });
@@ -42,9 +32,9 @@ class XietongStudentDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_xietong_student_detail_add', this);
+        notification.remove('notification_uni_lottery_detail_add', this);
 
-        notification.remove('notification_xietong_student_detail_edit', this);
+        notification.remove('notification_uni_lottery_detail_edit', this);
     }
 
     handleLoad() {
@@ -53,9 +43,9 @@ class XietongStudentDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/xietong/student/find',
+            url: '/' + constant.action + '/uni/lottery/find',
             data: {
-                student_id: this.state.student_id
+                user_id: this.state.user_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -65,10 +55,11 @@ class XietongStudentDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    clazz_id: data.clazz_id,
-                    student_name: data.student_name,
-                    student_number: data.student_number,
-                    student_sex: data.student_sex,
+                    lottery_number: data.lottery_number,
+                    lottery_user_sex: data.lottery_user_sex,
+                    lottery_user_mobile: data.lottery_user_mobile,
+                    lottery_time: data.lottery_time,
+                    lottery_status: data.lottery_status
                 });
 
                 this.setState({
@@ -90,7 +81,7 @@ class XietongStudentDetail extends Component {
                 return;
             }
 
-            values.student_id = this.state.student_id;
+            values.user_id = this.state.user_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -98,12 +89,12 @@ class XietongStudentDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/xietong/student/' + this.state.action,
+                url: '/' + constant.action + '/uni/lottery/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_xietong_student_index_load', {});
+                    notification.emit('notification_uni_lottery_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -121,7 +112,7 @@ class XietongStudentDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            student_id: '',
+            user_id: '',
             system_version: ''
         });
 
@@ -138,10 +129,7 @@ class XietongStudentDetail extends Component {
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>关闭</Button>,
-                       <Button key="submit" type="primary" size="default" icon="check-circle"
-                               loading={this.state.is_load}
-                               onClick={this.handleSubmit.bind(this)}>确定</Button>
+                               onClick={this.handleCancel.bind(this)}>关闭</Button>
                    ]}
             >
                 <Spin spinning={this.state.is_load}>
@@ -164,7 +152,7 @@ class XietongStudentDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.xietong_student.app_list.map(function (item) {
+                                                            this.props.uni_lottery.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -185,23 +173,12 @@ class XietongStudentDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="班级编号">                                    {
-                                        getFieldDecorator('clazz_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
+                                }} className="form-item" label="抽签号码">
+                                    {
+                                        getFieldDecorator('lottery_number', {
                                             initialValue: ''
                                         })(
-                                            <Select placeholder="请选择班级">
-                                                {
-                                                    this.state.clazz.map(function (item) {
-                                                        return (
-                                                            <Option key={item.clazz_id} value={item.clazz_id}>{item.clazz_name}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
+                                            <Input type="text" placeholder={constant.placeholder + '抽签号码'}/>
                                         )
                                     }
                                 </FormItem>
@@ -212,16 +189,13 @@ class XietongStudentDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="学生姓名">
+                                }} className="form-item" label="抽签用户性别">
                                     {
-                                        getFieldDecorator('student_name', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                        getFieldDecorator('lottery_user_sex', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '学生姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Switch checkedChildren="男" unCheckedChildren="女"/>
                                         )
                                     }
                                 </FormItem>
@@ -232,16 +206,12 @@ class XietongStudentDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="学生学号">
+                                }} className="form-item" label="抽签用户手机号码">
                                     {
-                                        getFieldDecorator('student_number', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
+                                        getFieldDecorator('lottery_user_mobile', {
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '学生学号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '抽签用户手机号码'}/>
                                         )
                                     }
                                 </FormItem>
@@ -252,19 +222,12 @@ class XietongStudentDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="学生性别">
+                                }} className="form-item" label="抽签次数">
                                     {
-                                        getFieldDecorator('student_sex', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                        getFieldDecorator('lottery_time', {
+                                            initialValue: 0
                                         })(
-                                            <Select placeholder="请选择性别">
-                                                <Option key="man" value="男">男</Option>
-                                                <Option key="woman" value="女">女</Option>
-                                            </Select>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '抽签次数'}/>
                                         )
                                     }
                                 </FormItem>
@@ -275,16 +238,13 @@ class XietongStudentDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="登录密码">
+                                }} className="form-item" label="是否抽签">
                                     {
-                                        getFieldDecorator('user_password', {
-                                            rules: [{
-                                                required: this.state.action === 'save',
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                        getFieldDecorator('lottery_status', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '登录密码'}/>
+                                            <Switch checkedChildren="是" unCheckedChildren="否"/>
                                         )
                                     }
                                 </FormItem>
@@ -297,8 +257,8 @@ class XietongStudentDetail extends Component {
     }
 }
 
-XietongStudentDetail.propTypes = {};
+UniLotteryDetail.propTypes = {};
 
-XietongStudentDetail = Form.create({})(XietongStudentDetail);
+UniLotteryDetail = Form.create({})(UniLotteryDetail);
 
-export default connect(({xietong_student}) => ({xietong_student}))(XietongStudentDetail);
+export default connect(({uni_lottery}) => ({uni_lottery}))(UniLotteryDetail);

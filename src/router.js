@@ -66,6 +66,9 @@ import XietongClazzIndex from './view/xietong_clazz/XietongClazzIndex';
 import XietongCourseConfigIndex from './view/xietong_course_config/XietongCourseConfigIndex';
 import InfinitiMemberIndex from './view/infiniti_member/InfinitiMemberIndex';
 import InfinitiPrizeIndex from './view/infiniti_prize/InfinitiPrizeIndex';
+import UniLotteryIndex from './view/uni_lottery/UniLotteryIndex';
+import XietongTeacherRecruitmentIndex from './view/xietong_teacher_recruitment/XietongTeacherRecruitmentIndex';
+import XietongAdmissionsIndex from './view/xietong_admissions/XietongAdmissionsIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -160,6 +163,9 @@ function RouterConfig({history}) {
                     <Route path="/xietong/student/index" component={XietongStudentIndex}/>
                     <Route path="/xietong/clazz/index" component={XietongClazzIndex}/>
                     <Route path="/xietong/course/config/index" component={XietongCourseConfigIndex}/>
+                    <Route path="/uni/lottery/index" component={UniLotteryIndex}/>
+                    <Route path="/xietong/teacher/recruitment/index" component={XietongTeacherRecruitmentIndex}/>
+                    <Route path="/xietong/admissions/index" component={XietongAdmissionsIndex}/>
                 </Route>
             </Route>
         </Router>

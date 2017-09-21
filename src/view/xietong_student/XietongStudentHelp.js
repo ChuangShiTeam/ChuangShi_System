@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, Table} from 'antd';
 
 import constant from '../../util/constant';
@@ -257,4 +256,4 @@ XietongStudentHelp.propTypes = {};
 
 XietongStudentHelp = Form.create({})(XietongStudentHelp);
 
-export default connect(({}) => ({}))(XietongStudentHelp);
+export default XietongStudentHelp;
