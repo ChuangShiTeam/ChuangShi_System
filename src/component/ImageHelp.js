@@ -18,18 +18,22 @@ class ImageHelp extends Component {
             image: '',
             list: [],
             page_index: 1,
-            page_size: 44,
+            page_size: 1,
             total: 0
         }
     }
 
     componentDidMount() {
         notification.on('notification_image_help_' + this.props.name + '_show', this, function (data) {
-            this.setState({
-                is_show: true
-            });
+            var width = Math.floor((document.documentElement.clientWidth - 200 - 30) / 106);
+            var height = Math.floor((document.documentElement.clientHeight - 200 - 30 - 30) / 106);
 
-            this.handleLoad(1);
+            this.setState({
+                is_show: true,
+                page_size: width * height
+            }, function () {
+                this.handleLoad(1);
+            });
         });
     }
 
