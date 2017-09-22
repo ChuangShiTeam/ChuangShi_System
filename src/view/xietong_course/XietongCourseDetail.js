@@ -510,8 +510,10 @@ class XietongCourseDetail extends Component {
                                                 <Option key="17" value="17">星期一第七节</Option>
                                                 <Option key="27" value="27">星期二第七节</Option>
                                                 <Option key="28" value="28">星期二第八节</Option>
+                                                <Option key="29" value="29">星期二第九节</Option>
                                                 <Option key="47" value="47">星期四第七节</Option>
                                                 <Option key="48" value="48">星期四第八节</Option>
+                                                <Option key="49" value="49">星期四第九节</Option>
                                                 <Option key="56" value="56">星期五第六节</Option>
                                             </Select>
                                         )
