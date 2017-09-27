@@ -122,6 +122,9 @@ class XietongArticleDetail extends Component {
                 values.article_outer_link = '';
                 values.article_content = this.refs.article_content.handleGetValue();
             }
+            if (values.article_author) {
+                values.article_author = '';
+            }
             this.setState({
                 is_load: true
             });

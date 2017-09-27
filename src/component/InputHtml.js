@@ -5,6 +5,7 @@ import TinyMCE from 'react-tinymce';
 import ImageHelp from './ImageHelp'
 import constant from '../util/constant';
 import notification from '../util/notification';
+import {compress} from '../util/function';
 
 let htmlEditor;
 
@@ -40,7 +41,7 @@ class InputHtml extends Component {
   }
 
   handleGetValue() {
-    return htmlEditor.getContent();
+    return compress(htmlEditor.getContent());
   }
 
   handleReset() {
