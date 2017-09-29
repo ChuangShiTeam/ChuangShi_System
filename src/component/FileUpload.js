@@ -119,7 +119,7 @@ class FileUpload extends Component {
 		const props = {
 			name: 'file',
 			multiple: true,
-			action: constant.host + '/file/admin/upload',
+			action: constant.host + '/admin/file/upload',
 			accept: this.props.type,
 			headers: {
 				'app_id': constant.app_id,

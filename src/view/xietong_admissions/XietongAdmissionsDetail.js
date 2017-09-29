@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message, DatePicker} from 'antd';
+import moment from 'moment';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -15,6 +16,7 @@ class XietongAdmissionsDetail extends Component {
             is_show: false,
             action: '',
             admissions_id: '',
+            user_id: '',
             system_version: ''
         }
     }
@@ -62,13 +64,12 @@ class XietongAdmissionsDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    user_id: data.user_id,
                     admissions_no: data.admissions_no,
                     admissions_name: data.admissions_name,
                     admissions_certificate_type: data.admissions_certificate_type,
                     admissions_certificate_number: data.admissions_certificate_number,
                     admissions_sex: data.admissions_sex,
-                    admissions_birthday: data.admissions_birthday,
+                    admissions_birthday: data.admissions_birthday?moment(data.admissions_birthday):null,
                     admissions_is_apply_live_school: data.admissions_is_apply_live_school,
                     admissions_old_school: data.admissions_old_school,
                     admissions_registration_address: data.admissions_registration_address,
@@ -83,6 +84,7 @@ class XietongAdmissionsDetail extends Component {
                 });
 
                 this.setState({
+                    user_id: data.user_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -103,6 +105,8 @@ class XietongAdmissionsDetail extends Component {
 
             values.admissions_id = this.state.admissions_id;
             values.system_version = this.state.system_version;
+            values.user_id = this.state.user_id;
+            values.admissions_birthday = values.admissions_birthday.format('YYYY-MM-DD');
 
             this.setState({
                 is_load: true
@@ -133,6 +137,7 @@ class XietongAdmissionsDetail extends Component {
             is_show: false,
             action: '',
             admissions_id: '',
+            user_id: '',
             system_version: ''
         });
 
@@ -143,6 +148,7 @@ class XietongAdmissionsDetail extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+        const { TextArea } = Input;
 
         return (
             <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
@@ -191,48 +197,32 @@ class XietongAdmissionsDetail extends Component {
                                 :
                                 ''
                         }
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="">
-                                    {
-                                        getFieldDecorator('user_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="序号">
-                                    {
-                                        getFieldDecorator('admissions_no', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '序号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
+                        {
+                            this.state.action === 'update' ?
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="form-item" label="序号">
+                                            {
+                                                getFieldDecorator('admissions_no', {
+                                                    rules: [{
+                                                        required: true,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Input type="text" placeholder={constant.placeholder + '序号'}
+                                                           onPressEnter={this.handleSubmit.bind(this)} disabled/>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>:null
+                        }
+                            <Row>
+                                <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
@@ -302,10 +292,12 @@ class XietongAdmissionsDetail extends Component {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
-                                            }],
-                                            initialValue: ''
+                                            }]
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '性别'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select placeholder="请选择性别">
+                                                <Option key="男" value="男">男</Option>
+                                                <Option key="女" value="女">女</Option>
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -322,10 +314,9 @@ class XietongAdmissionsDetail extends Component {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
-                                            }],
-                                            initialValue: ''
+                                            }]
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '出生日期'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker />
                                         )
                                     }
                                 </FormItem>
@@ -382,7 +373,7 @@ class XietongAdmissionsDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '户籍地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <TextArea rows={4} placeholder={constant.placeholder + '户籍地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -402,7 +393,7 @@ class XietongAdmissionsDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭住址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <TextArea rows={4} placeholder={constant.placeholder + '家庭住址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -436,10 +427,6 @@ class XietongAdmissionsDetail extends Component {
                                 }} className="form-item" label="家庭成员一单位">
                                     {
                                         getFieldDecorator('admissions_home_first_unit', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '家庭成员一单位'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -496,10 +483,6 @@ class XietongAdmissionsDetail extends Component {
                                 }} className="form-item" label="家庭成员二单位">
                                     {
                                         getFieldDecorator('admissions_home_second_unit', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '家庭成员二单位'} onPressEnter={this.handleSubmit.bind(this)}/>
@@ -536,18 +519,37 @@ class XietongAdmissionsDetail extends Component {
                                 }} className="form-item" label="需要说明事项">
                                     {
                                         getFieldDecorator('admissions_notes', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '需要说明事项'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <TextArea rows={4} placeholder={constant.placeholder + '需要说明事项'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
+                        {
+                            this.state.action === 'update' ?
+                                <Row>
+                                    <Col span={8}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 6},
+                                            wrapperCol: {span: 18}
+                                        }} className="form-item" label="登录密码">
+                                            {
+                                                getFieldDecorator('user_password', {
+                                                    rules: [{
+                                                        required: false,
+                                                        message: constant.required
+                                                    }],
+                                                    initialValue: ''
+                                                })(
+                                                    <Input type="text" placeholder={constant.placeholder + '登录密码'}/>
+                                                )
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>:null
+                        }
                     </form>
                 </Spin>
             </Modal>

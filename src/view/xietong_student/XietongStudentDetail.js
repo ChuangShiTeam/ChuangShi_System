@@ -15,6 +15,7 @@ class XietongStudentDetail extends Component {
             is_show: false,
             action: '',
             student_id: '',
+            user_id: '',
             system_version: '',
             clazz: []
         }
@@ -72,6 +73,7 @@ class XietongStudentDetail extends Component {
                 });
 
                 this.setState({
+                    user_id: data.user_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -92,6 +94,7 @@ class XietongStudentDetail extends Component {
 
             values.student_id = this.state.student_id;
             values.system_version = this.state.system_version;
+            values.user_id = this.state.user_id;
 
             this.setState({
                 is_load: true
@@ -122,6 +125,7 @@ class XietongStudentDetail extends Component {
             is_show: false,
             action: '',
             student_id: '',
+            user_id: '',
             system_version: ''
         });
 
