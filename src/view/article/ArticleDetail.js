@@ -7,6 +7,7 @@ import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class ArticleDetail extends Component {
     constructor(props) {
@@ -77,15 +78,14 @@ class ArticleDetail extends Component {
                     system_version: data.system_version
                 });
                 if (!article_is_outer_link) {
-                    this.refs.article_content.handleSetValue(data.article_content);
+                    this.refs.article_content.handleSetValue(validate.unescapeHtml(data.article_content));
                 }
                 this.props.form.setFieldsValue({
                     article_category_id: data.article_category_id,
                     article_name: data.article_name,
                     article_author: data.article_author,
                     article_summary: data.article_summary,
-                    article_outer_link: data.article_outer_link,
-                    article_is_float_advert: data.article_is_float_advert
+                    article_outer_link: data.article_outer_link
                 });
             }.bind(this),
             complete: function () {
