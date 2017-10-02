@@ -269,6 +269,14 @@ class TradeIndex extends Component {
                 </div>
             )
         }, {
+            title: '货到付款',
+            dataIndex: 'trade_deliver_pattern',
+            render: (text, record, index) => (
+                <div className="clearfix">
+                    {record.trade_deliver_pattern === 'CASH_ON_DELIVERY' ? '是' : '否'}
+                </div>
+            )
+        }, {
             title: '订单当前流程',
             dataIndex: 'trade_flow',
             render: (text, record, index) => (
@@ -287,9 +295,6 @@ class TradeIndex extends Component {
                     {record.trade_status ? '正常' : '异常'}
                 </div>
             )
-        }, {
-            title: '订单备注',
-            dataIndex: 'trade_message'
         }, {
             width: 50,
             title: constant.operation,

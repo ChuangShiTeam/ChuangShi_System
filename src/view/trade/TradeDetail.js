@@ -85,28 +85,6 @@ class TradeDetail extends Component {
                     });
                 }
 
-                this.props.form.setFieldsValue({
-                    user_id: data.trade.user_id,
-                    trade_number: data.trade.trade_number,
-                    trade_receiver_name: data.trade.trade_receiver_name,
-                    trade_receiver_mobile: data.trade.trade_receiver_mobile,
-                    trade_receiver_province: data.trade.trade_receiver_province,
-                    trade_receiver_city: data.trade.trade_receiver_city,
-                    trade_receiver_area: data.trade.trade_receiver_area,
-                    trade_receiver_address: data.trade.trade_receiver_address,
-                    trade_message: data.trade.trade_message,
-                    trade_product_quantity: data.trade.trade_product_quantity,
-                    trade_product_amount: data.trade.trade_product_amount,
-                    trade_express_amount: data.trade.trade_express_amount,
-                    trade_discount_amount: data.trade.trade_discount_amount,
-                    trade_is_commission: data.trade.trade_is_commission,
-                    trade_is_confirm: data.trade.trade_is_confirm,
-                    trade_is_pay: data.trade.trade_is_pay,
-                    trade_flow: data.trade.trade_flow,
-                    trade_status: data.trade.trade_status,
-                    trade_audit_status: data.trade.trade_audit_status,
-                });
-
                 this.setState({
                     trade: data.trade,
                     tradeProductSkuList: data.tradeProductSkuList,
@@ -399,7 +377,7 @@ class TradeDetail extends Component {
                         }
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="用户">
@@ -407,7 +385,7 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单号">
@@ -415,7 +393,7 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单状态">
@@ -427,7 +405,7 @@ class TradeDetail extends Component {
                         </Row>
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="收货人">
@@ -436,7 +414,7 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="收货地址">
@@ -449,7 +427,7 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单商品数量">
@@ -461,7 +439,7 @@ class TradeDetail extends Component {
                         </Row>
                         <Row>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单金额">
@@ -469,7 +447,7 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="运费金额">
@@ -479,7 +457,7 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="折扣金额">
@@ -487,7 +465,15 @@ class TradeDetail extends Component {
                                 </FormItem>
                             </Col>
                             <Col span={8}>
-                                <FormItem hasFeedback {...{
+                                <FormItem {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="货到付款">
+                                    <span>{this.state.trade.trade_deliver_pattern === 'CASH_ON_DELIVERY'?'是':'否'}</span>
+                                </FormItem>
+                            </Col>
+                            <Col span={8}>
+                                <FormItem {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="订单备注">
