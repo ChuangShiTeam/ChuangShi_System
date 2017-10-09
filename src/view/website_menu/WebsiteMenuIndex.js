@@ -210,7 +210,7 @@ class WebsiteMenuIndex extends Component {
             title: '菜单排序',
             dataIndex: 'website_menu_sort'
         }, {
-            width: 135,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (

@@ -69,6 +69,8 @@ import InfinitiPrizeIndex from './view/infiniti_prize/InfinitiPrizeIndex';
 import UniLotteryIndex from './view/uni_lottery/UniLotteryIndex';
 import XietongTeacherRecruitmentIndex from './view/xietong_teacher_recruitment/XietongTeacherRecruitmentIndex';
 import XietongAdmissionsIndex from './view/xietong_admissions/XietongAdmissionsIndex';
+import ProductCategorySkuAttributeIndex from './view/product_category_sku_attribute/ProductCategorySkuAttributeIndex';
+import ProductCategorySkuAttributeItemIndex from './view/product_category_sku_attribute_item/ProductCategorySkuAttributeItemIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -166,6 +168,8 @@ function RouterConfig({history}) {
                     <Route path="/uni/lottery/index" component={UniLotteryIndex}/>
                     <Route path="/xietong/teacher/recruitment/index" component={XietongTeacherRecruitmentIndex}/>
                     <Route path="/xietong/admissions/index" component={XietongAdmissionsIndex}/>
+                    <Route path="/product/category/sku/attribute/index" component={ProductCategorySkuAttributeIndex}/>
+                    <Route path="/product/category/sku/attribute/item/index" component={ProductCategorySkuAttributeItemIndex}/>
                 </Route>
             </Route>
         </Router>

@@ -68,6 +68,8 @@ import xietong_clazz from './model/xietong_clazz';
 import xietong_course_config from './model/xietong_course_config';
 import xietong_teacher_recruitment from './model/xietong_teacher_recruitment';
 import xietong_admissions from './model/xietong_admissions';
+import product_category_sku_attribute from './model/product_category_sku_attribute';
+import product_category_sku_attribute_item from './model/product_category_sku_attribute_item';
 
 document.title = constant.name;
 
@@ -139,6 +141,8 @@ app.model(xietong_clazz);
 app.model(xietong_course_config);
 app.model(xietong_teacher_recruitment);
 app.model(xietong_admissions);
+app.model(product_category_sku_attribute);
+app.model(product_category_sku_attribute_item);
 
 app.router(Router);
 
