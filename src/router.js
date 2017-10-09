@@ -72,6 +72,7 @@ import XietongAdmissionsIndex from './view/xietong_admissions/XietongAdmissionsI
 import MinhangKeyIndex from './view/minhang_key/MinhangKeyIndex';
 import MinhangVideoIndex from './view/minhang_video/MinhangVideoIndex';
 import MinhangTaskIndex from './view/minhang_task/MinhangTaskIndex';
+import MinhangQuestionIndex from './view/minhang_task/minhang_question/MinhangQuestionIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -172,6 +173,7 @@ function RouterConfig({history}) {
                     <Route path="/minhang/key/index" component={MinhangKeyIndex}/>
                     <Route path="/minhang/video/index" component={MinhangVideoIndex}/>
                     <Route path="/minhang/task/index" component={MinhangTaskIndex}/>
+                    <Route path="/minhang/task/question/index/:task_id" component={MinhangQuestionIndex}/>
                 </Route>
             </Route>
         </Router>

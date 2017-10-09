@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
+import {routerRedux} from 'dva/router';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
@@ -207,6 +208,13 @@ class MinhangTaskIndex extends Component {
         });
     }
 
+    handleQuestion(task_id) {
+        this.props.dispatch(routerRedux.push({
+            pathname: '/minhang/task/question/index/' + task_id,
+            query: {}
+        }));
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -216,6 +224,9 @@ class MinhangTaskIndex extends Component {
             title: '钥匙名称',
             dataIndex: 'key_name'
         }, {
+            title: '屏幕id',
+            dataIndex: 'screen_id'
+        }, {
             title: '任务名称',
             dataIndex: 'task_name'
         }, {
@@ -223,7 +234,7 @@ class MinhangTaskIndex extends Component {
             dataIndex: 'task_type',
             render: (text, record, index) => (
                 <span>
-                    {text === 'QUESTION'?'答题':text === 'LOCATION'?'标记位置':text === 'PICTURE'?'上传图片':text === 'RECORD'?'上传录音':''}
+                    {text === 'QUESTION'?'答题':text === 'PICTURE'?'上传图片':text === 'RECORD'?'上传录音':''}
                 </span>
             )
         }, {
@@ -238,12 +249,18 @@ class MinhangTaskIndex extends Component {
             title: '排序',
             dataIndex: 'task_sort'
         }, {
-            width: 100,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.task_id)}>{constant.edit}</a>
+                    {
+                        record.task_type === 'QUESTION'?<span>
+                             <span className="divider"/>
+                            <a onClick={this.handleQuestion.bind(this, record.task_id)}>题目管理</a>
+                        </span>:null
+                    }
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -359,7 +376,6 @@ class MinhangTaskIndex extends Component {
                                     })(
                                         <Select allowClear placeholder="请选择任务类型">
                                             <Option key={'QUESTION'} value={'QUESTION'}>答题</Option>
-                                            <Option key={'LOCATION'} value={'LOCATION'}>标记位置</Option>
                                             <Option key={'PICTURE'} value={'PICTURE'}>上传图片</Option>
                                             <Option key={'RECORD'} value={'RECORD'}>上传录音</Option>
                                         </Select>

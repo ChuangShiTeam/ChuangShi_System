@@ -71,6 +71,7 @@ import xietong_admissions from './model/xietong_admissions';
 import minhang_key from './model/minhang_key';
 import minhang_video from './model/minhang_video';
 import minhang_task from './model/minhang_task';
+import minhang_question from './model/minhang_question';
 
 document.title = constant.name;
 
@@ -145,6 +146,7 @@ app.model(xietong_admissions);
 app.model(minhang_key);
 app.model(minhang_video);
 app.model(minhang_task);
+app.model(minhang_question);
 
 app.router(Router);
 

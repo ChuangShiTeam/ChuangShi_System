@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message, Icon} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -17,9 +17,6 @@ class MinhangTaskDetail extends Component {
             key_list: [],
             task_id: '',
             task: {},
-            question: {},
-            location_list: [],
-            task_type: 'QUESTION',
             system_version: ''
         }
     }
@@ -70,10 +67,11 @@ class MinhangTaskDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     key_id: data.key_id,
+                    screen_id: data.screen_id,
                     task_name: data.task_name,
                     task_type: data.task_type,
                     task_sort: data.task_sort,
-                    task_description: data.task_description,
+                    task_description: data.task_description
                 });
 
                 this.setState({
@@ -98,25 +96,6 @@ class MinhangTaskDetail extends Component {
 
             values.task_id = this.state.task_id;
             values.system_version = this.state.system_version;
-            values.task_type = this.state.task_type;
-            if (this.state.task_type === 'LOCATION') {
-                values.locationList = [];
-                for (let index = 0; index < values.locationKeys.length; index ++) {
-                    if (!values['location_title-' + index]) {
-                        message.warn('请完善标记位置信息！');
-                        return;
-                    }
-                    var location = {
-                        location_id: values['location_id-' + index],
-                        location_title: values['location_title-' + index],
-                        location_sort: index
-                    };
-
-                    values.locationList.push(location);
-                    delete values['location_id-' + index];
-                    delete values['location_title-' + index];
-                }
-            }
 
             this.setState({
                 is_load: true
@@ -146,93 +125,23 @@ class MinhangTaskDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
+            key_list: [],
             task_id: '',
+            task: {},
             system_version: ''
         });
 
         this.props.form.resetFields();
     }
 
-    handleChangeType(value) {
-        this.setState({
-            task_type: value
-        });
-    }
-
-    removeLocation = (index) => {
-        const { form } = this.props;
-        const locationKeys = form.getFieldValue('locationKeys');
-        if (locationKeys.length === 1) {
-            return;
-        }
-        form.setFieldsValue({
-            locationKeys: locationKeys.filter((key, i) => i !== index)
-        });
-    };
-
-    addLocation = () => {
-        const { form } = this.props;
-        const locationKeys = form.getFieldValue('locationKeys');
-
-        const nextKeys = locationKeys.concat({
-            location_id: null,
-            location_name : null
-        });
-        form.setFieldsValue({
-            locationKeys: nextKeys
-        });
-    };
-
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
-        const {getFieldDecorator, getFieldValue} = this.props.form;
+        const {getFieldDecorator} = this.props.form;
         const { TextArea } = Input;
-        const formItemLayoutWithOutLabel = {
-            wrapperCol: {
-                xs: { span: 24, offset: 0 },
-                sm: { span: 22, offset: 2 }
-            }
-        };
-        this.state.location_list.length === 0?
-            getFieldDecorator('locationKeys', { initialValue: [{
-                location_id: null,
-                location_title : null
-            }] }):
-            getFieldDecorator('locationKeys', { initialValue: this.state.location_list });
-        const locationKeys = getFieldValue('locationKeys');
-        const locationFormItems = locationKeys.map((k, index) => {
-            return (
-                <FormItem
-                    {...formItemLayoutWithOutLabel}
-                    className="content-search-item"
-                    required={false}
-                    key={index}
-                >
-                    {getFieldDecorator(`location_id-${index}`,
-                        { initialValue: k.location_id })
-                    }
-                    {getFieldDecorator(`location_title-${index}`, {
-                        validateTrigger: ['onChange', 'onBlur'],
-                        rules: [{
-                            required: true,
-                            message: "请输入位置标题"
-                        }], initialValue: k.location_title
-                    })(
-                        <Input placeholder="位置标题" style={{ width: '60%', marginRight: 8 }}/>
-                    )}
-                    <Icon
-                        className="dynamic-delete-button"
-                        type="minus-circle-o"
-                        disabled={locationKeys.length === 1}
-                        onClick={() => this.removeLocation(index)}
-                    />
-                </FormItem>
-            );
-        });
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'任务详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -312,6 +221,26 @@ class MinhangTaskDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="屏幕ID">
+                                    {
+                                        getFieldDecorator('screen_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '屏幕ID'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="任务名称">
                                     {
                                         getFieldDecorator('task_name', {
@@ -333,45 +262,31 @@ class MinhangTaskDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="任务类型">
-                                    <Select allowClear placeholder="请选择任务类型" value={this.state.task_type} onChange={this.handleChangeType.bind(this)}>
-                                        <Option key={'QUESTION'} value={'QUESTION'}>答题</Option>
-                                        <Option key={'LOCATION'} value={'LOCATION'}>标记位置</Option>
-                                        <Option key={'PICTURE'} value={'PICTURE'}>上传图片</Option>
-                                        <Option key={'RECORD'} value={'RECORD'}>上传录音</Option>
-                                    </Select>
+                                    {
+                                        getFieldDecorator('task_type', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Select allowClear placeholder="请选择任务类型">
+                                                <Option key={'QUESTION'} value={'QUESTION'}>答题</Option>
+                                                <Option key={'PICTURE'} value={'PICTURE'}>上传图片</Option>
+                                                <Option key={'RECORD'} value={'RECORD'}>上传录音</Option>
+                                            </Select>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>
-                        {
-                            this.state.task_type === 'QUESTION'?null:null
-                        }
-                        {
-                            this.state.task_type === 'LOCATION'?
-                                <span>
-                                    <Row>
-                                        <Col span={24}>
-                                            {locationFormItems}
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={24}>
-                                            <FormItem {...formItemLayoutWithOutLabel} className="form-item">
-                                                <Button type="dashed" onClick={this.addLocation} style={{ width: '60%' }}>
-                                                <Icon type="plus" /> 添加标记位置
-                                                </Button>
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-                                </span>
-                                :null
-                        }
                         {
                             this.state.action === 'update'?<Row>
                                 <Col span={8}>
                                     <FormItem hasFeedback {...{
                                         labelCol: {span: 6},
                                         wrapperCol: {span: 18}
-                                    }} className="form-item" label="钥匙二维码">
+                                    }} className="form-item" label="任务二维码">
                                         <div className="clearfix">
                                             <img alt="example" style={{ height: '200px' }}
                                                  src={constant.host + this.state.task.task_qrcode_url}/>

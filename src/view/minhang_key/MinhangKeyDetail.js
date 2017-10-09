@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -15,7 +15,6 @@ class MinhangKeyDetail extends Component {
             is_show: false,
             action: '',
             key_id: '',
-            key:{},
             system_version: ''
         }
     }
@@ -64,11 +63,11 @@ class MinhangKeyDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     key_name: data.key_name,
-                    key_description: data.key_description,
+                    key_activated_task_quantity: data.key_activated_task_quantity,
+                    key_description: data.key_description
                 });
 
                 this.setState({
-                    key: data,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -132,7 +131,7 @@ class MinhangKeyDetail extends Component {
         const { TextArea } = Input;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'钥匙详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -198,21 +197,26 @@ class MinhangKeyDetail extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
-                        {
-                            this.state.action === 'update'?<Row>
-                                <Col span={8}>
-                                    <FormItem hasFeedback {...{
-                                        labelCol: {span: 6},
-                                        wrapperCol: {span: 18}
-                                    }} className="form-item" label="钥匙二维码">
-                                        <div className="clearfix">
-                                            <img alt="example" style={{ height: '200px' }}
-                                                 src={constant.host + this.state.key.key_qrcode_url}/>
-                                        </div>
-                                    </FormItem>
-                                </Col>
-                            </Row>:null
-                        }
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="需完成任务数">
+                                    {
+                                        getFieldDecorator('key_activated_task_quantity', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '钥匙激活需完成任务数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

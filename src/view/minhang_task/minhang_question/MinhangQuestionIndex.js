@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MinhangKeyDetail from './MinhangKeyDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import MinhangQuestionDetail from './MinhangQuestionDetail';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import validate from '../../../util/validate';
+import http from '../../../util/http';
 
-class MinhangKeyIndex extends Component {
+class MinhangQuestionIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,26 @@ class MinhangKeyIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.minhang_key.app_id
+            app_id: this.props.minhang_question.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            key_name: this.props.minhang_key.key_name,
+            question_title: this.props.minhang_question.question_title,
+            question_type: this.props.minhang_question.question_type,
         });
 
         this.handleLoad();
 
-        notification.on('notification_minhang_key_index_load', this, function (data) {
+        notification.on('notification_minhang_question_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_key_index_load', this);
+        notification.remove('notification_minhang_question_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +49,7 @@ class MinhangKeyIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_key/fetch',
+                    type: 'minhang_question/fetch',
                     data: {
                         app_list: data
                     }
@@ -67,13 +68,15 @@ class MinhangKeyIndex extends Component {
                 app_id = '';
             }
 
-            let key_name = this.props.form.getFieldValue('key_name');
+            let question_title = this.props.form.getFieldValue('question_title');
+            let question_type = this.props.form.getFieldValue('question_type');
 
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'minhang_question/fetch',
                 data: {
                     app_id: app_id,
-                    key_name: key_name,
+                    question_title: question_title,
+                    question_type: question_type,
                     page_index: 1
                 }
             });
@@ -90,16 +93,18 @@ class MinhangKeyIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/key/list',
+            url: '/' + constant.action + '/minhang/question/list',
             data: {
-                app_id: this.props.minhang_key.app_id,
-                key_name: this.props.minhang_key.key_name,
-                page_index: this.props.minhang_key.page_index,
-                page_size: this.props.minhang_key.page_size
+                app_id: this.props.minhang_question.app_id,
+                task_id: this.props.params.task_id,
+                question_title: this.props.minhang_question.question_title,
+                question_type: this.props.minhang_question.question_type,
+                page_index: this.props.minhang_question.page_index,
+                page_size: this.props.minhang_question.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_key/fetch',
+                    type: 'minhang_question/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +122,7 @@ class MinhangKeyIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'minhang_question/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +137,7 @@ class MinhangKeyIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'minhang_question/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +151,27 @@ class MinhangKeyIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_key_detail_add', {});
-    }
-
-    handleEdit(key_id) {
-        notification.emit('notification_minhang_key_detail_edit', {
-            key_id: key_id
+        notification.emit('notification_minhang_question_detail_add', {
+            task_id: this.props.params.task_id
         });
     }
 
-    handleDel(key_id, system_version) {
+    handleEdit(question_id) {
+        notification.emit('notification_minhang_question_detail_edit', {
+            question_id: question_id,
+            task_id: this.props.params.task_id
+        });
+    }
+
+    handleDel(question_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/key/delete',
+            url: '/' + constant.action + '/minhang/question/delete',
             data: {
-                key_id: key_id,
+                question_id: question_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,22 +193,27 @@ class MinhangKeyIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '钥匙名称',
-            dataIndex: 'key_name'
+            title: '题目标题',
+            dataIndex: 'question_title'
         }, {
-            title: '钥匙激活所需完成任务数',
-            dataIndex: 'key_activated_task_quantity'
+            title: '题目类型',
+            dataIndex: 'question_type',
+            render: (text, record, index) => (
+                <span>
+                    {text === 'RADIO'?'单选题':text === 'CHECKBOX'?'多选题':text === 'GAP_FILLING'?'填空题':''}
+                </span>
+            )
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.key_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.question_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.key_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.question_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -209,12 +222,12 @@ class MinhangKeyIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.minhang_key.total,
+            total: this.props.minhang_question.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.minhang_key.page_index,
-            pageSize: this.props.minhang_key.page_size,
+            current: this.props.minhang_question.page_index,
+            pageSize: this.props.minhang_question.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -224,7 +237,7 @@ class MinhangKeyIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">钥匙信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -249,7 +262,7 @@ class MinhangKeyIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.minhang_key.app_list.map(function (item) {
+                                                        this.props.minhang_question.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -268,12 +281,30 @@ class MinhangKeyIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="钥匙名称">
+                            }} className="content-search-item" label="题目标题">
                                 {
-                                    getFieldDecorator('key_name', {
+                                    getFieldDecorator('question_title', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入钥匙名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入题目标题" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="题目类型">
+                                {
+                                    getFieldDecorator('question_type', {
+                                        initialValue: ''
+                                    })(
+                                        <Select allowClear placeholder="请选择题目类型">
+                                            <Option key={'RADIO'} value={'RADIO'}>单选题</Option>
+                                            <Option key={'CHECKBOX'} value={'CHECKBOX'}>多选题</Option>
+                                            <Option key={'GAP_FILLING'} value={'GAP_FILLING'}>填空题</Option>
+                                        </Select>
                                     )
                                 }
                             </FormItem>
@@ -283,21 +314,21 @@ class MinhangKeyIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="key_id"
+                       rowKey="question_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.minhang_key.list} pagination={pagination}
+                       dataSource={this.props.minhang_question.list} pagination={pagination}
                        bordered/>
-                <MinhangKeyDetail/>
+                <MinhangQuestionDetail/>
             </QueueAnim>
         );
     }
 }
 
-MinhangKeyIndex.propTypes = {};
+MinhangQuestionIndex.propTypes = {};
 
-MinhangKeyIndex = Form.create({})(MinhangKeyIndex);
+MinhangQuestionIndex = Form.create({})(MinhangQuestionIndex);
 
-export default connect(({minhang_key}) => ({
-    minhang_key
-}))(MinhangKeyIndex);
+export default connect(({minhang_question}) => ({
+    minhang_question
+}))(MinhangQuestionIndex);

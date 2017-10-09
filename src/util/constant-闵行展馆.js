@@ -24,6 +24,6 @@ export default {
     detail_width: 1080,
     name: '闵行展馆--总控后台',
     app_id: '8acc2d49ad014f418878d1a16336c16b',
-    index: '/minhang/key/index',
+    index: '/minhang/task/index',
     login: '/admin/login'
 };
