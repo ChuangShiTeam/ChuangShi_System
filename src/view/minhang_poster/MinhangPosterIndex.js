@@ -1,16 +1,15 @@
-import React, {Component} from "react";
-import {connect} from "dva";
-import QueueAnim from "rc-queue-anim";
-import {Button, Col, Form, Icon, Input, Row, Select, Table} from "antd";
+import React, {Component} from 'react';
+import {connect} from 'dva';
+import QueueAnim from 'rc-queue-anim';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import constant from "../../util/constant";
-import notification from "../../util/notification";
-import validate from "../../util/validate";
-import http from "../../util/http";
+import MinhangPosterDetail from './MinhangPosterDetail';
+import constant from '../../util/constant';
+import notification from '../../util/notification';
+import validate from '../../util/validate';
+import http from '../../util/http';
 
-import SupplierTradeExpress from "./SupplierTradeExpress";
-
-class SupplierTradeIndex extends Component {
+class MinhangPosterIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -22,36 +21,55 @@ class SupplierTradeIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.supplier_trade.app_id
+            app_id: this.props.minhang_poster.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            trade_number: this.props.supplier_trade.trade_number
+            poster_title: this.props.minhang_poster.poster_title
         });
 
         this.handleLoad();
+        this.handleLoadTask();
 
-        notification.on('notification_supplier_trade_index_load', this, function (data) {
+        notification.on('notification_minhang_poster_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_supplier_trade_index_load', this);
+        notification.remove('notification_minhang_poster_index_load', this);
     }
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'trade/fetch',
+                    type: 'minhang_poster/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadTask() {
+        http.request({
+            url: '/' + constant.action + '/minhang/task/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'minhang_poster/fetch',
+                    data: {
+                        task_list: data
                     }
                 });
             }.bind(this),
@@ -68,12 +86,13 @@ class SupplierTradeIndex extends Component {
                 app_id = '';
             }
 
-            let trade_number = this.props.form.getFieldValue('trade_number');
+            let poster_title = this.props.form.getFieldValue('poster_title');
 
             this.props.dispatch({
-                type: 'supplier_trade/fetch',
+                type: 'minhang_poster/fetch',
                 data: {
-                    trade_number: trade_number,
+                    app_id: app_id,
+                    poster_title: poster_title,
                     page_index: 1
                 }
             });
@@ -90,15 +109,16 @@ class SupplierTradeIndex extends Component {
         });
 
         http.request({
-            url: '/trade/supplier/list',
+            url: '/' + constant.action + '/minhang/poster/list',
             data: {
-                trade_number: this.props.supplier_trade.trade_number,
-                page_index: this.props.supplier_trade.page_index,
-                page_size: this.props.supplier_trade.page_size
+                app_id: this.props.minhang_poster.app_id,
+                poster_title: this.props.minhang_poster.poster_title,
+                page_index: this.props.minhang_poster.page_index,
+                page_size: this.props.minhang_poster.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'supplier_trade/fetch',
+                    type: 'minhang_poster/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -116,7 +136,7 @@ class SupplierTradeIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'supplier_trade/fetch',
+                type: 'minhang_poster/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -131,7 +151,7 @@ class SupplierTradeIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'supplier_trade/fetch',
+                type: 'minhang_poster/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -144,9 +164,40 @@ class SupplierTradeIndex extends Component {
         }.bind(this));
     }
 
-    handleEdit(trade_id) {
-        notification.emit('notification_trade_detail_edit', {
-            trade_id: trade_id
+    handleAdd() {
+        notification.emit('notification_minhang_poster_detail_add', {
+            task_list: this.props.minhang_poster.task_list
+        });
+    }
+
+    handleEdit(poster_id) {
+        notification.emit('notification_minhang_poster_detail_edit', {
+            poster_id: poster_id,
+            task_list: this.props.minhang_poster.task_list
+        });
+    }
+
+    handleDel(poster_id, system_version) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/minhang/poster/delete',
+            data: {
+                poster_id: poster_id,
+                system_version: system_version
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
         });
     }
 
@@ -154,115 +205,43 @@ class SupplierTradeIndex extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+
         const columns = [{
-            title: '用户',
-            dataIndex: 'user_name'
+            title: '海报标题',
+            dataIndex: 'poster_title'
         }, {
-            title: '订单编号',
-            dataIndex: 'trade_number'
-        }, {
-            title: '收货人',
-            dataIndex: 'trade_receiver_name',
-            render: (text, record, index) => (
-                <span>{record.trade_receiver_name}({record.trade_receiver_mobile})</span>
-            )
-        }, {
-            title: '收货人地址',
-            dataIndex: 'trade_receiver_address',
-            render: (text, record, index) => (
-                <span>
-            {record.trade_receiver_province}-
-                    {record.trade_receiver_city}-
-                    {record.trade_receiver_area}-
-                    {record.trade_receiver_address}
-        </span>
-            )
-        }, {
-            title: '商品数量',
-            dataIndex: 'trade_product_quantity'
-        }, {
-            title: '订单金额',
-            dataIndex: 'trade_product_amount',
-            render: (text, record, index) => (
-                <span>
-            ￥{record.trade_product_amount}
-        </span>
-            )
-        }, {
-            title: '快递金额',
-            dataIndex: 'trade_express_amount',
-            render: (text, record, index) => (
-                <span>
-            ￥{record.trade_express_amount}
-        </span>
-            )
-        }, {
-            title: '折扣金额',
-            dataIndex: 'trade_discount_amount',
-            render: (text, record, index) => (
-                <span>
-            ￥{record.trade_discount_amount}
-        </span>
-            )
-        }, {
-            title: '付款',
-            dataIndex: 'trade_is_pay',
+            title: '海报图片',
+            dataIndex: 'poster_image_file',
             render: (text, record, index) => (
                 <div className="clearfix">
-                    {record.trade_is_pay ?
-                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
-                        :
-                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
-                    }
+                    <img alt="example" style={{ height: '83px' }} src={constant.host + record.poster_image_file.file_original_path}/>
                 </div>
             )
         }, {
-            title: '货到付款',
-            dataIndex: 'trade_deliver_pattern',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_deliver_pattern === 'CASH_ON_DELIVERY' ? '是' : '否'}
-                </div>
-            )
-        }, {
-            title: '订单当前流程',
-            dataIndex: 'trade_flow',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_flow === "WAIT_PAY" ? "待付款" :
-                        record.trade_flow === "WAIT_SEND" ? "待发货" :
-                            record.trade_flow === "WAIT_RECEIVE" ? "待收货" :
-                                record.trade_flow === "COMPLETE" ? "已完成" : ""}
-                </div>
-            )
-        }, {
-            title: '订单状态',
-            dataIndex: 'trade_status',
-            render: (text, record, index) => (
-                <div className="clearfix">
-                    {record.trade_status ? '正常' : '异常'}
-                </div>
-            )
-        }, {
-            title: '订单备注',
-            dataIndex: 'trade_message'
-        }, {
-            width: 50,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
-                <sapn><a onClick={this.handleEdit.bind(this, record.trade_id)}>{constant.find}</a></sapn>
+                <span>
+                  <a onClick={this.handleEdit.bind(this, record.poster_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleDel.bind(this, record.poster_id, record.system_version)}>
+                    <a>{constant.del}</a>
+                  </Popconfirm>
+                </span>
             )
         }];
 
         const pagination = {
             size: 'defalut',
-            total: this.props.supplier_trade.total,
+            total: this.props.minhang_poster.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.supplier_trade.page_index,
-            pageSize: this.props.supplier_trade.page_size,
+            current: this.props.minhang_poster.page_index,
+            pageSize: this.props.minhang_poster.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -272,12 +251,14 @@ class SupplierTradeIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">订单信息</div>
+                        <div className="">海报信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="primary" icon="plus-circle" size="default"
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -295,7 +276,7 @@ class SupplierTradeIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.supplier_trade.app_list.map(function (item) {
+                                                        this.props.minhang_poster.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -314,13 +295,12 @@ class SupplierTradeIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="订单编号">
+                            }} className="content-search-item" label="海报标题">
                                 {
-                                    getFieldDecorator('trade_number', {
+                                    getFieldDecorator('poster_title', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入订单编号"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入海报标题" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -330,22 +310,21 @@ class SupplierTradeIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey={record => record.trade_id}
+                       rowKey="poster_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.supplier_trade.list}
-                       pagination={pagination}
+                       dataSource={this.props.minhang_poster.list} pagination={pagination}
                        bordered/>
-                <SupplierTradeExpress/>
+                <MinhangPosterDetail/>
             </QueueAnim>
         );
     }
 }
 
-SupplierTradeIndex.propTypes = {};
+MinhangPosterIndex.propTypes = {};
 
-SupplierTradeIndex = Form.create({})(SupplierTradeIndex);
+MinhangPosterIndex = Form.create({})(MinhangPosterIndex);
 
-export default connect(({supplier_trade}) => ({
-    supplier_trade
-}))(SupplierTradeIndex);
+export default connect(({minhang_poster}) => ({
+    minhang_poster
+}))(MinhangPosterIndex);

@@ -68,6 +68,13 @@ import xietong_clazz from './model/xietong_clazz';
 import xietong_course_config from './model/xietong_course_config';
 import xietong_teacher_recruitment from './model/xietong_teacher_recruitment';
 import xietong_admissions from './model/xietong_admissions';
+import minhang_key from './model/minhang_key';
+import minhang_video from './model/minhang_video';
+import minhang_task from './model/minhang_task';
+import minhang_question from './model/minhang_question';
+import minhang_poster from './model/minhang_poster';
+import minhang_party_history from './model/minhang_party_history';
+import minhang_party_song from './model/minhang_party_song';
 import product_category_sku_attribute from './model/product_category_sku_attribute';
 import product_category_sku_attribute_item from './model/product_category_sku_attribute_item';
 
@@ -141,6 +148,13 @@ app.model(xietong_clazz);
 app.model(xietong_course_config);
 app.model(xietong_teacher_recruitment);
 app.model(xietong_admissions);
+app.model(minhang_key);
+app.model(minhang_video);
+app.model(minhang_task);
+app.model(minhang_question);
+app.model(minhang_poster);
+app.model(minhang_party_history);
+app.model(minhang_party_song);
 app.model(product_category_sku_attribute);
 app.model(product_category_sku_attribute_item);
 

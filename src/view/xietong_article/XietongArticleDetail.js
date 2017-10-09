@@ -7,6 +7,7 @@ import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class XietongArticleDetail extends Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class XietongArticleDetail extends Component {
                     system_version: data.system_version
                 });
                 if (!article_is_outer_link) {
-                    this.refs.article_content.handleSetValue(data.article_content);
+                    this.refs.article_content.handleSetValue(validate.unescapeHtml(data.article_content));
                 }
                 this.props.form.setFieldsValue({
                     article_category_id: data.article_category_id,
