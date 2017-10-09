@@ -69,6 +69,9 @@ import InfinitiPrizeIndex from './view/infiniti_prize/InfinitiPrizeIndex';
 import UniLotteryIndex from './view/uni_lottery/UniLotteryIndex';
 import XietongTeacherRecruitmentIndex from './view/xietong_teacher_recruitment/XietongTeacherRecruitmentIndex';
 import XietongAdmissionsIndex from './view/xietong_admissions/XietongAdmissionsIndex';
+import MinhangKeyIndex from './view/minhang_key/MinhangKeyIndex';
+import MinhangVideoIndex from './view/minhang_video/MinhangVideoIndex';
+import MinhangTaskIndex from './view/minhang_task/MinhangTaskIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -166,6 +169,9 @@ function RouterConfig({history}) {
                     <Route path="/uni/lottery/index" component={UniLotteryIndex}/>
                     <Route path="/xietong/teacher/recruitment/index" component={XietongTeacherRecruitmentIndex}/>
                     <Route path="/xietong/admissions/index" component={XietongAdmissionsIndex}/>
+                    <Route path="/minhang/key/index" component={MinhangKeyIndex}/>
+                    <Route path="/minhang/video/index" component={MinhangVideoIndex}/>
+                    <Route path="/minhang/task/index" component={MinhangTaskIndex}/>
                 </Route>
             </Route>
         </Router>

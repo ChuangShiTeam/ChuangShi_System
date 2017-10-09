@@ -55,7 +55,9 @@ class FileUpload extends Component {
 			message.error(`文件上传数量限制为${this.props.limit}个！`);
 			return false;
 		}
-
+		if (this.props.size === -1) {
+            return true;
+		}
 		if (file.size > 1024 * 1024 * this.props.size) {
 			message.error(`文件大小超过${this.props.size}M！`);
 
@@ -131,11 +133,11 @@ class FileUpload extends Component {
 			beforeUpload: this.handleBeforeUpload,
 			fileList: this.state.fileList
 		};
-
+		console.log('this.props.size', this.props.size);
 		return (
 			<Upload {...props}>
 				<Button loading={this.state.is_load}>
-					<Icon type="upload" /> 上传(文件大小不超过{this.props.size}M)
+					<Icon type="upload" /> 上传{this.props.size === -1?null:`(文件大小不超过${this.props.size}M)`}
 				</Button>
 			</Upload>
 		);
