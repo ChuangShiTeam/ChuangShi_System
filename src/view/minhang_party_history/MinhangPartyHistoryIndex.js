@@ -28,11 +28,11 @@ class MinhangPartyHistoryIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            task_id: this.props.minhang_party_history.task_id,
-            book_code: this.props.minhang_party_history.book_code,
+            book_code: this.props.minhang_party_history.book_code
         });
 
         this.handleLoad();
+        this.handleLoadTask();
 
         notification.on('notification_minhang_party_history_index_load', this, function (data) {
             this.handleLoad();
@@ -61,6 +61,24 @@ class MinhangPartyHistoryIndex extends Component {
         });
     }
 
+    handleLoadTask() {
+        http.request({
+            url: '/' + constant.action + '/minhang/task/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'minhang_party_history/fetch',
+                    data: {
+                        task_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleSearch() {
         new Promise(function (resolve, reject) {
             let app_id = this.props.form.getFieldValue('app_id');
@@ -68,14 +86,12 @@ class MinhangPartyHistoryIndex extends Component {
                 app_id = '';
             }
 
-            let task_id = this.props.form.getFieldValue('task_id');
             let book_code = this.props.form.getFieldValue('book_code');
 
             this.props.dispatch({
                 type: 'minhang_party_history/fetch',
                 data: {
                     app_id: app_id,
-                    task_id: task_id,
                     book_code: book_code,
                     page_index: 1
                 }
@@ -96,7 +112,6 @@ class MinhangPartyHistoryIndex extends Component {
             url: '/' + constant.action + '/minhang/party/history/list',
             data: {
                 app_id: this.props.minhang_party_history.app_id,
-                task_id: this.props.minhang_party_history.task_id,
                 book_code: this.props.minhang_party_history.book_code,
                 page_index: this.props.minhang_party_history.page_index,
                 page_size: this.props.minhang_party_history.page_size
@@ -150,12 +165,15 @@ class MinhangPartyHistoryIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_party_history_detail_add', {});
+        notification.emit('notification_minhang_party_history_detail_add', {
+            task_list: this.props.minhang_party_history.task_list
+        });
     }
 
     handleEdit(party_history_id) {
         notification.emit('notification_minhang_party_history_detail_edit', {
-            party_history_id: party_history_id
+            party_history_id: party_history_id,
+            task_list: this.props.minhang_party_history.task_list
         });
     }
 
@@ -189,9 +207,6 @@ class MinhangPartyHistoryIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '任务编号',
-            dataIndex: 'task_id'
-        }, {
             title: '书编码',
             dataIndex: 'book_code'
         }, {
@@ -228,7 +243,7 @@ class MinhangPartyHistoryIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">党史信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -268,20 +283,6 @@ class MinhangPartyHistoryIndex extends Component {
                                 :
                                 ''
                         }
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="任务编号">
-                                {
-                                    getFieldDecorator('task_id', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入任务编号" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},

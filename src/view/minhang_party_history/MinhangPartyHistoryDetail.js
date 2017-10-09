@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class MinhangPartyHistoryDetail extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ class MinhangPartyHistoryDetail extends Component {
             is_show: false,
             action: '',
             party_history_id: '',
-            system_version: ''
+            system_version: '',
+            task_list: []
         }
     }
 
@@ -23,7 +26,8 @@ class MinhangPartyHistoryDetail extends Component {
         notification.on('notification_minhang_party_history_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save'
+                action: 'save',
+                task_list: data.task_list
             });
         });
 
@@ -31,9 +35,12 @@ class MinhangPartyHistoryDetail extends Component {
             this.setState({
                 is_show: true,
                 action: 'update',
-                party_history_id: data.party_history_id
+                party_history_id: data.party_history_id,
+                task_list: data.task_list
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -60,11 +67,10 @@ class MinhangPartyHistoryDetail extends Component {
                         app_id: data.app_id
                     });
                 }
-
+                this.refs.party_history_content.handleSetValue(validate.unescapeHtml(data.party_history_content));
                 this.props.form.setFieldsValue({
                     task_id: data.task_id,
-                    party_history_content: data.party_history_content,
-                    book_code: data.book_code,
+                    book_code: data.book_code
                 });
 
                 this.setState({
@@ -88,6 +94,7 @@ class MinhangPartyHistoryDetail extends Component {
 
             values.party_history_id = this.state.party_history_id;
             values.system_version = this.state.system_version;
+            values.party_history_content = this.refs.party_history_content.handleGetValue();
 
             this.setState({
                 is_load: true
@@ -118,10 +125,12 @@ class MinhangPartyHistoryDetail extends Component {
             is_show: false,
             action: '',
             party_history_id: '',
-            system_version: ''
+            system_version: '',
+            task_list: []
         });
 
         this.props.form.resetFields();
+        this.refs.party_history_content.handleReset();
     }
 
     render() {
@@ -181,7 +190,7 @@ class MinhangPartyHistoryDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="任务编号">
+                                }} className="form-item" label="任务">
                                     {
                                         getFieldDecorator('task_id', {
                                             rules: [{
@@ -190,27 +199,16 @@ class MinhangPartyHistoryDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '任务编号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="内容">
-                                    {
-                                        getFieldDecorator('party_history_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '内容'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择任务">
+                                                {
+                                                    this.state.task_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.task_id}
+                                                                    value={item.task_id}>{item.task_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -233,6 +231,16 @@ class MinhangPartyHistoryDetail extends Component {
                                             <Input type="text" placeholder={constant.placeholder + '书编码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="内容">
+                                    <InputHtml name="party_history_content" ref="party_history_content"/>
                                 </FormItem>
                             </Col>
                         </Row>

@@ -74,7 +74,6 @@ class MinhangPosterDetail extends Component {
                     poster_image.push(data.poster_image_file);
                 }
                 this.refs.poster_image.handleSetValue(poster_image);
-                console.log('poster_content', validate.unescapeHtml(data.poster_content));
                 this.refs.poster_content.handleSetValue(validate.unescapeHtml(data.poster_content));
                 this.props.form.setFieldsValue({
                     task_id: data.task_id,
