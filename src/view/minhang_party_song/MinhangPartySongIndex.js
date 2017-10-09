@@ -21,17 +21,14 @@ class MinhangPartySongIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.minhang_party_song.app_id
+                app_id: this.props.minhang_party_song.app_id
             });
 
             this.handleLoadApp();
         }
 
-        this.props.form.setFieldsValue({
-            task_id: this.props.minhang_party_song.task_id,
-        });
-
         this.handleLoad();
+        this.handleLoadTask();
 
         notification.on('notification_minhang_party_song_index_load', this, function (data) {
             this.handleLoad();
@@ -60,6 +57,24 @@ class MinhangPartySongIndex extends Component {
         });
     }
 
+    handleLoadTask() {
+        http.request({
+            url: '/' + constant.action + '/minhang/task/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'minhang_party_song/fetch',
+                    data: {
+                        task_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleSearch() {
         new Promise(function (resolve, reject) {
             let app_id = this.props.form.getFieldValue('app_id');
@@ -67,13 +82,11 @@ class MinhangPartySongIndex extends Component {
                 app_id = '';
             }
 
-            let task_id = this.props.form.getFieldValue('task_id');
 
             this.props.dispatch({
                 type: 'minhang_party_song/fetch',
                 data: {
                     app_id: app_id,
-                    task_id: task_id,
                     page_index: 1
                 }
             });
@@ -93,7 +106,6 @@ class MinhangPartySongIndex extends Component {
             url: '/' + constant.action + '/minhang/party/song/list',
             data: {
                 app_id: this.props.minhang_party_song.app_id,
-                task_id: this.props.minhang_party_song.task_id,
                 page_index: this.props.minhang_party_song.page_index,
                 page_size: this.props.minhang_party_song.page_size
             },
@@ -146,12 +158,15 @@ class MinhangPartySongIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_party_song_detail_add', {});
+        notification.emit('notification_minhang_party_song_detail_add', {
+            task_list: this.props.minhang_party_song.task_list
+        });
     }
 
     handleEdit(party_song_id) {
         notification.emit('notification_minhang_party_song_detail_edit', {
-            party_song_id: party_song_id
+            party_song_id: party_song_id,
+            task_list: this.props.minhang_party_song.task_list
         });
     }
 
@@ -185,9 +200,6 @@ class MinhangPartySongIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '任务编号',
-            dataIndex: 'task_id'
-        }, {
             title: '语音地址',
             dataIndex: 'party_song_url'
         }, {
@@ -224,7 +236,7 @@ class MinhangPartySongIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">党歌信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -264,20 +276,6 @@ class MinhangPartySongIndex extends Component {
                                 :
                                 ''
                         }
-                        <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="任务编号">
-                                {
-                                    getFieldDecorator('task_id', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入任务编号" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
                         <Col span={8}>
                         </Col>
                     </Row>

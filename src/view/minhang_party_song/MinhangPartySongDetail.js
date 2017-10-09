@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class MinhangPartySongDetail extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ class MinhangPartySongDetail extends Component {
             is_show: false,
             action: '',
             party_song_id: '',
-            system_version: ''
+            system_version: '',
+            task_list: []
         }
     }
 
@@ -23,7 +26,8 @@ class MinhangPartySongDetail extends Component {
         notification.on('notification_minhang_party_song_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save'
+                action: 'save',
+                task_list: data.task_list
             });
         });
 
@@ -31,9 +35,12 @@ class MinhangPartySongDetail extends Component {
             this.setState({
                 is_show: true,
                 action: 'update',
-                party_song_id: data.party_song_id
+                party_song_id: data.party_song_id,
+                task_list: data.task_list
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -61,10 +68,11 @@ class MinhangPartySongDetail extends Component {
                     });
                 }
 
+                this.refs.party_song_content.handleSetValue(validate.unescapeHtml(data.party_song_content));
                 this.props.form.setFieldsValue({
                     task_id: data.task_id,
                     party_song_content: data.party_song_content,
-                    party_song_url: data.party_song_url,
+                    party_song_url: data.party_song_url
                 });
 
                 this.setState({
@@ -88,6 +96,7 @@ class MinhangPartySongDetail extends Component {
 
             values.party_song_id = this.state.party_song_id;
             values.system_version = this.state.system_version;
+            values.party_song_content = this.refs.party_song_content.handleGetValue();
 
             this.setState({
                 is_load: true
@@ -118,10 +127,12 @@ class MinhangPartySongDetail extends Component {
             is_show: false,
             action: '',
             party_song_id: '',
-            system_version: ''
+            system_version: '',
+            task_list: []
         });
 
         this.props.form.resetFields();
+        this.refs.party_song_content.handleReset();
     }
 
     render() {
@@ -130,7 +141,7 @@ class MinhangPartySongDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'党歌详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -181,7 +192,7 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="任务编号">
+                                }} className="form-item" label="任务">
                                     {
                                         getFieldDecorator('task_id', {
                                             rules: [{
@@ -190,27 +201,16 @@ class MinhangPartySongDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '任务编号'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="内容">
-                                    {
-                                        getFieldDecorator('party_song_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '内容'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择任务">
+                                                {
+                                                    this.state.task_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.task_id}
+                                                                    value={item.task_id}>{item.task_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -233,6 +233,16 @@ class MinhangPartySongDetail extends Component {
                                             <Input type="text" placeholder={constant.placeholder + '语音地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="内容">
+                                    <InputHtml name="party_song_content" ref="party_song_content"/>
                                 </FormItem>
                             </Col>
                         </Row>
