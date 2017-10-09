@@ -7,7 +7,7 @@ export default {
     state: {
         app_id: '',
         app_list: [],
-        task_id: '',
+        task_list: [],
         book_code: '',
         total: 0,
         page_index: 1,

@@ -72,6 +72,9 @@ import minhang_key from './model/minhang_key';
 import minhang_video from './model/minhang_video';
 import minhang_task from './model/minhang_task';
 import minhang_question from './model/minhang_question';
+import minhang_poster from './model/minhang_poster';
+import minhang_party_history from './model/minhang_party_history';
+import minhang_party_song from './model/minhang_party_song';
 
 document.title = constant.name;
 
@@ -147,6 +150,9 @@ app.model(minhang_key);
 app.model(minhang_video);
 app.model(minhang_task);
 app.model(minhang_question);
+app.model(minhang_poster);
+app.model(minhang_party_history);
+app.model(minhang_party_song);
 
 app.router(Router);
 
