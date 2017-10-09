@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import ProductCategoryDetail from './ProductCategoryDetail';
+import ProductCategorySkuAttributeIndex from '../product_category_sku_attribute/ProductCategorySkuAttributeIndex';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -194,6 +195,12 @@ class ProductCategoryIndex extends Component {
         });
     }
 
+    handleSku(product_category_id){
+        notification.emit('notification_product_category_sku_attribute_index_list', {
+            product_category_id: product_category_id
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -203,11 +210,13 @@ class ProductCategoryIndex extends Component {
             title: '名称',
             dataIndex: 'product_category_name'
         }, {
-            width: 100,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
+                  <a onClick={this.handleSku.bind(this, record.product_category_id)}>SKU</a>
+                  <span className="divider"/>
                   <a onClick={this.handleEdit.bind(this, record.product_category_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
@@ -288,6 +297,7 @@ class ProductCategoryIndex extends Component {
                        dataSource={this.props.product_category.list} pagination={false}
                        bordered/>
                 <ProductCategoryDetail/>
+                <ProductCategorySkuAttributeIndex/>
             </QueueAnim>
         );
     }

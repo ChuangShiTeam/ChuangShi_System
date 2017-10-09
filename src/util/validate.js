@@ -39,7 +39,7 @@ function isMobileDevice() {
 
 function unescapeHtml(str) {
     var s = "";
-    if(str.length == 0) return "";
+    if(str.length === 0) return "";
     s = str.replace(/&amp;/g,"&");
     s = s.replace(/&lt;/g,"<");
     s = s.replace(/&gt;/g,">");

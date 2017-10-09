@@ -195,7 +195,7 @@ class MemberIndex extends Component {
             title: '名称',
             dataIndex: 'user_name'
         }, {
-            width: 150,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (

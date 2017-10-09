@@ -216,7 +216,7 @@ class MenuIndex extends Component {
             title: '排序',
             dataIndex: 'menu_sort'
         }, {
-            width: 135,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (

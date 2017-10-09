@@ -7,6 +7,7 @@ import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class ProductDetail extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class ProductDetail extends Component {
         });
 
         http.request({
-            url: '/product/' + constant.action + '/find',
+            url: '/' + constant.action + '/product/find',
             data: {
                 product_id: this.state.product_id
             },
@@ -66,12 +67,17 @@ class ProductDetail extends Component {
                 }
 
                 let product_image = [];
-                if (data.product_image_file !== null) {
-                    product_image.push(data.product_image_file);
+                if (data.file_id === '') {
+
+                } else {
+                    product_image.push({
+                        file_id: data.file_id,
+                        file_path: data.file_path
+                    });
                 }
                 this.refs.product_image.handleSetValue(product_image);
 
-                this.refs.product_content.handleSetValue(data.product_content);
+                this.refs.product_content.handleSetValue(validate.unescapeHtml(data.product_content));
 
                 this.props.form.setFieldsValue({
                     product_category_id: data.product_category_id,
@@ -188,7 +194,7 @@ class ProductDetail extends Component {
             });
 
             http.request({
-                url: '/product/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/product/' +  this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);

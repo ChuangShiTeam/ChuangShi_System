@@ -150,7 +150,7 @@
 }
 
 .form-item {
-    margin-bottom: 16px !important;
+    margin-bottom: 18px !important;
 }
 
 .form-image-item {
@@ -187,7 +187,8 @@
     width: 100%;
     height: 100%;
     background-size: contain;
-    background: no-repeat center;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .item-mask {
