@@ -261,20 +261,12 @@ class MinhangQuestionDetail extends Component {
                         { initialValue: k.question_option_id })
                     }
                     {getFieldDecorator(`question_option_key-${index}`, {
-                        validateTrigger: ['onChange', 'onBlur'],
-                        rules: [{
-                            required: true,
-                            message: "请输入选项标识"
-                        }], initialValue: k.question_option_key
+                         initialValue: k.question_option_key
                     })(
                         <Input placeholder="选项标识" style={{ width: '10%', marginRight: 8 }}/>
                     )}
                     {getFieldDecorator(`question_option_value-${index}`, {
-                        validateTrigger: ['onChange', 'onBlur'],
-                        rules: [{
-                            required: true,
-                            message: "请输入选项内容"
-                        }], initialValue: k.question_option_value
+                        initialValue: k.question_option_value
                     })(
                         <Input placeholder="选项内容" style={{ width: '50%', marginRight: 8 }}/>
                     )}
@@ -307,11 +299,7 @@ class MinhangQuestionDetail extends Component {
                         { initialValue: k.question_answer_id })
                     }
                     {getFieldDecorator(`question_answer-${index}`, {
-                        validateTrigger: ['onChange', 'onBlur'],
-                        rules: [{
-                            required: true,
-                            message: "请输入题目答案"
-                        }], initialValue: k.question_answer
+                        initialValue: k.question_answer
                     })(
                         <TextArea rows={4} placeholder="题目答案" style={{ width: '60%', marginRight: 8 }}/>
                     )}

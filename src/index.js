@@ -77,6 +77,7 @@ import minhang_party_history from './model/minhang_party_history';
 import minhang_party_song from './model/minhang_party_song';
 import product_category_sku_attribute from './model/product_category_sku_attribute';
 import product_category_sku_attribute_item from './model/product_category_sku_attribute_item';
+import minhang_timeline from './model/minhang_timeline';
 
 document.title = constant.name;
 
@@ -157,6 +158,7 @@ app.model(minhang_party_history);
 app.model(minhang_party_song);
 app.model(product_category_sku_attribute);
 app.model(product_category_sku_attribute_item);
+app.model(minhang_timeline);
 
 app.router(Router);
 

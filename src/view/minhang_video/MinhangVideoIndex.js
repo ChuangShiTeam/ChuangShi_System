@@ -188,6 +188,9 @@ class MinhangVideoIndex extends Component {
             title: '视频标题',
             dataIndex: 'video_title'
         }, {
+            title: '视频url',
+            dataIndex: 'video_url'
+        }, {
             title: '排序',
             dataIndex: 'video_sort'
         }, {

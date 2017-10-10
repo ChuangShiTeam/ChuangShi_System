@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class MinhangVideoDetail extends Component {
+class MinhangTimelineDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,24 +14,24 @@ class MinhangVideoDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            video_id: '',
+            timeline_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_video_detail_add', this, function (data) {
+        notification.on('notification_minhang_timeline_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_minhang_video_detail_edit', this, function (data) {
+        notification.on('notification_minhang_timeline_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                video_id: data.video_id
+                timeline_id: data.timeline_id
             }, function () {
                 this.handleLoad();
             });
@@ -39,9 +39,9 @@ class MinhangVideoDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_video_detail_add', this);
+        notification.remove('notification_minhang_timeline_detail_add', this);
 
-        notification.remove('notification_minhang_video_detail_edit', this);
+        notification.remove('notification_minhang_timeline_detail_edit', this);
     }
 
     handleLoad() {
@@ -50,9 +50,9 @@ class MinhangVideoDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/video/find',
+            url: '/' + constant.action + '/minhang/timeline/find',
             data: {
-                video_id: this.state.video_id
+                timeline_id: this.state.timeline_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -62,9 +62,9 @@ class MinhangVideoDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    video_title: data.video_title,
-                    video_url: data.video_url,
-                    video_sort: data.video_sort
+                    timeline_year: data.timeline_year,
+                    timeline_image: data.timeline_image,
+                    timeline_description: data.timeline_description,
                 });
 
                 this.setState({
@@ -86,7 +86,7 @@ class MinhangVideoDetail extends Component {
                 return;
             }
 
-            values.video_id = this.state.video_id;
+            values.timeline_id = this.state.timeline_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -94,12 +94,12 @@ class MinhangVideoDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/video/' + this.state.action,
+                url: '/' + constant.action + '/minhang/timeline/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_video_index_load', {});
+                    notification.emit('notification_minhang_timeline_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -117,7 +117,7 @@ class MinhangVideoDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            video_id: '',
+            timeline_id: '',
             system_version: ''
         });
 
@@ -130,7 +130,7 @@ class MinhangVideoDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'视频详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -160,7 +160,7 @@ class MinhangVideoDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_video.app_list.map(function (item) {
+                                                            this.props.minhang_timeline.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -181,16 +181,16 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="视频标题">
+                                }} className="form-item" label="年份">
                                     {
-                                        getFieldDecorator('video_title', {
+                                        getFieldDecorator('timeline_year', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '视频标题'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '年份'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -201,16 +201,16 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="视频url">
+                                }} className="form-item" label="图片">
                                     {
-                                        getFieldDecorator('video_url', {
+                                        getFieldDecorator('timeline_image', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '视频url'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '图片'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -221,16 +221,16 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="排序">
+                                }} className="form-item" label="描述">
                                     {
-                                        getFieldDecorator('video_sort', {
+                                        getFieldDecorator('timeline_description', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: 0
+                                            initialValue: ''
                                         })(
-                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '描述'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -243,8 +243,8 @@ class MinhangVideoDetail extends Component {
     }
 }
 
-MinhangVideoDetail.propTypes = {};
+MinhangTimelineDetail.propTypes = {};
 
-MinhangVideoDetail = Form.create({})(MinhangVideoDetail);
+MinhangTimelineDetail = Form.create({})(MinhangTimelineDetail);
 
-export default connect(({minhang_video}) => ({minhang_video}))(MinhangVideoDetail);
+export default connect(({minhang_timeline}) => ({minhang_timeline}))(MinhangTimelineDetail);
