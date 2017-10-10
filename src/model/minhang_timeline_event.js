@@ -7,8 +7,7 @@ export default {
     state: {
         app_id: '',
         app_list: [],
-        timeline_id: '',
-        task_id: '',
+        task_list:[],
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

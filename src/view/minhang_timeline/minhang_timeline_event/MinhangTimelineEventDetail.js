@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, DatePicker} from 'antd';
+import moment from 'moment';
 
-import InputImage from '../../component/InputImage';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
+import InputHtml from '../../../component/InputHtml';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import http from '../../../util/http';
+import validate from '../../../util/validate';
 
-class MinhangTimelineDetail extends Component {
+class MinhangTimelineEventDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -15,34 +17,42 @@ class MinhangTimelineDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
+            task_list: [],
             timeline_id: '',
+            timeline_event_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_timeline_detail_add', this, function (data) {
+        notification.on('notification_minhang_timeline_event_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save'
+                action: 'save',
+                task_list: data.task_list,
+                timeline_id: data.timeline_id
             });
         });
 
-        notification.on('notification_minhang_timeline_detail_edit', this, function (data) {
+        notification.on('notification_minhang_timeline_event_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
+                timeline_event_id: data.timeline_event_id,
+                task_list: data.task_list,
                 timeline_id: data.timeline_id
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_timeline_detail_add', this);
+        notification.remove('notification_minhang_timeline_event_detail_add', this);
 
-        notification.remove('notification_minhang_timeline_detail_edit', this);
+        notification.remove('notification_minhang_timeline_event_detail_edit', this);
     }
 
     handleLoad() {
@@ -51,9 +61,9 @@ class MinhangTimelineDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/timeline/find',
+            url: '/' + constant.action + '/minhang/timeline/event/find',
             data: {
-                timeline_id: this.state.timeline_id
+                timeline_event_id: this.state.timeline_event_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -61,14 +71,12 @@ class MinhangTimelineDetail extends Component {
                         app_id: data.app_id
                     });
                 }
-                let timeline_image = [];
-                if (data.timeline_image_file !== null) {
-                    timeline_image.push(data.timeline_image_file);
-                }
-                this.refs.timeline_image.handleSetValue(timeline_image);
+                this.refs.timeline_event_content.handleSetValue(validate.unescapeHtml(data.timeline_event_content));
+
                 this.props.form.setFieldsValue({
-                    timeline_year: data.timeline_year,
-                    timeline_description: data.timeline_description
+                    task_id: data.task_id,
+                    timeline_event_time: data.timeline_event_time?moment(data.timeline_event_time):null,
+                    timeline_event_title: data.timeline_event_title
                 });
 
                 this.setState({
@@ -90,27 +98,22 @@ class MinhangTimelineDetail extends Component {
                 return;
             }
 
-            values.timeline_id = this.state.timeline_id;
+            values.timeline_event_id = this.state.timeline_event_id;
             values.system_version = this.state.system_version;
-
-            let file_list = this.refs.timeline_image.handleGetValue();
-            if (file_list.length === 0) {
-                values.timeline_image = '';
-            } else {
-                values.timeline_image = file_list[0].file_id;
-            }
-
+            values.timeline_id = this.state.timeline_id;
+            values.timeline_event_content = this.refs.timeline_event_content.handleGetValue();
+            values.timeline_event_time = values.timeline_event_time.format('YYYY-MM-DD');
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/timeline/' + this.state.action,
+                url: '/' + constant.action + '/minhang/timeline/event/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_timeline_index_load', {});
+                    notification.emit('notification_minhang_timeline_event_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -128,12 +131,14 @@ class MinhangTimelineDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            timeline_id: '',
+            task_list: [],
+            time_line_id: '',
+            timeline_event_id: '',
             system_version: ''
         });
 
         this.props.form.resetFields();
-        this.refs.timeline_image.handleReset();
+        this.refs.timeline_event_content.handleReset();
     }
 
     render() {
@@ -143,7 +148,7 @@ class MinhangTimelineDetail extends Component {
         const { TextArea } = Input;
 
         return (
-            <Modal title={'时间轴详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'事件详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -173,7 +178,7 @@ class MinhangTimelineDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_timeline.app_list.map(function (item) {
+                                                            this.props.minhang_timeline_event.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -194,16 +199,25 @@ class MinhangTimelineDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="年份">
+                                }} className="form-item" label="任务">
                                     {
-                                        getFieldDecorator('timeline_year', {
+                                        getFieldDecorator('task_id', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '年份'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择任务">
+                                                {
+                                                    this.state.task_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.task_id}
+                                                                    value={item.task_id}>{item.task_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -214,24 +228,48 @@ class MinhangTimelineDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="图片">
-                                    <InputImage name="timeline_image" limit={1} ref="timeline_image"/>
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="描述">
+                                }} className="form-item" label="时间">
                                     {
-                                        getFieldDecorator('timeline_description', {
+                                        getFieldDecorator('timeline_event_time', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '描述'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker />
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="事件标题">
+                                    {
+                                        getFieldDecorator('timeline_event_title', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <TextArea rows={4} placeholder={constant.placeholder + '事件标题'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="事件内容">
+                                    <InputHtml name="timeline_event_content" ref="timeline_event_content"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -242,8 +280,8 @@ class MinhangTimelineDetail extends Component {
     }
 }
 
-MinhangTimelineDetail.propTypes = {};
+MinhangTimelineEventDetail.propTypes = {};
 
-MinhangTimelineDetail = Form.create({})(MinhangTimelineDetail);
+MinhangTimelineEventDetail = Form.create({})(MinhangTimelineEventDetail);
 
-export default connect(({minhang_timeline}) => ({minhang_timeline}))(MinhangTimelineDetail);
+export default connect(({minhang_timeline_event}) => ({minhang_timeline_event}))(MinhangTimelineEventDetail);

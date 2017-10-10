@@ -78,6 +78,8 @@ import MinhangQuestionIndex from './view/minhang_task/minhang_question/MinhangQu
 import MinhangPosterIndex from './view/minhang_poster/MinhangPosterIndex';
 import MinhangPartyHistoryIndex from './view/minhang_party_history/MinhangPartyHistoryIndex';
 import MinhangPartySongIndex from './view/minhang_party_song/MinhangPartySongIndex';
+import MinhangTimelineIndex from './view/minhang_timeline/MinhangTimelineIndex';
+import MinhangTimelineEventIndex from './view/minhang_timeline/minhang_timeline_event/MinhangTimelineEventIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -184,6 +186,8 @@ function RouterConfig({history}) {
                     <Route path="/minhang/poster/index" component={MinhangPosterIndex}/>
                     <Route path="/minhang/party/history/index" component={MinhangPartyHistoryIndex}/>
                     <Route path="/minhang/party/song/index" component={MinhangPartySongIndex}/>
+                    <Route path="/minhang/timeline/index" component={MinhangTimelineIndex}/>
+                    <Route path="/minhang/timeline/event/index/:timeline_id" component={MinhangTimelineEventIndex}/>
                 </Route>
             </Route>
         </Router>
