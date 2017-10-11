@@ -5,7 +5,7 @@ export default {
 	action: 'admin',
 	is_show_menu: true,
 	platform: 'Admin',
-	version: '9.9.9',
+	version: '1.0.0',
 	page_size: 10,
 	operation: '操作',
 	search: '搜索',
