@@ -188,6 +188,15 @@ class MinhangKeyIndex extends Component {
             title: '钥匙名称',
             dataIndex: 'key_name'
         }, {
+            title: '图片',
+            dataIndex: 'key_image',
+            render: (text, record, index) => (
+                record.key_image_file?
+                <div className="clearfix">
+                    <img alt="example" style={{ height: '83px' }} src={constant.host + record.key_image_file.file_path}/>
+                </div>:null
+            )
+        }, {
             title: '钥匙激活所需完成任务数',
             dataIndex: 'key_activated_task_quantity'
         }, {
