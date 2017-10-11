@@ -200,6 +200,9 @@ class MinhangKeyIndex extends Component {
             title: '钥匙激活所需完成任务数',
             dataIndex: 'key_activated_task_quantity'
         }, {
+            title: '排序',
+            dataIndex: 'key_sort'
+        }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',

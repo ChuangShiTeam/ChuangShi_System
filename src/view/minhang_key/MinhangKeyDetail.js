@@ -71,6 +71,7 @@ class MinhangKeyDetail extends Component {
                 this.props.form.setFieldsValue({
                     key_name: data.key_name,
                     key_activated_task_quantity: data.key_activated_task_quantity,
+                    key_sort: data.key_sort,
                     key_description: data.key_description
                 });
 
@@ -237,6 +238,26 @@ class MinhangKeyDetail extends Component {
                                             initialValue: 0
                                         })(
                                             <InputNumber min={0} max={999} placeholder={constant.placeholder + '钥匙激活需完成任务数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="排序">
+                                    {
+                                        getFieldDecorator('key_sort', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
