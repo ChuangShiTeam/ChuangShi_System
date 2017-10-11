@@ -28,10 +28,12 @@ class XietongClazzIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            clazz_name: this.props.xietong_clazz.clazz_name,
+            organization_id: this.props.xietong_clazz.organization_id,
+            clazz_name: this.props.xietong_clazz.clazz_name
         });
 
         this.handleLoad();
+        this.handleLoadOrganization();
 
         notification.on('notification_xietong_clazz_index_load', this, function (data) {
             this.handleLoad();
@@ -60,6 +62,24 @@ class XietongClazzIndex extends Component {
         });
     }
 
+    handleLoadOrganization() {
+        http.request({
+            url: '/admin/xietong/organization/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'xietong_clazz/fetch',
+                    data: {
+                        organization_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleSearch() {
         new Promise(function (resolve, reject) {
             let app_id = this.props.form.getFieldValue('app_id');
@@ -68,11 +88,13 @@ class XietongClazzIndex extends Component {
             }
 
             let clazz_name = this.props.form.getFieldValue('clazz_name');
+            let organization_id = this.props.form.getFieldValue('organization_id');
 
             this.props.dispatch({
                 type: 'xietong_clazz/fetch',
                 data: {
                     app_id: app_id,
+                    organization_id: organization_id,
                     clazz_name: clazz_name,
                     page_index: 1
                 }
@@ -93,6 +115,7 @@ class XietongClazzIndex extends Component {
             url: '/' + constant.action + '/xietong/clazz/list',
             data: {
                 app_id: this.props.xietong_clazz.app_id,
+                organization_id: this.props.xietong_clazz.organization_id,
                 clazz_name: this.props.xietong_clazz.clazz_name,
                 page_index: this.props.xietong_clazz.page_index,
                 page_size: this.props.xietong_clazz.page_size
@@ -188,6 +211,9 @@ class XietongClazzIndex extends Component {
             title: '名称',
             dataIndex: 'clazz_name'
         }, {
+            title: '所属组织机构',
+            dataIndex: 'organization_name'
+        }, {
             title: '选课限制人数',
             dataIndex: 'clazz_course_apply_limit'
         }, {
@@ -273,6 +299,29 @@ class XietongClazzIndex extends Component {
                                 :
                                 ''
                         }
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="组织机构">
+                                {
+                                    getFieldDecorator('organization_id', {
+                                        initialValue: ''
+                                    })(
+                                        <Select allowClear placeholder="请选择组织机构">
+                                            {
+                                                this.props.xietong_clazz.organization_list.map(function (item) {
+                                                    return (
+                                                        <Option key={item.organization_id}
+                                                                value={item.organization_id}>{item.organization_name}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
                         <Col span={8}>
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},

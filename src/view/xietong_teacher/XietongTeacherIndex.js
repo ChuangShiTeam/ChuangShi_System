@@ -1,42 +1,49 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MinhangTimelineEventDetail from './MinhangTimelineEventDetail';
-import constant from '../../../util/constant';
-import notification from '../../../util/notification';
-import validate from '../../../util/validate';
-import http from '../../../util/http';
+import XietongTeacherDetail from './XietongTeacherDetail';
+import constant from '../../util/constant';
+import notification from '../../util/notification';
+import validate from '../../util/validate';
+import http from '../../util/http';
 
-class MinhangTimelineEventIndex extends Component {
+class XietongTeacherIndex extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            is_load: false
+            is_load: false,
+            clazz: []
         }
     }
 
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.minhang_timeline_event.app_id
+            app_id: this.props.xietong_teacher.app_id
             });
 
             this.handleLoadApp();
         }
 
-        this.handleLoad();
-        this.handleLoadTask();
+        this.props.form.setFieldsValue({
+            organization_id: this.props.xietong_teacher.organization_id,
+            teacher_name: this.props.xietong_teacher.teacher_name,
+        });
 
-        notification.on('notification_minhang_timeline_event_index_load', this, function (data) {
+        this.handleLoad();
+        this.handleLoadOrganization();
+        this.handleClazzList();
+
+        notification.on('notification_xietong_teacher_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_timeline_event_index_load', this);
+        notification.remove('notification_xietong_teacher_index_load', this);
     }
 
     handleLoadApp() {
@@ -45,7 +52,7 @@ class MinhangTimelineEventIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_timeline_event/fetch',
+                    type: 'xietong_teacher/fetch',
                     data: {
                         app_list: data
                     }
@@ -57,16 +64,40 @@ class MinhangTimelineEventIndex extends Component {
         });
     }
 
-    handleLoadTask() {
+    handleLoadOrganization() {
         http.request({
-            url: '/' + constant.action + '/minhang/task/all/list',
+            url: '/admin/xietong/organization/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_timeline_event/fetch',
+                    type: 'xietong_teacher/fetch',
                     data: {
-                        task_list: data
+                        organization_list: data
                     }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleClazzList() {
+        http.request({
+            url: '/' + constant.action + '/xietong/clazz/all/list',
+            data: {},
+            success: function (data) {
+                let array = [{
+                    clazz_id: '',
+                    clazz_name: '所有班级'
+                }];
+
+                for (let i = 0; i < data.length; i++) {
+                    array.push(data[i]);
+                }
+
+                this.setState({
+                    clazz: array
                 });
             }.bind(this),
             complete: function () {
@@ -77,15 +108,20 @@ class MinhangTimelineEventIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
+            let organization_id = this.props.form.getFieldValue('organization_id');
+            let teacher_name = this.props.form.getFieldValue('teacher_name');
+
             this.props.dispatch({
-                type: 'minhang_timeline_event/fetch',
+                type: 'xietong_teacher/fetch',
                 data: {
                     app_id: app_id,
+                    organization_id: organization_id,
+                    teacher_name: teacher_name,
                     page_index: 1
                 }
             });
@@ -102,16 +138,17 @@ class MinhangTimelineEventIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/timeline/event/list',
+            url: '/' + constant.action + '/xietong/teacher/list',
             data: {
-                app_id: this.props.minhang_timeline_event.app_id,
-                timeline_id: this.props.params.timeline_id,
-                page_index: this.props.minhang_timeline_event.page_index,
-                page_size: this.props.minhang_timeline_event.page_size
+                app_id: this.props.xietong_teacher.app_id,
+                organization_id: this.props.xietong_teacher.organization_id,
+                teacher_name: this.props.xietong_teacher.teacher_name,
+                page_index: this.props.xietong_teacher.page_index,
+                page_size: this.props.xietong_teacher.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_timeline_event/fetch',
+                    type: 'xietong_teacher/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -129,7 +166,7 @@ class MinhangTimelineEventIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_timeline_event/fetch',
+                type: 'xietong_teacher/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -144,7 +181,7 @@ class MinhangTimelineEventIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_timeline_event/fetch',
+                type: 'xietong_teacher/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -158,29 +195,27 @@ class MinhangTimelineEventIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_timeline_event_detail_add', {
-            task_list: this.props.minhang_timeline_event.task_list,
-            timeline_id: this.props.params.timeline_id
+        notification.emit('notification_xietong_teacher_detail_add', {
+            clazz: this.state.clazz
         });
     }
 
-    handleEdit(timeline_event_id) {
-        notification.emit('notification_minhang_timeline_event_detail_edit', {
-            timeline_event_id: timeline_event_id,
-            task_list: this.props.minhang_timeline_event.task_list,
-            timeline_id: this.props.params.timeline_id
+    handleEdit(teacher_id) {
+        notification.emit('notification_xietong_teacher_detail_edit', {
+            teacher_id: teacher_id,
+            clazz: this.state.clazz
         });
     }
 
-    handleDel(timeline_event_id, system_version) {
+    handleDel(teacher_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/timeline/event/delete',
+            url: '/' + constant.action + '/xietong/teacher/delete',
             data: {
-                timeline_event_id: timeline_event_id,
+                teacher_id: teacher_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -202,22 +237,22 @@ class MinhangTimelineEventIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '时间',
-            dataIndex: 'timeline_event_time'
+            title: '老师姓名',
+            dataIndex: 'teacher_name'
         }, {
-            title: '事件标题',
-            dataIndex: 'timeline_event_title'
+            title: '所属组织机构',
+            dataIndex: 'organization_name'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.timeline_event_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.teacher_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.timeline_event_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.teacher_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -226,12 +261,12 @@ class MinhangTimelineEventIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.minhang_timeline_event.total,
+            total: this.props.xietong_teacher.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.minhang_timeline_event.page_index,
-            pageSize: this.props.minhang_timeline_event.page_size,
+            current: this.props.xietong_teacher.page_index,
+            pageSize: this.props.xietong_teacher.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -241,7 +276,7 @@ class MinhangTimelineEventIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">事件信息</div>
+                        <div className="">教师信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -266,7 +301,7 @@ class MinhangTimelineEventIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.minhang_timeline_event.app_list.map(function (item) {
+                                                        this.props.xietong_teacher.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -282,27 +317,62 @@ class MinhangTimelineEventIndex extends Component {
                                 ''
                         }
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="组织机构">
+                                {
+                                    getFieldDecorator('organization_id', {
+                                        initialValue: ''
+                                    })(
+                                        <Select allowClear placeholder="请选择组织机构">
+                                            {
+                                                this.props.xietong_teacher.organization_list.map(function (item) {
+                                                    return (
+                                                        <Option key={item.organization_id}
+                                                                value={item.organization_id}>{item.organization_name}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="老师姓名">
+                                {
+                                    getFieldDecorator('teacher_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入老师姓名" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                         <Col span={8}>
                         </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="timeline_event_id"
+                       rowKey="teacher_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.minhang_timeline_event.list} pagination={pagination}
+                       dataSource={this.props.xietong_teacher.list} pagination={pagination}
                        bordered/>
-                <MinhangTimelineEventDetail/>
+                <XietongTeacherDetail/>
             </QueueAnim>
         );
     }
 }
 
-MinhangTimelineEventIndex.propTypes = {};
+XietongTeacherIndex.propTypes = {};
 
-MinhangTimelineEventIndex = Form.create({})(MinhangTimelineEventIndex);
+XietongTeacherIndex = Form.create({})(XietongTeacherIndex);
 
-export default connect(({minhang_timeline_event}) => ({
-    minhang_timeline_event
-}))(MinhangTimelineEventIndex);
+export default connect(({xietong_teacher}) => ({
+    xietong_teacher
+}))(XietongTeacherIndex);

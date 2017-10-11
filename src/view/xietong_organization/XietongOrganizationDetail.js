@@ -6,7 +6,7 @@ import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class MinhangVideoDetail extends Component {
+class XietongOrganizationDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,25 +14,24 @@ class MinhangVideoDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            video_id: '',
-            video_task_list: [],
+            organization_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_video_detail_add', this, function (data) {
+        notification.on('notification_xietong_organization_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_minhang_video_detail_edit', this, function (data) {
+        notification.on('notification_xietong_organization_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                video_id: data.video_id
+                organization_id: data.organization_id
             }, function () {
                 this.handleLoad();
             });
@@ -40,9 +39,9 @@ class MinhangVideoDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_video_detail_add', this);
+        notification.remove('notification_xietong_organization_detail_add', this);
 
-        notification.remove('notification_minhang_video_detail_edit', this);
+        notification.remove('notification_xietong_organization_detail_edit', this);
     }
 
     handleLoad() {
@@ -51,9 +50,9 @@ class MinhangVideoDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/video/find',
+            url: '/' + constant.action + '/xietong/organization/find',
             data: {
-                video_id: this.state.video_id
+                organization_id: this.state.organization_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -63,9 +62,9 @@ class MinhangVideoDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    video_title: data.video_title,
-                    video_url: data.video_url,
-                    video_sort: data.video_sort
+                    organization_name: data.organization_name,
+                    organization_code: data.organization_code,
+                    organizaiton_sort: data.organizaiton_sort,
                 });
 
                 this.setState({
@@ -87,7 +86,7 @@ class MinhangVideoDetail extends Component {
                 return;
             }
 
-            values.video_id = this.state.video_id;
+            values.organization_id = this.state.organization_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -95,12 +94,12 @@ class MinhangVideoDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/video/' + this.state.action,
+                url: '/' + constant.action + '/xietong/organization/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_video_index_load', {});
+                    notification.emit('notification_xietong_organization_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -118,7 +117,7 @@ class MinhangVideoDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            video_id: '',
+            organization_id: '',
             system_version: ''
         });
 
@@ -131,7 +130,7 @@ class MinhangVideoDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'视频详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'组织机构详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -161,7 +160,7 @@ class MinhangVideoDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_video.app_list.map(function (item) {
+                                                            this.props.xietong_organization.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -182,16 +181,16 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="视频标题">
+                                }} className="form-item" label="名称">
                                     {
-                                        getFieldDecorator('video_title', {
+                                        getFieldDecorator('organization_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '视频标题'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -202,16 +201,16 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="视频url">
+                                }} className="form-item" label="编码">
                                     {
-                                        getFieldDecorator('video_url', {
+                                        getFieldDecorator('organization_code', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '视频url'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '编码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -224,14 +223,14 @@ class MinhangVideoDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="排序">
                                     {
-                                        getFieldDecorator('video_sort', {
+                                        getFieldDecorator('organizaiton_sort', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -244,8 +243,8 @@ class MinhangVideoDetail extends Component {
     }
 }
 
-MinhangVideoDetail.propTypes = {};
+XietongOrganizationDetail.propTypes = {};
 
-MinhangVideoDetail = Form.create({})(MinhangVideoDetail);
+XietongOrganizationDetail = Form.create({})(XietongOrganizationDetail);
 
-export default connect(({minhang_video}) => ({minhang_video}))(MinhangVideoDetail);
+export default connect(({xietong_organization}) => ({xietong_organization}))(XietongOrganizationDetail);

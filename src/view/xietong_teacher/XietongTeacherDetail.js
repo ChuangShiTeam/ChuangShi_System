@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class MinhangVideoDetail extends Component {
+class XietongTeacherDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,25 +14,28 @@ class MinhangVideoDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            video_id: '',
-            video_task_list: [],
-            system_version: ''
+            teacher_id: '',
+            user_id: '',
+            system_version: '',
+            clazz: []
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_video_detail_add', this, function (data) {
+        notification.on('notification_xietong_teacher_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save'
+                action: 'save',
+                clazz: data.clazz
             });
         });
 
-        notification.on('notification_minhang_video_detail_edit', this, function (data) {
+        notification.on('notification_xietong_teacher_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                video_id: data.video_id
+                teacher_id: data.teacher_id,
+                clazz: data.clazz
             }, function () {
                 this.handleLoad();
             });
@@ -40,9 +43,9 @@ class MinhangVideoDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_video_detail_add', this);
+        notification.remove('notification_xietong_teacher_detail_add', this);
 
-        notification.remove('notification_minhang_video_detail_edit', this);
+        notification.remove('notification_xietong_teacher_detail_edit', this);
     }
 
     handleLoad() {
@@ -51,9 +54,9 @@ class MinhangVideoDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/video/find',
+            url: '/' + constant.action + '/xietong/teacher/find',
             data: {
-                video_id: this.state.video_id
+                teacher_id: this.state.teacher_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -63,12 +66,13 @@ class MinhangVideoDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    video_title: data.video_title,
-                    video_url: data.video_url,
-                    video_sort: data.video_sort
+                    clazz_id: data.clazz_id,
+                    organization_id: data.organization_id,
+                    teacher_name: data.teacher_name,
                 });
 
                 this.setState({
+                    user_id: data.user_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -87,20 +91,21 @@ class MinhangVideoDetail extends Component {
                 return;
             }
 
-            values.video_id = this.state.video_id;
+            values.teacher_id = this.state.teacher_id;
             values.system_version = this.state.system_version;
+            values.user_id = this.state.user_id;
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/video/' + this.state.action,
+                url: '/' + constant.action + '/xietong/teacher/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_video_index_load', {});
+                    notification.emit('notification_xietong_teacher_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -118,8 +123,10 @@ class MinhangVideoDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            video_id: '',
-            system_version: ''
+            teacher_id: '',
+            user_id: '',
+            system_version: '',
+            clazz: []
         });
 
         this.props.form.resetFields();
@@ -131,7 +138,7 @@ class MinhangVideoDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'视频详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'教师详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -161,7 +168,7 @@ class MinhangVideoDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_video.app_list.map(function (item) {
+                                                            this.props.xietong_teacher.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -182,16 +189,25 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="视频标题">
+                                }} className="content-search-item" label="组织机构">
                                     {
-                                        getFieldDecorator('video_title', {
+                                        getFieldDecorator('organization_id', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '视频标题'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Select allowClear placeholder="请选择组织机构">
+                                                {
+                                                    this.props.xietong_teacher.organization_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.organization_id}
+                                                                    value={item.organization_id}>{item.organization_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
                                         )
                                     }
                                 </FormItem>
@@ -202,16 +218,43 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="视频url">
+                                }} className="form-item" label="班级编号">                                    {
+                                    getFieldDecorator('clazz_id', {
+                                        rules: [{
+                                            required: true,
+                                            message: constant.required
+                                        }],
+                                        initialValue: ''
+                                    })(
+                                        <Select placeholder="请选择班级">
+                                            {
+                                                this.state.clazz.map(function (item) {
+                                                    return (
+                                                        <Option key={item.clazz_id} value={item.clazz_id}>{item.clazz_name}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    )
+                                }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="工号">
                                     {
-                                        getFieldDecorator('video_url', {
+                                        getFieldDecorator('teacher_number', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '视频url'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '工号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -222,16 +265,36 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="排序">
+                                }} className="form-item" label="老师姓名">
                                     {
-                                        getFieldDecorator('video_sort', {
+                                        getFieldDecorator('teacher_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: 0
+                                            initialValue: ''
                                         })(
-                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '老师姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="登录密码">
+                                    {
+                                        getFieldDecorator('user_password', {
+                                            rules: [{
+                                                required: this.state.action === 'save',
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '登录密码'}/>
                                         )
                                     }
                                 </FormItem>
@@ -244,8 +307,8 @@ class MinhangVideoDetail extends Component {
     }
 }
 
-MinhangVideoDetail.propTypes = {};
+XietongTeacherDetail.propTypes = {};
 
-MinhangVideoDetail = Form.create({})(MinhangVideoDetail);
+XietongTeacherDetail = Form.create({})(XietongTeacherDetail);
 
-export default connect(({minhang_video}) => ({minhang_video}))(MinhangVideoDetail);
+export default connect(({xietong_teacher}) => ({xietong_teacher}))(XietongTeacherDetail);
