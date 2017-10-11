@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -61,9 +62,16 @@ class MinhangKeyDetail extends Component {
                     });
                 }
 
+                let key_image = [];
+                if (data.key_image_file !== null) {
+                    key_image.push(data.key_image_file);
+                }
+                this.refs.key_image.handleSetValue(key_image);
+
                 this.props.form.setFieldsValue({
                     key_name: data.key_name,
                     key_activated_task_quantity: data.key_activated_task_quantity,
+                    key_sort: data.key_sort,
                     key_description: data.key_description
                 });
 
@@ -88,6 +96,13 @@ class MinhangKeyDetail extends Component {
 
             values.key_id = this.state.key_id;
             values.system_version = this.state.system_version;
+
+            let file_list = this.refs.key_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.key_image = '';
+            } else {
+                values.key_image = file_list[0].file_id;
+            }
 
             this.setState({
                 is_load: true
@@ -121,6 +136,7 @@ class MinhangKeyDetail extends Component {
             system_version: ''
         });
 
+        this.refs.key_image.handleReset();
         this.props.form.resetFields();
     }
 
@@ -202,6 +218,16 @@ class MinhangKeyDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="图片">
+                                    <InputImage name="key_image" limit={1} ref="key_image"/>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="需完成任务数">
                                     {
                                         getFieldDecorator('key_activated_task_quantity', {
@@ -212,6 +238,26 @@ class MinhangKeyDetail extends Component {
                                             initialValue: 0
                                         })(
                                             <InputNumber min={0} max={999} placeholder={constant.placeholder + '钥匙激活需完成任务数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="排序">
+                                    {
+                                        getFieldDecorator('key_sort', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

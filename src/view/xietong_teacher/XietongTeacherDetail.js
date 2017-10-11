@@ -2,13 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
-import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
-import validate from '../../util/validate';
 
-class MinhangPartySongDetail extends Component {
+class XietongTeacherDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -16,39 +14,38 @@ class MinhangPartySongDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            party_song_id: '',
+            teacher_id: '',
+            user_id: '',
             system_version: '',
-            task_list: []
+            clazz: []
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_party_song_detail_add', this, function (data) {
+        notification.on('notification_xietong_teacher_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save',
-                task_list: data.task_list
+                clazz: data.clazz
             });
         });
 
-        notification.on('notification_minhang_party_song_detail_edit', this, function (data) {
+        notification.on('notification_xietong_teacher_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                party_song_id: data.party_song_id,
-                task_list: data.task_list
+                teacher_id: data.teacher_id,
+                clazz: data.clazz
             }, function () {
-                setTimeout(function () {
-                    this.handleLoad();
-                }.bind(this), 300);
+                this.handleLoad();
             });
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_party_song_detail_add', this);
+        notification.remove('notification_xietong_teacher_detail_add', this);
 
-        notification.remove('notification_minhang_party_song_detail_edit', this);
+        notification.remove('notification_xietong_teacher_detail_edit', this);
     }
 
     handleLoad() {
@@ -57,9 +54,9 @@ class MinhangPartySongDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/party/song/find',
+            url: '/' + constant.action + '/xietong/teacher/find',
             data: {
-                party_song_id: this.state.party_song_id
+                teacher_id: this.state.teacher_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -68,14 +65,14 @@ class MinhangPartySongDetail extends Component {
                     });
                 }
 
-                this.refs.party_song_content.handleSetValue(validate.unescapeHtml(data.party_song_content));
                 this.props.form.setFieldsValue({
-                    task_id: data.task_id,
-                    party_song_content: data.party_song_content,
-                    party_song_url: data.party_song_url
+                    clazz_id: data.clazz_id,
+                    organization_id: data.organization_id,
+                    teacher_name: data.teacher_name,
                 });
 
                 this.setState({
+                    user_id: data.user_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -94,21 +91,21 @@ class MinhangPartySongDetail extends Component {
                 return;
             }
 
-            values.party_song_id = this.state.party_song_id;
+            values.teacher_id = this.state.teacher_id;
             values.system_version = this.state.system_version;
-            values.party_song_content = this.refs.party_song_content.handleGetValue();
+            values.user_id = this.state.user_id;
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/party/song/' + this.state.action,
+                url: '/' + constant.action + '/xietong/teacher/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_party_song_index_load', {});
+                    notification.emit('notification_xietong_teacher_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -126,13 +123,13 @@ class MinhangPartySongDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            party_song_id: '',
+            teacher_id: '',
+            user_id: '',
             system_version: '',
-            task_list: []
+            clazz: []
         });
 
         this.props.form.resetFields();
-        this.refs.party_song_content.handleReset();
     }
 
     render() {
@@ -141,7 +138,7 @@ class MinhangPartySongDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'党歌详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'教师详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -171,7 +168,7 @@ class MinhangPartySongDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_party_song.app_list.map(function (item) {
+                                                            this.props.xietong_teacher.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -192,21 +189,21 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="任务">
+                                }} className="content-search-item" label="组织机构">
                                     {
-                                        getFieldDecorator('task_id', {
+                                        getFieldDecorator('organization_id', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Select allowClear placeholder="请选择任务">
+                                            <Select allowClear placeholder="请选择组织机构">
                                                 {
-                                                    this.state.task_list.map(function (item) {
+                                                    this.props.xietong_teacher.organization_list.map(function (item) {
                                                         return (
-                                                            <Option key={item.task_id}
-                                                                    value={item.task_id}>{item.task_name}</Option>
+                                                            <Option key={item.organization_id}
+                                                                    value={item.organization_id}>{item.organization_name}</Option>
                                                         )
                                                     })
                                                 }
@@ -221,28 +218,85 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="语音地址">
+                                }} className="form-item" label="班级编号">                                    {
+                                    getFieldDecorator('clazz_id', {
+                                        rules: [{
+                                            required: true,
+                                            message: constant.required
+                                        }],
+                                        initialValue: ''
+                                    })(
+                                        <Select placeholder="请选择班级">
+                                            {
+                                                this.state.clazz.map(function (item) {
+                                                    return (
+                                                        <Option key={item.clazz_id} value={item.clazz_id}>{item.clazz_name}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    )
+                                }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="工号">
                                     {
-                                        getFieldDecorator('party_song_url', {
+                                        getFieldDecorator('teacher_number', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '语音地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '工号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={24}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 2},
-                                    wrapperCol: {span: 22}
-                                }} className="form-item" label="内容">
-                                    <InputHtml name="party_song_content" ref="party_song_content"/>
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="老师姓名">
+                                    {
+                                        getFieldDecorator('teacher_name', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '老师姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="登录密码">
+                                    {
+                                        getFieldDecorator('user_password', {
+                                            rules: [{
+                                                required: this.state.action === 'save',
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '登录密码'}/>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>
@@ -253,8 +307,8 @@ class MinhangPartySongDetail extends Component {
     }
 }
 
-MinhangPartySongDetail.propTypes = {};
+XietongTeacherDetail.propTypes = {};
 
-MinhangPartySongDetail = Form.create({})(MinhangPartySongDetail);
+XietongTeacherDetail = Form.create({})(XietongTeacherDetail);
 
-export default connect(({minhang_party_song}) => ({minhang_party_song}))(MinhangPartySongDetail);
+export default connect(({xietong_teacher}) => ({xietong_teacher}))(XietongTeacherDetail);

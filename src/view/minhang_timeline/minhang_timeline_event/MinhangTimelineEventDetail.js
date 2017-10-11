@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, DatePicker} from 'antd';
+import moment from 'moment';
 
-import InputHtml from '../../component/InputHtml';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import http from '../../util/http';
-import validate from '../../util/validate';
+import InputHtml from '../../../component/InputHtml';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import http from '../../../util/http';
+import validate from '../../../util/validate';
 
-class MinhangPartySongDetail extends Component {
+class MinhangTimelineEventDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -16,27 +17,30 @@ class MinhangPartySongDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            party_song_id: '',
-            system_version: '',
-            task_list: []
+            task_list: [],
+            timeline_id: '',
+            timeline_event_id: '',
+            system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_party_song_detail_add', this, function (data) {
+        notification.on('notification_minhang_timeline_event_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save',
-                task_list: data.task_list
+                task_list: data.task_list,
+                timeline_id: data.timeline_id
             });
         });
 
-        notification.on('notification_minhang_party_song_detail_edit', this, function (data) {
+        notification.on('notification_minhang_timeline_event_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                party_song_id: data.party_song_id,
-                task_list: data.task_list
+                timeline_event_id: data.timeline_event_id,
+                task_list: data.task_list,
+                timeline_id: data.timeline_id
             }, function () {
                 setTimeout(function () {
                     this.handleLoad();
@@ -46,9 +50,9 @@ class MinhangPartySongDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_party_song_detail_add', this);
+        notification.remove('notification_minhang_timeline_event_detail_add', this);
 
-        notification.remove('notification_minhang_party_song_detail_edit', this);
+        notification.remove('notification_minhang_timeline_event_detail_edit', this);
     }
 
     handleLoad() {
@@ -57,9 +61,9 @@ class MinhangPartySongDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/party/song/find',
+            url: '/' + constant.action + '/minhang/timeline/event/find',
             data: {
-                party_song_id: this.state.party_song_id
+                timeline_event_id: this.state.timeline_event_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -67,12 +71,12 @@ class MinhangPartySongDetail extends Component {
                         app_id: data.app_id
                     });
                 }
+                this.refs.timeline_event_content.handleSetValue(validate.unescapeHtml(data.timeline_event_content));
 
-                this.refs.party_song_content.handleSetValue(validate.unescapeHtml(data.party_song_content));
                 this.props.form.setFieldsValue({
                     task_id: data.task_id,
-                    party_song_content: data.party_song_content,
-                    party_song_url: data.party_song_url
+                    timeline_event_time: data.timeline_event_time?moment(data.timeline_event_time):null,
+                    timeline_event_title: data.timeline_event_title
                 });
 
                 this.setState({
@@ -94,21 +98,22 @@ class MinhangPartySongDetail extends Component {
                 return;
             }
 
-            values.party_song_id = this.state.party_song_id;
+            values.timeline_event_id = this.state.timeline_event_id;
             values.system_version = this.state.system_version;
-            values.party_song_content = this.refs.party_song_content.handleGetValue();
-
+            values.timeline_id = this.state.timeline_id;
+            values.timeline_event_content = this.refs.timeline_event_content.handleGetValue();
+            values.timeline_event_time = values.timeline_event_time.format('YYYY-MM-DD');
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/party/song/' + this.state.action,
+                url: '/' + constant.action + '/minhang/timeline/event/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_party_song_index_load', {});
+                    notification.emit('notification_minhang_timeline_event_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -126,22 +131,24 @@ class MinhangPartySongDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            party_song_id: '',
-            system_version: '',
-            task_list: []
+            task_list: [],
+            time_line_id: '',
+            timeline_event_id: '',
+            system_version: ''
         });
 
         this.props.form.resetFields();
-        this.refs.party_song_content.handleReset();
+        this.refs.timeline_event_content.handleReset();
     }
 
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+        const { TextArea } = Input;
 
         return (
-            <Modal title={'党歌详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'事件详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -171,7 +178,7 @@ class MinhangPartySongDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_party_song.app_list.map(function (item) {
+                                                            this.props.minhang_timeline_event.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -221,16 +228,36 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="语音地址">
+                                }} className="form-item" label="时间">
                                     {
-                                        getFieldDecorator('party_song_url', {
+                                        getFieldDecorator('timeline_event_time', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '语音地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="事件标题">
+                                    {
+                                        getFieldDecorator('timeline_event_title', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <TextArea rows={4} placeholder={constant.placeholder + '事件标题'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -241,8 +268,8 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 2},
                                     wrapperCol: {span: 22}
-                                }} className="form-item" label="内容">
-                                    <InputHtml name="party_song_content" ref="party_song_content"/>
+                                }} className="form-item" label="事件内容">
+                                    <InputHtml name="timeline_event_content" ref="timeline_event_content"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -253,8 +280,8 @@ class MinhangPartySongDetail extends Component {
     }
 }
 
-MinhangPartySongDetail.propTypes = {};
+MinhangTimelineEventDetail.propTypes = {};
 
-MinhangPartySongDetail = Form.create({})(MinhangPartySongDetail);
+MinhangTimelineEventDetail = Form.create({})(MinhangTimelineEventDetail);
 
-export default connect(({minhang_party_song}) => ({minhang_party_song}))(MinhangPartySongDetail);
+export default connect(({minhang_timeline_event}) => ({minhang_timeline_event}))(MinhangTimelineEventDetail);

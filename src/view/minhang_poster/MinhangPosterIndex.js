@@ -213,9 +213,10 @@ class MinhangPosterIndex extends Component {
             title: '海报图片',
             dataIndex: 'poster_image_file',
             render: (text, record, index) => (
+                record.poster_image_file?
                 <div className="clearfix">
                     <img alt="example" style={{ height: '83px' }} src={constant.host + record.poster_image_file.file_original_path}/>
-                </div>
+                </div>:null
             )
         }, {
             width: 100,

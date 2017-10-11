@@ -2,12 +2,13 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'minhang_oath',
+    namespace: 'xietong_organization',
 
     state: {
         app_id: '',
         app_list: [],
-        task_id: '',
+        organization_name: '',
+        organization_code: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

@@ -62,6 +62,7 @@ class XietongClazzDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
+                    organization_id: data.organization_id,
                     clazz_name: data.clazz_name,
                     clazz_course_apply_limit: data.clazz_course_apply_limit,
                     clazz_course_apply_start_time: data.clazz_course_apply_start_time,
@@ -130,9 +131,9 @@ class XietongClazzDetail extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-
+        
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'班级详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -178,6 +179,35 @@ class XietongClazzDetail extends Component {
                                 :
                                 ''
                         }
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="content-search-item" label="组织机构">
+                                    {
+                                        getFieldDecorator('organization_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Select allowClear placeholder="请选择组织机构">
+                                                {
+                                                    this.props.xietong_clazz.organization_list.map(function (item) {
+                                                        return (
+                                                            <Option key={item.organization_id}
+                                                                    value={item.organization_id}>{item.organization_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

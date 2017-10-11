@@ -2,13 +2,12 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
-import InputHtml from '../../component/InputHtml';
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
-import validate from '../../util/validate';
 
-class MinhangPartySongDetail extends Component {
+class MinhangTimelineDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -16,39 +15,34 @@ class MinhangPartySongDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            party_song_id: '',
-            system_version: '',
-            task_list: []
+            timeline_id: '',
+            system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_party_song_detail_add', this, function (data) {
+        notification.on('notification_minhang_timeline_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save',
-                task_list: data.task_list
+                action: 'save'
             });
         });
 
-        notification.on('notification_minhang_party_song_detail_edit', this, function (data) {
+        notification.on('notification_minhang_timeline_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                party_song_id: data.party_song_id,
-                task_list: data.task_list
+                timeline_id: data.timeline_id
             }, function () {
-                setTimeout(function () {
-                    this.handleLoad();
-                }.bind(this), 300);
+                this.handleLoad();
             });
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_party_song_detail_add', this);
+        notification.remove('notification_minhang_timeline_detail_add', this);
 
-        notification.remove('notification_minhang_party_song_detail_edit', this);
+        notification.remove('notification_minhang_timeline_detail_edit', this);
     }
 
     handleLoad() {
@@ -57,9 +51,9 @@ class MinhangPartySongDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/party/song/find',
+            url: '/' + constant.action + '/minhang/timeline/find',
             data: {
-                party_song_id: this.state.party_song_id
+                timeline_id: this.state.timeline_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -67,12 +61,14 @@ class MinhangPartySongDetail extends Component {
                         app_id: data.app_id
                     });
                 }
-
-                this.refs.party_song_content.handleSetValue(validate.unescapeHtml(data.party_song_content));
+                let timeline_image = [];
+                if (data.timeline_image_file !== null) {
+                    timeline_image.push(data.timeline_image_file);
+                }
+                this.refs.timeline_image.handleSetValue(timeline_image);
                 this.props.form.setFieldsValue({
-                    task_id: data.task_id,
-                    party_song_content: data.party_song_content,
-                    party_song_url: data.party_song_url
+                    timeline_year: data.timeline_year,
+                    timeline_description: data.timeline_description
                 });
 
                 this.setState({
@@ -94,21 +90,27 @@ class MinhangPartySongDetail extends Component {
                 return;
             }
 
-            values.party_song_id = this.state.party_song_id;
+            values.timeline_id = this.state.timeline_id;
             values.system_version = this.state.system_version;
-            values.party_song_content = this.refs.party_song_content.handleGetValue();
+
+            let file_list = this.refs.timeline_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.timeline_image = '';
+            } else {
+                values.timeline_image = file_list[0].file_id;
+            }
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/party/song/' + this.state.action,
+                url: '/' + constant.action + '/minhang/timeline/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_party_song_index_load', {});
+                    notification.emit('notification_minhang_timeline_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -126,22 +128,22 @@ class MinhangPartySongDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            party_song_id: '',
-            system_version: '',
-            task_list: []
+            timeline_id: '',
+            system_version: ''
         });
 
         this.props.form.resetFields();
-        this.refs.party_song_content.handleReset();
+        this.refs.timeline_image.handleReset();
     }
 
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+        const { TextArea } = Input;
 
         return (
-            <Modal title={'党歌详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'时间轴详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -171,7 +173,7 @@ class MinhangPartySongDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_party_song.app_list.map(function (item) {
+                                                            this.props.minhang_timeline.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -192,25 +194,16 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="任务">
+                                }} className="form-item" label="年份">
                                     {
-                                        getFieldDecorator('task_id', {
+                                        getFieldDecorator('timeline_year', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Select allowClear placeholder="请选择任务">
-                                                {
-                                                    this.state.task_list.map(function (item) {
-                                                        return (
-                                                            <Option key={item.task_id}
-                                                                    value={item.task_id}>{item.task_name}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
+                                            <Input type="text" placeholder={constant.placeholder + '年份'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -221,28 +214,24 @@ class MinhangPartySongDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="语音地址">
-                                    {
-                                        getFieldDecorator('party_song_url', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '语音地址'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="图片">
+                                    <InputImage name="timeline_image" limit={1} ref="timeline_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={24}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 2},
-                                    wrapperCol: {span: 22}
-                                }} className="form-item" label="内容">
-                                    <InputHtml name="party_song_content" ref="party_song_content"/>
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="描述">
+                                    {
+                                        getFieldDecorator('timeline_description', {
+                                            initialValue: ''
+                                        })(
+                                            <TextArea rows={4} placeholder={constant.placeholder + '描述'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>
@@ -253,8 +242,8 @@ class MinhangPartySongDetail extends Component {
     }
 }
 
-MinhangPartySongDetail.propTypes = {};
+MinhangTimelineDetail.propTypes = {};
 
-MinhangPartySongDetail = Form.create({})(MinhangPartySongDetail);
+MinhangTimelineDetail = Form.create({})(MinhangTimelineDetail);
 
-export default connect(({minhang_party_song}) => ({minhang_party_song}))(MinhangPartySongDetail);
+export default connect(({minhang_timeline}) => ({minhang_timeline}))(MinhangTimelineDetail);

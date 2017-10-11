@@ -5,7 +5,6 @@ import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
-import FileUpload from '../../component/FileUpload';
 
 class MinhangVideoDetail extends Component {
     constructor(props) {
@@ -16,6 +15,7 @@ class MinhangVideoDetail extends Component {
             is_show: false,
             action: '',
             video_id: '',
+            video_task_list: [],
             system_version: ''
         }
     }
@@ -62,13 +62,9 @@ class MinhangVideoDetail extends Component {
                     });
                 }
 
-                let video_file = [];
-                if (data.video_file_file !== null) {
-                    video_file.push(data.video_file_file);
-                }
-                this.refs.video_file.handleSetValue(video_file);
                 this.props.form.setFieldsValue({
                     video_title: data.video_title,
+                    video_url: data.video_url,
                     video_sort: data.video_sort
                 });
 
@@ -93,13 +89,6 @@ class MinhangVideoDetail extends Component {
 
             values.video_id = this.state.video_id;
             values.system_version = this.state.system_version;
-
-            let file_list = this.refs.video_file.handleGetValue();
-            if (file_list.length === 0) {
-                values.video_file = '';
-            } else {
-                values.video_file = file_list[0].file_id;
-            }
 
             this.setState({
                 is_load: true
@@ -134,8 +123,6 @@ class MinhangVideoDetail extends Component {
         });
 
         this.props.form.resetFields();
-
-        this.refs.video_file.handleReset();
     }
 
     render() {
@@ -144,7 +131,7 @@ class MinhangVideoDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'视频详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -215,8 +202,18 @@ class MinhangVideoDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="请上传视频文件">
-                                    <FileUpload name="video_file" limit={1} size={300} ref="video_file"/>
+                                }} className="form-item" label="视频url">
+                                    {
+                                        getFieldDecorator('video_url', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '视频url'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
                                 </FormItem>
                             </Col>
                         </Row>

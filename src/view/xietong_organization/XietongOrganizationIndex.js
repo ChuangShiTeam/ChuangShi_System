@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MinhangKeyDetail from './MinhangKeyDetail';
+import XietongOrganizationDetail from './XietongOrganizationDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MinhangKeyIndex extends Component {
+class XietongOrganizationIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +21,26 @@ class MinhangKeyIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.minhang_key.app_id
+            app_id: this.props.xietong_organization.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            key_name: this.props.minhang_key.key_name,
+            organization_name: this.props.xietong_organization.organization_name,
+            organization_code: this.props.xietong_organization.organization_code,
         });
 
         this.handleLoad();
 
-        notification.on('notification_minhang_key_index_load', this, function (data) {
+        notification.on('notification_xietong_organization_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_key_index_load', this);
+        notification.remove('notification_xietong_organization_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +49,7 @@ class MinhangKeyIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_key/fetch',
+                    type: 'xietong_organization/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +63,20 @@ class MinhangKeyIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let key_name = this.props.form.getFieldValue('key_name');
+            let organization_name = this.props.form.getFieldValue('organization_name');
+            let organization_code = this.props.form.getFieldValue('organization_code');
 
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'xietong_organization/fetch',
                 data: {
                     app_id: app_id,
-                    key_name: key_name,
+                    organization_name: organization_name,
+                    organization_code: organization_code,
                     page_index: 1
                 }
             });
@@ -90,16 +93,17 @@ class MinhangKeyIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/key/list',
+            url: '/' + constant.action + '/xietong/organization/list',
             data: {
-                app_id: this.props.minhang_key.app_id,
-                key_name: this.props.minhang_key.key_name,
-                page_index: this.props.minhang_key.page_index,
-                page_size: this.props.minhang_key.page_size
+                app_id: this.props.xietong_organization.app_id,
+                organization_name: this.props.xietong_organization.organization_name,
+                organization_code: this.props.xietong_organization.organization_code,
+                page_index: this.props.xietong_organization.page_index,
+                page_size: this.props.xietong_organization.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_key/fetch',
+                    type: 'xietong_organization/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +121,7 @@ class MinhangKeyIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'xietong_organization/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +136,7 @@ class MinhangKeyIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'xietong_organization/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +150,24 @@ class MinhangKeyIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_key_detail_add', {});
+        notification.emit('notification_xietong_organization_detail_add', {});
     }
 
-    handleEdit(key_id) {
-        notification.emit('notification_minhang_key_detail_edit', {
-            key_id: key_id
+    handleEdit(organization_id) {
+        notification.emit('notification_xietong_organization_detail_edit', {
+            organization_id: organization_id
         });
     }
 
-    handleDel(key_id, system_version) {
+    handleDel(organization_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/key/delete',
+            url: '/' + constant.action + '/xietong/organization/delete',
             data: {
-                key_id: key_id,
+                organization_id: organization_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -185,34 +189,25 @@ class MinhangKeyIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '钥匙名称',
-            dataIndex: 'key_name'
+            title: '名称',
+            dataIndex: 'organization_name'
         }, {
-            title: '图片',
-            dataIndex: 'key_image',
-            render: (text, record, index) => (
-                record.key_image_file?
-                <div className="clearfix">
-                    <img alt="example" style={{ height: '83px' }} src={constant.host + record.key_image_file.file_path}/>
-                </div>:null
-            )
-        }, {
-            title: '钥匙激活所需完成任务数',
-            dataIndex: 'key_activated_task_quantity'
+            title: '编码',
+            dataIndex: 'organization_code'
         }, {
             title: '排序',
-            dataIndex: 'key_sort'
+            dataIndex: 'organizaiton_sort'
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.key_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.organization_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.key_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.organization_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -221,12 +216,12 @@ class MinhangKeyIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.minhang_key.total,
+            total: this.props.xietong_organization.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.minhang_key.page_index,
-            pageSize: this.props.minhang_key.page_size,
+            current: this.props.xietong_organization.page_index,
+            pageSize: this.props.xietong_organization.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -236,7 +231,7 @@ class MinhangKeyIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">钥匙信息</div>
+                        <div className="">组织机构信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -261,7 +256,7 @@ class MinhangKeyIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.minhang_key.app_list.map(function (item) {
+                                                        this.props.xietong_organization.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -280,12 +275,26 @@ class MinhangKeyIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="钥匙名称">
+                            }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('key_name', {
+                                    getFieldDecorator('organization_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入钥匙名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="编码">
+                                {
+                                    getFieldDecorator('organization_code', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入编码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -295,21 +304,21 @@ class MinhangKeyIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="key_id"
+                       rowKey="organization_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.minhang_key.list} pagination={pagination}
+                       dataSource={this.props.xietong_organization.list} pagination={pagination}
                        bordered/>
-                <MinhangKeyDetail/>
+                <XietongOrganizationDetail/>
             </QueueAnim>
         );
     }
 }
 
-MinhangKeyIndex.propTypes = {};
+XietongOrganizationIndex.propTypes = {};
 
-MinhangKeyIndex = Form.create({})(MinhangKeyIndex);
+XietongOrganizationIndex = Form.create({})(XietongOrganizationIndex);
 
-export default connect(({minhang_key}) => ({
-    minhang_key
-}))(MinhangKeyIndex);
+export default connect(({xietong_organization}) => ({
+    xietong_organization
+}))(XietongOrganizationIndex);

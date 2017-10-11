@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
+import {routerRedux} from 'dva/router';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MinhangKeyDetail from './MinhangKeyDetail';
+import MinhangTimelineDetail from './MinhangTimelineDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MinhangKeyIndex extends Component {
+class MinhangTimelineIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,25 +22,25 @@ class MinhangKeyIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.minhang_key.app_id
+            app_id: this.props.minhang_timeline.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            key_name: this.props.minhang_key.key_name,
+            timeline_year: this.props.minhang_timeline.timeline_year,
         });
 
         this.handleLoad();
 
-        notification.on('notification_minhang_key_index_load', this, function (data) {
+        notification.on('notification_minhang_timeline_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_key_index_load', this);
+        notification.remove('notification_minhang_timeline_index_load', this);
     }
 
     handleLoadApp() {
@@ -48,7 +49,7 @@ class MinhangKeyIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_key/fetch',
+                    type: 'minhang_timeline/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +63,18 @@ class MinhangKeyIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let key_name = this.props.form.getFieldValue('key_name');
+            let timeline_year = this.props.form.getFieldValue('timeline_year');
 
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'minhang_timeline/fetch',
                 data: {
                     app_id: app_id,
-                    key_name: key_name,
+                    timeline_year: timeline_year,
                     page_index: 1
                 }
             });
@@ -90,16 +91,16 @@ class MinhangKeyIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/key/list',
+            url: '/' + constant.action + '/minhang/timeline/list',
             data: {
-                app_id: this.props.minhang_key.app_id,
-                key_name: this.props.minhang_key.key_name,
-                page_index: this.props.minhang_key.page_index,
-                page_size: this.props.minhang_key.page_size
+                app_id: this.props.minhang_timeline.app_id,
+                timeline_year: this.props.minhang_timeline.timeline_year,
+                page_index: this.props.minhang_timeline.page_index,
+                page_size: this.props.minhang_timeline.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_key/fetch',
+                    type: 'minhang_timeline/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -117,7 +118,7 @@ class MinhangKeyIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'minhang_timeline/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -132,7 +133,7 @@ class MinhangKeyIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_key/fetch',
+                type: 'minhang_timeline/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -146,24 +147,24 @@ class MinhangKeyIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_key_detail_add', {});
+        notification.emit('notification_minhang_timeline_detail_add', {});
     }
 
-    handleEdit(key_id) {
-        notification.emit('notification_minhang_key_detail_edit', {
-            key_id: key_id
+    handleEdit(timeline_id) {
+        notification.emit('notification_minhang_timeline_detail_edit', {
+            timeline_id: timeline_id
         });
     }
 
-    handleDel(key_id, system_version) {
+    handleDel(timeline_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/key/delete',
+            url: '/' + constant.action + '/minhang/timeline/delete',
             data: {
-                key_id: key_id,
+                timeline_id: timeline_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -179,54 +180,56 @@ class MinhangKeyIndex extends Component {
         });
     }
 
+    handleEvent(timeline_id) {
+        this.props.dispatch(routerRedux.push({
+            pathname: '/minhang/timeline/event/index/' + timeline_id,
+            query: {}
+        }));
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '钥匙名称',
-            dataIndex: 'key_name'
+            title: '年份',
+            dataIndex: 'timeline_year'
         }, {
             title: '图片',
-            dataIndex: 'key_image',
+            dataIndex: 'timeline_image',
             render: (text, record, index) => (
-                record.key_image_file?
                 <div className="clearfix">
-                    <img alt="example" style={{ height: '83px' }} src={constant.host + record.key_image_file.file_path}/>
-                </div>:null
+                    <img alt="example" style={{ height: '83px' }} src={constant.host + record.timeline_image_file.file_original_path}/>
+                </div>
             )
         }, {
-            title: '钥匙激活所需完成任务数',
-            dataIndex: 'key_activated_task_quantity'
-        }, {
-            title: '排序',
-            dataIndex: 'key_sort'
-        }, {
-            width: 100,
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.key_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                    <a onClick={this.handleEdit.bind(this, record.timeline_id)}>{constant.edit}</a>
+                    <span className="divider"/>
+                    <a onClick={this.handleEvent.bind(this, record.timeline_id)}>事件管理</a>
+                    <span className="divider"/>
+                    <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.key_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                              onConfirm={this.handleDel.bind(this, record.timeline_id, record.system_version)}>
+                        <a>{constant.del}</a>
+                    </Popconfirm>
                 </span>
             )
         }];
 
         const pagination = {
             size: 'defalut',
-            total: this.props.minhang_key.total,
+            total: this.props.minhang_timeline.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.minhang_key.page_index,
-            pageSize: this.props.minhang_key.page_size,
+            current: this.props.minhang_timeline.page_index,
+            pageSize: this.props.minhang_timeline.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -236,7 +239,7 @@ class MinhangKeyIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">钥匙信息</div>
+                        <div className="">时间轴信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -261,7 +264,7 @@ class MinhangKeyIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.minhang_key.app_list.map(function (item) {
+                                                        this.props.minhang_timeline.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -280,12 +283,12 @@ class MinhangKeyIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="钥匙名称">
+                            }} className="content-search-item" label="年份">
                                 {
-                                    getFieldDecorator('key_name', {
+                                    getFieldDecorator('timeline_year', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入钥匙名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入年份" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -295,21 +298,21 @@ class MinhangKeyIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="key_id"
+                       rowKey="timeline_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.minhang_key.list} pagination={pagination}
+                       dataSource={this.props.minhang_timeline.list} pagination={pagination}
                        bordered/>
-                <MinhangKeyDetail/>
+                <MinhangTimelineDetail/>
             </QueueAnim>
         );
     }
 }
 
-MinhangKeyIndex.propTypes = {};
+MinhangTimelineIndex.propTypes = {};
 
-MinhangKeyIndex = Form.create({})(MinhangKeyIndex);
+MinhangTimelineIndex = Form.create({})(MinhangTimelineIndex);
 
-export default connect(({minhang_key}) => ({
-    minhang_key
-}))(MinhangKeyIndex);
+export default connect(({minhang_timeline}) => ({
+    minhang_timeline
+}))(MinhangTimelineIndex);

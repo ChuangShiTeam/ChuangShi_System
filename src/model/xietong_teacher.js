@@ -2,14 +2,14 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'xietong_clazz',
+    namespace: 'xietong_teacher',
 
     state: {
         app_id: '',
         app_list: [],
-        organization_list: [],
         organization_id: '',
-        clazz_name: '',
+        organization_list: [],
+        teacher_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
