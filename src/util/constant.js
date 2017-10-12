@@ -1,6 +1,6 @@
 export default {
-    host: 'http://localhost:8080',
-    // host: 'http://api.chuangshi.nowui.com',
+    // host: 'http://localhost:8080',
+    host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
     is_show_menu: true,
@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '上海星销信息技术有限公司--总控后台',
-    app_id: 'c1af3f1ae00e4e0da9b20f5bd41b4279',
-    index: '/member/delivery/order/index',
+    name: '闵行区党建服务中心--总控后台',
+    app_id: '8acc2d49ad014f418878d1a16336c16b',
+    index: '/minhang/task/index',
     login: '/admin/login'
 };

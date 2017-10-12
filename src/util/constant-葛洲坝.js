@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '闵行展馆--总控后台',
-    app_id: '8acc2d49ad014f418878d1a16336c16b',
-    index: '/minhang/task/index',
+    name: '葛洲坝--总控后台',
+    app_id: 'cbefcd8d1e3e48d99603e112601f61a6',
+    index: '/member/delivery/order/index',
     login: '/admin/login'
 };
