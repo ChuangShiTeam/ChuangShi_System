@@ -81,6 +81,7 @@ import MinhangPartySongIndex from './view/minhang_party_song/MinhangPartySongInd
 import MinhangTimelineIndex from './view/minhang_timeline/MinhangTimelineIndex';
 import MinhangTimelineEventIndex from './view/minhang_timeline/minhang_timeline_event/MinhangTimelineEventIndex';
 import XietongOrganizationIndex from './view/xietong_organization/XietongOrganizationIndex';
+import MinhangVideoTaskIndex from './view/minhang_video/minhang_video_task/MinhangVideoTaskIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -189,6 +190,7 @@ function RouterConfig({history}) {
                     <Route path="/minhang/party/song/index" component={MinhangPartySongIndex}/>
                     <Route path="/minhang/timeline/index" component={MinhangTimelineIndex}/>
                     <Route path="/minhang/timeline/event/index/:timeline_id" component={MinhangTimelineEventIndex}/>
+                    <Route path="/minhang/video/task/index/:video_id" component={MinhangVideoTaskIndex}/>
                     <Route path="/xietong/organization/index" component={XietongOrganizationIndex}/>
                 </Route>
             </Route>

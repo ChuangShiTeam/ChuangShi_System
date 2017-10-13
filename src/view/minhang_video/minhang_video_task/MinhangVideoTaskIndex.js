@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {routerRedux} from 'dva/router';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MinhangVideoDetail from './MinhangVideoDetail';
-import constant from '../../util/constant';
-import notification from '../../util/notification';
-import validate from '../../util/validate';
-import http from '../../util/http';
+import MinhangVideoTaskDetail from './MinhangVideoTaskDetail';
+import constant from '../../../util/constant';
+import notification from '../../../util/notification';
+import validate from '../../../util/validate';
+import http from '../../../util/http';
 
-class MinhangVideoIndex extends Component {
+class MinhangVideoTaskIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -22,25 +21,22 @@ class MinhangVideoIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.minhang_video.app_id
+                app_id: this.props.minhang_video_task.app_id
             });
 
             this.handleLoadApp();
         }
 
-        this.props.form.setFieldsValue({
-            video_title: this.props.minhang_video.video_title,
-        });
-
         this.handleLoad();
+        this.handleLoadTask();
 
-        notification.on('notification_minhang_video_index_load', this, function (data) {
+        notification.on('notification_minhang_video_task_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_video_index_load', this);
+        notification.remove('notification_minhang_video_task_index_load', this);
     }
 
     handleLoadApp() {
@@ -49,9 +45,27 @@ class MinhangVideoIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_video/fetch',
+                    type: 'minhang_video_task/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadTask() {
+        http.request({
+            url: '/' + constant.action + '/minhang/task/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'minhang_video_task/fetch',
+                    data: {
+                        task_list: data
                     }
                 });
             }.bind(this),
@@ -68,13 +82,10 @@ class MinhangVideoIndex extends Component {
                 app_id = '';
             }
 
-            let video_title = this.props.form.getFieldValue('video_title');
-
             this.props.dispatch({
-                type: 'minhang_video/fetch',
+                type: 'minhang_video_task/fetch',
                 data: {
                     app_id: app_id,
-                    video_title: video_title,
                     page_index: 1
                 }
             });
@@ -91,16 +102,16 @@ class MinhangVideoIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/video/list',
+            url: '/' + constant.action + '/minhang/video/task/list',
             data: {
-                app_id: this.props.minhang_video.app_id,
-                video_title: this.props.minhang_video.video_title,
-                page_index: this.props.minhang_video.page_index,
-                page_size: this.props.minhang_video.page_size
+                app_id: this.props.minhang_video_task.app_id,
+                video_id: this.props.params.video_id,
+                page_index: this.props.minhang_video_task.page_index,
+                page_size: this.props.minhang_video_task.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'minhang_video/fetch',
+                    type: 'minhang_video_task/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -118,7 +129,7 @@ class MinhangVideoIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_video/fetch',
+                type: 'minhang_video_task/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -133,7 +144,7 @@ class MinhangVideoIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'minhang_video/fetch',
+                type: 'minhang_video_task/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -147,24 +158,29 @@ class MinhangVideoIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_minhang_video_detail_add', {});
-    }
-
-    handleEdit(video_id) {
-        notification.emit('notification_minhang_video_detail_edit', {
-            video_id: video_id
+        notification.emit('notification_minhang_video_task_detail_add', {
+            video_id: this.props.params.video_id,
+            task_list: this.props.minhang_video_task.task_list
         });
     }
 
-    handleDel(video_id, system_version) {
+    handleEdit(video_task_id) {
+        notification.emit('notification_minhang_video_task_detail_edit', {
+            video_task_id: video_task_id,
+            video_id: this.props.params.video_id,
+            task_list: this.props.minhang_video_task.task_list
+        });
+    }
+
+    handleDel(video_task_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/video/delete',
+            url: '/' + constant.action + '/minhang/video/task/delete',
             data: {
-                video_id: video_id,
+                video_task_id: video_task_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -179,13 +195,6 @@ class MinhangVideoIndex extends Component {
             }.bind(this)
         });
     }
-    handleVideoTask(video_id) {
-        this.props.dispatch(routerRedux.push({
-            pathname: '/minhang/video/task/index/' + video_id,
-            query: {}
-        }));
-    }
-
 
     render() {
         const FormItem = Form.Item;
@@ -193,27 +202,19 @@ class MinhangVideoIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '视频标题',
-            dataIndex: 'video_title'
+            title: '视频触发任务时间(秒)',
+            dataIndex: 'video_task_time'
         }, {
-            title: '视频url',
-            dataIndex: 'video_url'
-        }, {
-            title: '排序',
-            dataIndex: 'video_sort'
-        }, {
-            width: 200,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.video_id)}>{constant.edit}</a>
-                    <span className="divider"/>
-                    <a onClick={this.handleVideoTask.bind(this, record.video_id)}>视频任务管理</a>
+                  <a onClick={this.handleEdit.bind(this, record.video_task_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.video_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.video_task_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -222,12 +223,12 @@ class MinhangVideoIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.minhang_video.total,
+            total: this.props.minhang_video_task.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.minhang_video.page_index,
-            pageSize: this.props.minhang_video.page_size,
+            current: this.props.minhang_video_task.page_index,
+            pageSize: this.props.minhang_video_task.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -237,7 +238,7 @@ class MinhangVideoIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">视频任务信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -262,7 +263,7 @@ class MinhangVideoIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.minhang_video.app_list.map(function (item) {
+                                                        this.props.minhang_video_task.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -277,40 +278,29 @@ class MinhangVideoIndex extends Component {
                                 :
                                 ''
                         }
+
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="视频标题">
-                                {
-                                    getFieldDecorator('video_title', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入视频标题" onPressEnter={this.handleSearch.bind(this)}/>
-                                    )
-                                }
-                            </FormItem>
                         </Col>
                         <Col span={8}>
                         </Col>
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="video_id"
+                       rowKey="video_task_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.minhang_video.list} pagination={pagination}
+                       dataSource={this.props.minhang_video_task.list} pagination={pagination}
                        bordered/>
-                <MinhangVideoDetail/>
+                <MinhangVideoTaskDetail/>
             </QueueAnim>
         );
     }
 }
 
-MinhangVideoIndex.propTypes = {};
+MinhangVideoTaskIndex.propTypes = {};
 
-MinhangVideoIndex = Form.create({})(MinhangVideoIndex);
+MinhangVideoTaskIndex = Form.create({})(MinhangVideoTaskIndex);
 
-export default connect(({minhang_video}) => ({
-    minhang_video
-}))(MinhangVideoIndex);
+export default connect(({minhang_video_task}) => ({
+    minhang_video_task
+}))(MinhangVideoTaskIndex);

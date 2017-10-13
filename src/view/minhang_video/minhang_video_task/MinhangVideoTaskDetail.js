@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, DatePicker} from 'antd';
-import moment from 'moment';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
 import constant from '../../../util/constant';
 import notification from '../../../util/notification';
 import http from '../../../util/http';
 
-class MinhangTimelineEventDetail extends Component {
+class MinhangVideoTaskDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -15,42 +14,40 @@ class MinhangTimelineEventDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
+            video_id: '',
             task_list: [],
-            timeline_id: '',
-            timeline_event_id: '',
+            video_task_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_minhang_timeline_event_detail_add', this, function (data) {
+        notification.on('notification_minhang_video_task_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save',
-                task_list: data.task_list,
-                timeline_id: data.timeline_id
+                video_id: data.video_id,
+                task_list: data.task_list
             });
         });
 
-        notification.on('notification_minhang_timeline_event_detail_edit', this, function (data) {
+        notification.on('notification_minhang_video_task_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                timeline_event_id: data.timeline_event_id,
+                video_id: data.video_id,
                 task_list: data.task_list,
-                timeline_id: data.timeline_id
+                video_task_id: data.video_task_id
             }, function () {
-                setTimeout(function () {
-                    this.handleLoad();
-                }.bind(this), 300);
+                this.handleLoad();
             });
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_minhang_timeline_event_detail_add', this);
+        notification.remove('notification_minhang_video_task_detail_add', this);
 
-        notification.remove('notification_minhang_timeline_event_detail_edit', this);
+        notification.remove('notification_minhang_video_task_detail_edit', this);
     }
 
     handleLoad() {
@@ -59,9 +56,9 @@ class MinhangTimelineEventDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/minhang/timeline/event/find',
+            url: '/' + constant.action + '/minhang/video/task/find',
             data: {
-                timeline_event_id: this.state.timeline_event_id
+                video_task_id: this.state.video_task_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -72,9 +69,7 @@ class MinhangTimelineEventDetail extends Component {
 
                 this.props.form.setFieldsValue({
                     task_id: data.task_id,
-                    timeline_event_content: data.timeline_event_content,
-                    timeline_event_time: data.timeline_event_time?moment(data.timeline_event_time):null,
-                    timeline_event_title: data.timeline_event_title
+                    video_task_time: data.video_task_time
                 });
 
                 this.setState({
@@ -96,21 +91,21 @@ class MinhangTimelineEventDetail extends Component {
                 return;
             }
 
-            values.timeline_event_id = this.state.timeline_event_id;
+            values.video_task_id = this.state.video_task_id;
             values.system_version = this.state.system_version;
-            values.timeline_id = this.state.timeline_id;
-            values.timeline_event_time = values.timeline_event_time.format('YYYY-MM-DD');
+            values.video_id = this.state.video_id;
+
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/minhang/timeline/event/' + this.state.action,
+                url: '/' + constant.action + '/minhang/video/task/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_minhang_timeline_event_index_load', {});
+                    notification.emit('notification_minhang_video_task_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -128,9 +123,9 @@ class MinhangTimelineEventDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
+            video_id: '',
             task_list: [],
-            time_line_id: '',
-            timeline_event_id: '',
+            video_task_id: '',
             system_version: ''
         });
 
@@ -141,10 +136,9 @@ class MinhangTimelineEventDetail extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-        const { TextArea } = Input;
 
         return (
-            <Modal title={'事件详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'视频任务详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -174,7 +168,7 @@ class MinhangTimelineEventDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.minhang_timeline_event.app_list.map(function (item) {
+                                                            this.props.minhang_video_task.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -224,56 +218,16 @@ class MinhangTimelineEventDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="时间">
+                                }} className="form-item" label="视频触发任务时间(秒)">
                                     {
-                                        getFieldDecorator('timeline_event_time', {
+                                        getFieldDecorator('video_task_time', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: ''
+                                            initialValue: 0
                                         })(
-                                            <DatePicker />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="事件标题">
-                                    {
-                                        getFieldDecorator('timeline_event_title', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '事件标题'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="事件内容">
-                                    {
-                                        getFieldDecorator('timeline_event_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '事件内容'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={99999} placeholder={constant.placeholder + '视频触发任务时间(秒)'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -286,8 +240,8 @@ class MinhangTimelineEventDetail extends Component {
     }
 }
 
-MinhangTimelineEventDetail.propTypes = {};
+MinhangVideoTaskDetail.propTypes = {};
 
-MinhangTimelineEventDetail = Form.create({})(MinhangTimelineEventDetail);
+MinhangVideoTaskDetail = Form.create({})(MinhangVideoTaskDetail);
 
-export default connect(({minhang_timeline_event}) => ({minhang_timeline_event}))(MinhangTimelineEventDetail);
+export default connect(({minhang_video_task}) => ({minhang_video_task}))(MinhangVideoTaskDetail);

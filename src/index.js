@@ -81,6 +81,7 @@ import minhang_timeline from './model/minhang_timeline';
 import minhang_timeline_event from './model/minhang_timeline_event';
 import xietong_organization from './model/xietong_organization';
 import xietong_teacher from './model/xietong_teacher';
+import minhang_video_task from './model/minhang_video_task';
 
 document.title = constant.name;
 
@@ -165,6 +166,7 @@ app.model(minhang_timeline);
 app.model(minhang_timeline_event);
 app.model(xietong_organization);
 app.model(xietong_teacher);
+app.model(minhang_video_task);
 
 app.router(Router);
 
