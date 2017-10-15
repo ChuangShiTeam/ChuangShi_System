@@ -133,7 +133,6 @@ class FileUpload extends Component {
 			beforeUpload: this.handleBeforeUpload,
 			fileList: this.state.fileList
 		};
-		console.log('this.props.size', this.props.size);
 		return (
 			<Upload {...props}>
 				<Button loading={this.state.is_load}>
