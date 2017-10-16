@@ -132,7 +132,7 @@ class ProductCategorySkuAttributeDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'SKU属性详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -149,7 +149,7 @@ class ProductCategorySkuAttributeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="SKU属性名称">
+                                }} className="form-item" label="属性名称">
                                     {
                                         getFieldDecorator('product_category_sku_attribute_name', {
                                             rules: [{
@@ -158,7 +158,7 @@ class ProductCategorySkuAttributeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + 'SKU属性名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '属性名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -169,7 +169,7 @@ class ProductCategorySkuAttributeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="SKU属性排序">
+                                }} className="form-item" label="属性排序">
                                     {
                                         getFieldDecorator('product_category_sku_attribute_sort', {
                                             rules: [{
@@ -178,7 +178,7 @@ class ProductCategorySkuAttributeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + 'SKU属性排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '属性排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
