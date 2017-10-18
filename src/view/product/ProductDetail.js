@@ -452,6 +452,16 @@ class ProductDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-image-item" label="SKU属性">
+
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
                             <Col span={24}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 2},
