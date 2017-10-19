@@ -25,5 +25,5 @@ export default {
 	name: '统一--总控后台',
 	app_id: 'd64666f02d7c4bf68a598076b88b81cf',
 	index: '/uni/lottery/index',
-	login: '/admin/login'
+    login: '/admin/admin/login'
 };

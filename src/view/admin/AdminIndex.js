@@ -90,7 +90,7 @@ class AdminIndex extends Component {
         });
 
         http.request({
-            url: '/admin/' + constant.action + '/list',
+            url: '/' + constant.action + 'admin//list',
             data: {
                 app_id: this.props.admin.app_id,
                 user_name: this.props.admin.user_name,
@@ -161,7 +161,7 @@ class AdminIndex extends Component {
         });
 
         http.request({
-            url: '/admin/' + constant.action + '/delete',
+            url: '/' + constant.action + '/admin/delete',
             data: {
                 admin_id: admin_id,
                 system_version: system_version

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, DatePicker} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -50,7 +50,7 @@ class CertificateDetail extends Component {
         });
 
         http.request({
-            url: '/certificate/' + constant.action + '/find',
+            url: '/' + constant.action + '/certificate/find',
             data: {
                 certificate_id: this.state.certificate_id
             },
@@ -66,8 +66,7 @@ class CertificateDetail extends Component {
                     certificate_number: data.certificate_number,
                     certificate_start_date: data.certificate_start_date,
                     certificate_end_date: data.certificate_end_date,
-                    certificate_content: data.certificate_content,
-                    certificate_file: data.certificate_file,
+                    certificate_is_pay: data.certificate_is_pay,
                 });
 
                 this.setState({
@@ -97,7 +96,7 @@ class CertificateDetail extends Component {
             });
 
             http.request({
-                url: '/certificate/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/certificate/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -133,8 +132,7 @@ class CertificateDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
-                   className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -194,8 +192,7 @@ class CertificateDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户编号'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '用户编号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -215,12 +212,13 @@ class CertificateDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '授权编号'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '授权编号'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
@@ -234,12 +232,13 @@ class CertificateDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <DatePicker size='large'
-                                                        placeholder={constant.placeholder + '授权开始日期'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '授权开始日期'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
@@ -253,8 +252,7 @@ class CertificateDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <DatePicker size='large'
-                                                        placeholder={constant.placeholder + '授权结束日期'}/>
+                                            <Input type="text" placeholder={constant.placeholder + '授权结束日期'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -265,18 +263,13 @@ class CertificateDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="授权内容">
+                                }} className="form-item" label="授权是否支付">
                                     {
-                                        getFieldDecorator('certificate_content', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
+                                        getFieldDecorator('certificate_is_pay', {
+                                            valuePropName: 'checked',
+                                            initialValue: false
                                         })(
-                                            <Input rows={4} type="textarea"
-                                                   placeholder={constant.placeholder + '授权内容'}
-                                                   onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Switch />
                                         )
                                     }
                                 </FormItem>

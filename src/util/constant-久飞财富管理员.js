@@ -25,5 +25,5 @@ export default {
     name: '久飞财富快速贷款--总控后台',
     app_id: 'd49579df8f8342699657335868f90561',
     index: '/feijiu/fast/product/index',
-    login: '/admin/login'
+    login: '/admin/admin/login'
 };

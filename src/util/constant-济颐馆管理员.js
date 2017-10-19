@@ -25,5 +25,5 @@ export default {
     name: '广州市济颐馆贸易有限公司--总控后台',
     app_id: 'df2078d6c9eb46babb0df957127273ab',
     index: '/trade/index',
-    login: '/admin/login'
+    login: '/admin/admin/login'
 };
