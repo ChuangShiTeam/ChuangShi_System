@@ -31,6 +31,8 @@ class XietongTeacherIndex extends Component {
         this.props.form.setFieldsValue({
             organization_id: this.props.xietong_teacher.organization_id,
             teacher_name: this.props.xietong_teacher.teacher_name,
+            teacher_number: this.props.xietong_teacher.teacher_number,
+            teacher_category: this.props.xietong_teacher.teacher_category
         });
 
         this.handleLoad();
@@ -115,6 +117,8 @@ class XietongTeacherIndex extends Component {
 
             let organization_id = this.props.form.getFieldValue('organization_id');
             let teacher_name = this.props.form.getFieldValue('teacher_name');
+            let teacher_number = this.props.form.getFieldValue('teacher_number');
+            let teacher_category = this.props.form.getFieldValue('teacher_category');
 
             this.props.dispatch({
                 type: 'xietong_teacher/fetch',
@@ -122,6 +126,8 @@ class XietongTeacherIndex extends Component {
                     app_id: app_id,
                     organization_id: organization_id,
                     teacher_name: teacher_name,
+                    teacher_number: teacher_number,
+                    teacher_category: teacher_category,
                     page_index: 1
                 }
             });
@@ -143,6 +149,8 @@ class XietongTeacherIndex extends Component {
                 app_id: this.props.xietong_teacher.app_id,
                 organization_id: this.props.xietong_teacher.organization_id,
                 teacher_name: this.props.xietong_teacher.teacher_name,
+                teacher_number: this.props.xietong_teacher.teacher_number,
+                teacher_category: this.props.xietong_teacher.teacher_category,
                 page_index: this.props.xietong_teacher.page_index,
                 page_size: this.props.xietong_teacher.page_size
             },
@@ -237,8 +245,23 @@ class XietongTeacherIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '老师姓名',
+            title: '姓名',
             dataIndex: 'teacher_name'
+        }, {
+            title: '工号',
+            dataIndex: 'teacher_number'
+        }, {
+            title: '分类',
+            dataIndex: 'teacher_category'
+        }, {
+            title: '照片',
+            dataIndex: 'file_path',
+            render: (text, record, index) => (
+                record.file_path?
+                    <div className="clearfix">
+                        <img alt="example" style={{ height: '83px' }} src={constant.host + record.file_path}/>
+                    </div>:null
+            )
         }, {
             title: '所属组织机构',
             dataIndex: 'organization_name'
@@ -340,20 +363,48 @@ class XietongTeacherIndex extends Component {
                             </FormItem>
                         </Col>
                         <Col span={8}>
-                            <FormItem hasFeedback {...{
-                                labelCol: {span: 6},
-                                wrapperCol: {span: 18}
-                            }} className="content-search-item" label="老师姓名">
+                                    <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="content-search-item" label="姓名">
                                 {
                                     getFieldDecorator('teacher_name', {
-                                        initialValue: ''
-                                    })(
-                                        <Input type="text" placeholder="请输入老师姓名" onPressEnter={this.handleSearch.bind(this)}/>
+                                    initialValue: ''
+                                })(
+                                    <Input type="text" placeholder="请输入姓名" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
                         </Col>
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="content-search-item" label="工号">
+                                {
+                                    getFieldDecorator('teacher_number', {
+                                    initialValue: ''
+                                })(
+                                    <Input type="text" placeholder="请输入工号" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                                    <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="content-search-item" label="分类">
+                                {
+                                    getFieldDecorator('teacher_category', {
+                                    initialValue: ''
+                                })(
+                                    <Input type="text" placeholder="请输入分类" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
