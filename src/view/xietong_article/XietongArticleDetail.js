@@ -304,6 +304,26 @@ class XietongArticleDetail extends Component {
                                     hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
+                                }} className="form-item" label="是否置顶">
+                                    {
+                                        getFieldDecorator('article_is_top', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: false
+                                        })(
+                                            <Switch checkedChildren="是" unCheckedChildren="否"/>                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem
+                                    hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
                                 }} className="form-item" label="是否外部链接">
                                     <Switch checked={this.state.article_is_outer_link} onChange={this.onChangeOuterLink.bind(this)} checkedChildren="是" unCheckedChildren="否"/>
                                 </FormItem>
