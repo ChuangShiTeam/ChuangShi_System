@@ -7,7 +7,8 @@ export default {
     state: {
         app_id: '',
         app_list: [],
-        certificate_number : '',
+        user_name: '',
+        certificate_number: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

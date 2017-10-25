@@ -93,6 +93,10 @@ class MinhangTaskIndex extends Component {
             let task_name = this.props.form.getFieldValue('task_name');
             let task_type = this.props.form.getFieldValue('task_type');
 
+            if (typeof(task_type) === 'undefined') {
+                task_type = '';
+            }
+
             this.props.dispatch({
                 type: 'minhang_task/fetch',
                 data: {

@@ -50,7 +50,7 @@ class AdminDetail extends Component {
         });
 
         http.request({
-            url: '/admin/' + constant.action + '/find',
+            url: '/' + constant.action + '/admin/find',
             data: {
                 admin_id: this.state.admin_id
             },

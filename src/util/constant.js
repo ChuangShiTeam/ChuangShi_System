@@ -25,5 +25,5 @@ export default {
     name: '上海星销信息技术有限公司--总控后台',
     app_id: 'c1af3f1ae00e4e0da9b20f5bd41b4279',
     index: '/member/delivery/order/index',
-    login: '/admin/login'
+    login: '/admin/admin/login'
 };

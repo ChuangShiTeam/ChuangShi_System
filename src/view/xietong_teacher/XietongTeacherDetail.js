@@ -2,9 +2,12 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
+import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class XietongTeacherDetail extends Component {
     constructor(props) {
@@ -37,7 +40,9 @@ class XietongTeacherDetail extends Component {
                 teacher_id: data.teacher_id,
                 clazz: data.clazz
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -65,10 +70,23 @@ class XietongTeacherDetail extends Component {
                     });
                 }
 
+                let teacher_image = [];
+                if (data.file_id !== null) {
+                    teacher_image.push({
+                        file_id: data.file_id,
+                        file_path: data.file_path
+                    });
+                }
+                this.refs.teacher_image.handleSetValue(teacher_image);
+                this.refs.teacher_description.handleSetValue(data.teacher_description);
+
                 this.props.form.setFieldsValue({
-                    clazz_id: data.clazz_id,
+                    clazz_id: JSON.parse(data.clazz_id),
                     organization_id: data.organization_id,
                     teacher_name: data.teacher_name,
+                    teacher_number: data.teacher_number,
+                    teacher_category: data.teacher_category,
+                    teacher_title: data.teacher_title
                 });
 
                 this.setState({
@@ -91,6 +109,15 @@ class XietongTeacherDetail extends Component {
                 return;
             }
 
+            let file_list = this.refs.teacher_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.teacher_image = '';
+            } else {
+                values.teacher_image = file_list[0].file_id;
+            }
+
+            values.teacher_description = this.refs.teacher_description.handleGetValue();
+            values.clazz_id = JSON.stringify(values.clazz_id);
             values.teacher_id = this.state.teacher_id;
             values.system_version = this.state.system_version;
             values.user_id = this.state.user_id;
@@ -130,6 +157,9 @@ class XietongTeacherDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.teacher_image.handleReset();
+        this.refs.teacher_description.handleReset();
     }
 
     render() {
@@ -218,15 +248,16 @@ class XietongTeacherDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="班级编号">                                    {
+                                }} className="form-item" label="所属班级">                                    {
                                     getFieldDecorator('clazz_id', {
                                         rules: [{
                                             required: true,
-                                            message: constant.required
+                                            message: constant.required,
+                                            type: 'array'
                                         }],
-                                        initialValue: ''
+                                        initialValue: []
                                     })(
-                                        <Select placeholder="请选择班级">
+                                        <Select mode="multiple" allowClear placeholder="请选择班级">
                                             {
                                                 this.state.clazz.map(function (item) {
                                                     return (
@@ -265,7 +296,7 @@ class XietongTeacherDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="老师姓名">
+                                }} className="form-item" label="姓名">
                                     {
                                         getFieldDecorator('teacher_name', {
                                             rules: [{
@@ -274,9 +305,61 @@ class XietongTeacherDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '老师姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="分类">
+                                    {
+                                        getFieldDecorator('teacher_category', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '分类'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="照片">
+                                    <InputImage name="teacher_image" limit={1} ref="teacher_image"/>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="职称">
+                                    {
+                                        getFieldDecorator('teacher_title', {
+                                            initialValue: ''
+                                        })(
+                                            <Input type="textarea" rows={8} placeholder={constant.placeholder + '职称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="描述">
+                                    <InputHtml name="teacher_description" ref="teacher_description"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -294,7 +377,7 @@ class XietongTeacherDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '登录密码'}/>
+                                            <Input type="password" placeholder={constant.placeholder + '登录密码'}/>
                                         )
                                     }
                                 </FormItem>

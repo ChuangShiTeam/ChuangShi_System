@@ -10,6 +10,8 @@ export default {
         organization_id: '',
         organization_list: [],
         teacher_name: '',
+        teacher_number: '',
+        teacher_category: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

@@ -25,5 +25,5 @@ export default {
     name: '葛洲坝--总控后台',
     app_id: 'cbefcd8d1e3e48d99603e112601f61a6',
     index: '/member/delivery/order/index',
-    login: '/admin/login'
+    login: '/admin/admin/login'
 };

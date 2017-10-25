@@ -7,7 +7,6 @@ import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
-import validate from '../../util/validate';
 
 class ProductDetail extends Component {
     constructor(props) {
@@ -16,8 +15,10 @@ class ProductDetail extends Component {
         this.state = {
             is_load: false,
             is_show: false,
+            is_commission: false,
             action: '',
             product_id: '',
+            product_category_sku_attribute_list: [],
             system_version: ''
         }
     }
@@ -77,7 +78,7 @@ class ProductDetail extends Component {
                 }
                 this.refs.product_image.handleSetValue(product_image);
 
-                this.refs.product_content.handleSetValue(validate.unescapeHtml(data.product_content));
+                this.refs.product_content.handleSetValue(data.product_content);
 
                 this.props.form.setFieldsValue({
                     product_category_id: data.product_category_id,
@@ -124,6 +125,7 @@ class ProductDetail extends Component {
                 }
 
                 this.setState({
+                    product_category_sku_attribute_list: data.product_category_sku_attribute_list,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -194,7 +196,7 @@ class ProductDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/product/' +  this.state.action,
+                url: '/' + constant.action + '/product/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
@@ -440,6 +442,16 @@ class ProductDetail extends Component {
                                     </FormItem>
                                     <FormItem style={{width: '82px', float: 'left'}}>
                                         {
+                                            getFieldDecorator('product_is_commission', {
+                                                valuePropName: 'checked',
+                                                initialValue: this.state.is_commission
+                                            })(
+                                                <Checkbox>佣金</Checkbox>
+                                            )
+                                        }
+                                    </FormItem>
+                                    <FormItem style={{width: '82px', float: 'left'}}>
+                                        {
                                             getFieldDecorator('product_status', {
                                                 valuePropName: 'checked',
                                                 initialValue: true
@@ -448,16 +460,6 @@ class ProductDetail extends Component {
                                             )
                                         }
                                     </FormItem>
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-image-item" label="SKU属性">
-
                                 </FormItem>
                             </Col>
                         </Row>
@@ -516,34 +518,76 @@ class ProductDetail extends Component {
                                 </FormItem>
                             </Col>
                         </Row>
+                        {
+                            this.state.is_commission ?
+                                <Row>
+                                    <Col span={24}>
+                                        <FormItem hasFeedback {...{
+                                            labelCol: {span: 2},
+                                            wrapperCol: {span: 22}
+                                        }} className="form-item" label="会员佣金">
+                                            {
+                                                this.props.product.member_level_list.map(function (item) {
+                                                    return (
+                                                        <div key={item.member_level_id}
+                                                             style={{width: '210px', float: 'left'}}>
+                                                            <FormItem hasFeedback {...{
+                                                                labelCol: {span: 12},
+                                                                wrapperCol: {span: 12}
+                                                            }} className="form-item"
+                                                                      label={item.member_level_name + '(%)'}>
+                                                                {
+                                                                    getFieldDecorator('product_sku_commission_' + item.member_level_id, {
+                                                                        rules: [{
+                                                                            type: 'number',
+                                                                            required: true,
+                                                                            message: constant.required
+                                                                        }],
+                                                                        initialValue: 0.00
+                                                                    })(
+                                                                        <InputNumber min={0} max={100} step={1}
+                                                                                     placeholder={constant.placeholder + '佣金'}/>
+                                                                    )
+                                                                }
+                                                            </FormItem>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                :
+                                ''
+
+                        }
                         <Row>
-                            <Col span={24}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 2},
-                                    wrapperCol: {span: 22}
-                                }} className="form-item" label="会员佣金">
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-image-item" label="SKU属性">
                                     {
-                                        this.props.product.member_level_list.map(function (item) {
+                                        this.state.product_category_sku_attribute_list.map(function (item) {
                                             return (
-                                                <div key={item.member_level_id} style={{width: '210px', float: 'left'}}>
-                                                    <FormItem hasFeedback {...{
-                                                        labelCol: {span: 12},
-                                                        wrapperCol: {span: 12}
-                                                    }} className="form-item" label={item.member_level_name + '(%)'}>
-                                                        {
-                                                            getFieldDecorator('product_sku_commission_' + item.member_level_id, {
-                                                                rules: [{
-                                                                    type: 'number',
-                                                                    required: true,
-                                                                    message: constant.required
-                                                                }],
-                                                                initialValue: 0.00
-                                                            })(
-                                                                <InputNumber min={0} max={100} step={1}
-                                                                             placeholder={constant.placeholder + '佣金'}/>
+                                                <div key={item.product_category_id}
+                                                     style={{width: '210px', float: 'left'}}>
+                                                    {item.product_category_sku_attribute_name}
+                                                    {
+                                                        item.product_category_sku_attribute_item_list.map(function (product_category_sku_attribute_item) {
+                                                            return (
+                                                                <div style={{
+                                                                    float: 'left',
+                                                                    width: '100px',
+                                                                    height: '30px'
+                                                                }} key={product_category_sku_attribute_item.product_category_sku_attribute_item_id}>
+                                                                    <FormItem>
+                                                                        ddd
+                                                                    </FormItem>
+                                                                </div>
                                                             )
-                                                        }
-                                                    </FormItem>
+                                                        }.bind(this))
+                                                    }
                                                 </div>
                                             )
                                         })

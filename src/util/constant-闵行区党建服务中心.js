@@ -25,5 +25,5 @@ export default {
     name: '闵行区党建服务中心--总控后台',
     app_id: '8acc2d49ad014f418878d1a16336c16b',
     index: '/minhang/task/index',
-    login: '/admin/login'
+    login: '/admin/admin/login'
 };

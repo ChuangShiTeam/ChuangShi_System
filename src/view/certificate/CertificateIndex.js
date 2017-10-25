@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, Icon, message} from 'antd';
 
 import CertificateDetail from './CertificateDetail';
 import constant from '../../util/constant';
@@ -28,7 +28,8 @@ class CertificateIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            certificate_number: this.props.certificate.certificate_number
+            user_name: this.props.certificate.user_name,
+            certificate_number: this.props.certificate.certificate_number,
         });
 
         this.handleLoad();
@@ -44,7 +45,7 @@ class CertificateIndex extends Component {
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
@@ -62,17 +63,19 @@ class CertificateIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
+            let user_name = this.props.form.getFieldValue('user_name');
             let certificate_number = this.props.form.getFieldValue('certificate_number');
 
             this.props.dispatch({
                 type: 'certificate/fetch',
                 data: {
                     app_id: app_id,
+                    user_name: user_name,
                     certificate_number: certificate_number,
                     page_index: 1
                 }
@@ -90,9 +93,10 @@ class CertificateIndex extends Component {
         });
 
         http.request({
-            url: '/certificate/' + constant.action + '/list',
+            url: '/' + constant.action + '/certificate/list',
             data: {
                 app_id: this.props.certificate.app_id,
+                user_name: this.props.certificate.user_name,
                 certificate_number: this.props.certificate.certificate_number,
                 page_index: this.props.certificate.page_index,
                 page_size: this.props.certificate.page_size
@@ -161,7 +165,7 @@ class CertificateIndex extends Component {
         });
 
         http.request({
-            url: '/certificate/' + constant.action + '/delete',
+            url: '/' + constant.action + '/certificate/delete',
             data: {
                 certificate_id: certificate_id,
                 system_version: system_version
@@ -185,8 +189,34 @@ class CertificateIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
+            title: '用户名称',
+            dataIndex: 'user_name'
+        }, {
+            title: '授权编号',
             dataIndex: 'certificate_number'
+        }, {
+            title: '授权开始日期',
+            dataIndex: 'certificate_start_date'
+        }, {
+            title: '授权结束日期',
+            dataIndex: 'certificate_end_date'
+        }, {
+            title: '授权是否支付',
+            dataIndex: 'certificate_is_pay',
+            render: (text, record, index) => (
+                <span>
+                    <div className="clearfix">
+                    {record.certificate_is_pay ?
+                        <Icon type="check-circle-o" style={{fontSize: 16, color: 'green'}}/>
+                        :
+                        <Icon type="close-circle-o" style={{fontSize: 16, color: 'red'}}/>
+                    }
+                </div>
+                </span>
+            )
+        }, {
+            title: '支付金额',
+            dataIndex: 'certificate_amount'
         }, {
             width: 100,
             title: constant.operation,
@@ -265,12 +295,26 @@ class CertificateIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="用户编号">
+                                {
+                                    getFieldDecorator('user_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入用户编号" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="授权编号">
                                 {
                                     getFieldDecorator('certificate_number', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入授权编号" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>

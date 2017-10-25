@@ -25,5 +25,5 @@ export default {
     name: '江铃汽车--总控后台',
     app_id: 'dad947bec0c54ff8b12586eda1c8e146',
     index: '/jiangling/member/index',
-    login: '/admin/login'
+    login: '/admin/admin/login'
 };
