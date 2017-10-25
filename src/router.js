@@ -82,6 +82,11 @@ import MinhangTimelineIndex from './view/minhang_timeline/MinhangTimelineIndex';
 import MinhangTimelineEventIndex from './view/minhang_timeline/minhang_timeline_event/MinhangTimelineEventIndex';
 import XietongOrganizationIndex from './view/xietong_organization/XietongOrganizationIndex';
 import MinhangVideoTaskIndex from './view/minhang_video/minhang_video_task/MinhangVideoTaskIndex';
+import GezhoubaSupplierinfoIndex from './view/gezhouba_supplier/GezhoubaSupplierinfoIndex';
+import GezhoubaProductinfoIndex from './view/gezhouba_product/GezhoubaProductinfoIndex';
+import GezhoubaStockinfoIndex from './view/gezhouba_stock/GezhoubaStockinfoIndex';
+import GezhoubaStockinIndex from './view/gezhouba_stockin/GezhoubaStockinIndex';
+import GezhoubaStockinDetailIndex from './view/gezhouba_stockin_detail/GezhoubaStockinDetailIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -192,6 +197,11 @@ function RouterConfig({history}) {
                     <Route path="/minhang/timeline/event/index/:timeline_id" component={MinhangTimelineEventIndex}/>
                     <Route path="/minhang/video/task/index/:video_id" component={MinhangVideoTaskIndex}/>
                     <Route path="/xietong/organization/index" component={XietongOrganizationIndex}/>
+                    <Route path="/getzhouba/supplier/index" component={GezhoubaSupplierinfoIndex}/>
+                    <Route path="/getzhouba/product/index" component={GezhoubaProductinfoIndex}/>
+                    <Route path="/getzhouba/stock/index" component={GezhoubaStockinfoIndex}/>
+                    <Route path="/getzhouba/stockin/index" component={GezhoubaStockinIndex}/>
+                    <Route path="/getzhouba/stockin_detail/index" component={GezhoubaStockinDetailIndex}/>
                 </Route>
             </Route>
         </Router>
