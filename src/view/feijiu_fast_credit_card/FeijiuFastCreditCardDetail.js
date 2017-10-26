@@ -219,7 +219,7 @@ class FeijiuFastCreditCardDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-image-item form-required-item" label="信用卡图片">
-                                    <InputImage name="credit_card_image" limit={1} ref="credit_card_image"/>
+                                    <InputImage name="credit_card_image" limit={1} aspect={100 / 100} ref="credit_card_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

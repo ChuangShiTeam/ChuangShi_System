@@ -1,7 +1,9 @@
 import dva from "dva";
 import Router from "./router";
 import constant from "./util/constant";
+import 'cropperjs/dist/cropper.css';
 import "./view/Style.css";
+
 import code from "./model/code";
 import http from "./model/http";
 import sql from "./model/sql";

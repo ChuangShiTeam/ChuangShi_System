@@ -222,7 +222,7 @@ class ProductBrandDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="品牌图片">
-                                    <InputImage name="product_brand_image" limit={1} ref="product_brand_image"/>
+                                    <InputImage name="product_brand_image" limit={1} aspect={100 / 100} ref="product_brand_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

@@ -79,7 +79,7 @@ class InputHtml extends Component {
             }.bind(this)
           }}
         />
-        <ImageHelp name={this.props.name} type={'original'} limit={0} ref="image"/>
+        <ImageHelp name={this.props.name} type={'original'} limit={0} aspect={0} ref="image"/>
       </div>
     );
   }

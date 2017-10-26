@@ -256,7 +256,7 @@ class MinhangPosterDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="海报图片">
-                                    <InputImage name="poster_image" limit={1} ref="poster_image"/>
+                                    <InputImage name="poster_image" limit={1} aspect={90 / 60} ref="poster_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

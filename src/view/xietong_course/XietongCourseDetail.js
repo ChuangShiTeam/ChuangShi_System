@@ -563,7 +563,7 @@ class XietongCourseDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="课程图片">
-                                    <InputImage name="course_image" limit={1} ref="course_image"/>
+                                    <InputImage name="course_image" limit={1} aspect={90 / 60} ref="course_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
