@@ -360,7 +360,7 @@ class ProductDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-image-item form-required-item" label="商品图片">
-                                    <InputImage name="product_image" limit={1} ref="product_image"/>
+                                    <InputImage name="product_image" limit={1} aspect={100 / 100} ref="product_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -370,7 +370,7 @@ class ProductDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-image-item form-required-item" label="图片列表">
-                                    <InputImage name="product_image_list" limit={5} ref="product_image_list"/>
+                                    <InputImage name="product_image_list" limit={5} aspect={100 / 100} ref="product_image_list"/>
                                 </FormItem>
                             </Col>
                         </Row>
@@ -562,33 +562,44 @@ class ProductDetail extends Component {
 
                         }
                         <Row>
-                            <Col span={8}>
+                            <Col span={24}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-image-item" label="SKU属性">
                                     {
                                         this.state.product_category_sku_attribute_list.map(function (item) {
                                             return (
-                                                <div key={item.product_category_id}
-                                                     style={{width: '210px', float: 'left'}}>
-                                                    {item.product_category_sku_attribute_name}
+                                                <FormItem key={item.product_category_id} hasFeedback {...{
+                                                    labelCol: {span: 2},
+                                                    wrapperCol: {span: 20}
+                                                }} className="form-item"
+                                                          label={item.product_category_sku_attribute_name}>
                                                     {
                                                         item.product_category_sku_attribute_item_list.map(function (product_category_sku_attribute_item) {
                                                             return (
-                                                                <div style={{
-                                                                    float: 'left',
-                                                                    width: '100px',
-                                                                    height: '30px'
-                                                                }} key={product_category_sku_attribute_item.product_category_sku_attribute_item_id}>
-                                                                    <FormItem>
-                                                                        ddd
+                                                                <div
+                                                                    key={product_category_sku_attribute_item.product_category_sku_attribute_item_id}
+                                                                    style={{width: '82px', float: 'left', marginLeft: '10px'}}>
+                                                                    <FormItem {...{
+                                                                        labelCol: {span: 2},
+                                                                        wrapperCol: {span: 22}
+                                                                    }} className="form-item"
+                                                                    >
+                                                                        {
+                                                                            getFieldDecorator('product_is_virtual', {
+                                                                                valuePropName: 'checked',
+                                                                                initialValue: false
+                                                                            })(
+                                                                                <Checkbox>{product_category_sku_attribute_item.product_category_sku_attribute_item_name}</Checkbox>
+                                                                            )
+                                                                        }
                                                                     </FormItem>
                                                                 </div>
                                                             )
                                                         }.bind(this))
                                                     }
-                                                </div>
+                                                </FormItem>
                                             )
                                         })
                                     }

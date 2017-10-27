@@ -261,7 +261,7 @@ class AdvertisementDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="广告图片">
-                                    <InputImage name="advertisement_image" limit={1} ref="advertisement_image"/>
+                                    <InputImage name="advertisement_image" limit={1} aspect={0} ref="advertisement_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

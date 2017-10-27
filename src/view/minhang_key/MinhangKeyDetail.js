@@ -219,7 +219,7 @@ class MinhangKeyDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="图片">
-                                    <InputImage name="key_image" limit={1} ref="key_image"/>
+                                    <InputImage name="key_image" limit={1} aspect={90 / 60} ref="key_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

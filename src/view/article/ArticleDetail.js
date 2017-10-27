@@ -293,7 +293,7 @@ class ArticleDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="文章图片">
-                                    <InputImage name="article_image" limit={1} ref="article_image"/>
+                                    <InputImage name="article_image" limit={1} aspect={90 / 60} ref="article_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

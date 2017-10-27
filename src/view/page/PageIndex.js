@@ -33,6 +33,8 @@ class PageIndex extends Component {
 
         this.handleLoad();
 
+        this.handleLoadWebsiteMenu();
+
         notification.on('notification_page_index_load', this, function (data) {
             this.handleLoad();
         });
@@ -51,6 +53,24 @@ class PageIndex extends Component {
                     type: 'page/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadWebsiteMenu() {
+        http.request({
+            url: '/' + constant.action + '/website/menu/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'page/fetch',
+                    data: {
+                        website_menu_list: data
                     }
                 });
             }.bind(this),

@@ -11,7 +11,8 @@ export default {
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: []
+        list: [],
+        website_menu_list: []
     },
 
     reducers: {
