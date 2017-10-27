@@ -83,6 +83,8 @@ import MinhangTimelineEventIndex from './view/minhang_timeline/minhang_timeline_
 import XietongOrganizationIndex from './view/xietong_organization/XietongOrganizationIndex';
 import MinhangVideoTaskIndex from './view/minhang_video/minhang_video_task/MinhangVideoTaskIndex';
 import XietongTeacherIndex from './view/xietong_teacher/XietongTeacherIndex';
+import UniApplyIndex from './view/uni_apply/UniApplyIndex';
+import UniBookConsultIndex from './view/uni_book_consult/UniBookConsultIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -194,6 +196,8 @@ function RouterConfig({history}) {
                     <Route path="/minhang/video/task/index/:video_id" component={MinhangVideoTaskIndex}/>
                     <Route path="/xietong/organization/index" component={XietongOrganizationIndex}/>
                     <Route path="/xietong/teacher/index" component={XietongTeacherIndex}/>
+                    <Route path="/uni/apply/index" component={UniApplyIndex}/>
+                    <Route path="/uni/book/consult/index" component={UniBookConsultIndex}/>
                 </Route>
             </Route>
         </Router>
