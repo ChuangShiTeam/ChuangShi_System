@@ -177,7 +177,7 @@ class FeijiuRecommendProductDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-image-item form-required-item" label="商品图片">
-                                    <InputImage name="product_image" limit={1} ref="product_image"/>
+                                    <InputImage name="product_image" limit={1} aspect={100 / 100} ref="product_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

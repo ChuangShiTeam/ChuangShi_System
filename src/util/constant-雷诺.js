@@ -1,6 +1,6 @@
 export default {
-    host: 'http://localhost:8080',
-    // host: 'http://api.chuangshi.nowui.com',
+    // host: 'http://localhost:8080',
+    host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
     is_show_menu: true,
@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '上海星销信息技术有限公司--总控后台',
-    app_id: '749388e5dac3465f922c54e61d16a993',
-    index: '/minhang/task/index',
+    name: '雷诺--总控后台',
+    app_id: '443c30390b3d4eebad80e231a2929113',
+    index: '/advertisement/index',
     login: '/admin/admin/login'
 };

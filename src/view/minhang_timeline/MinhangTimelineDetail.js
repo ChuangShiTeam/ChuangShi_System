@@ -215,7 +215,7 @@ class MinhangTimelineDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="图片">
-                                    <InputImage name="timeline_image" limit={1} ref="timeline_image"/>
+                                    <InputImage name="timeline_image" limit={1} aspect={90 / 60} ref="timeline_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

@@ -34,7 +34,7 @@ class Main extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/admin/menu',
+            url: '/' + constant.action + '/menu/list',
             data: {},
             success: function (data) {
                 let open_key = [];

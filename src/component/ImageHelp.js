@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Modal, Button, message, Upload, Icon, Spin, Pagination} from 'antd';
 
+import ImageCrop from './ImageCrop';
 import constant from '../util/constant';
 import storage from '../util/storage';
 import notification from '../util/notification';
@@ -25,8 +26,8 @@ class ImageHelp extends Component {
 
     componentDidMount() {
         notification.on('notification_image_help_' + this.props.name + '_show', this, function (data) {
-            var width = Math.floor((document.documentElement.clientWidth - 200 - 30) / 106);
-            var height = Math.floor((document.documentElement.clientHeight - 200 - 30 - 30) / 106);
+            var width = Math.floor((document.documentElement.clientWidth - 200 - 40) / (96 + 16));
+            var height = Math.floor((document.documentElement.clientHeight - 200 - 32 - 21 - 49 - 20) / (96 + 16));
 
             this.setState({
                 is_show: true,
@@ -66,9 +67,9 @@ class ImageHelp extends Component {
                 page_size: this.state.page_size
             },
             success: function (data) {
-                let list = [];
+                var list = [];
 
-                for (let i = 0; i < data.list.length; i++) {
+                for (var i = 0; i < data.list.length; i++) {
                     list.push({
                         file_id: data.list[i].file_id,
                         file_path: data.list[i].file_path,
@@ -92,7 +93,7 @@ class ImageHelp extends Component {
     }
 
     handleBeforeUpload(file) {
-        let result = true;
+        var result = true;
 
         if (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png') {
 
@@ -112,10 +113,10 @@ class ImageHelp extends Component {
     }
 
     handleCancel() {
-        let list = [];
+        var list = [];
 
-        for (let i = 0; i < this.state.list.length; i++) {
-            let item = this.state.list[i];
+        for (var i = 0; i < this.state.list.length; i++) {
+            var item = this.state.list[i];
 
             list.push({
                 file_id: item.file_id,
@@ -138,8 +139,8 @@ class ImageHelp extends Component {
     }
 
     handlePreview(file_id) {
-        let file_path = '';
-        for (let i = 0; i < this.state.list.length; i++) {
+        var file_path = '';
+        for (var i = 0; i < this.state.list.length; i++) {
             if (this.state.list[i].file_id === file_id) {
                 file_path = this.state.list[i].file_path;
             }
@@ -152,10 +153,10 @@ class ImageHelp extends Component {
     }
 
     handleClick(file_id) {
-        let list = [];
+        var list = [];
 
-        for (let i = 0; i < this.state.list.length; i++) {
-            let item = this.state.list[i];
+        for (var i = 0; i < this.state.list.length; i++) {
+            var item = this.state.list[i];
 
             if (item.file_id === file_id) {
                 item.select = !item.select;
@@ -175,10 +176,10 @@ class ImageHelp extends Component {
     }
 
     handleMouseOver(file_id) {
-        let list = [];
+        var list = [];
 
-        for (let i = 0; i < this.state.list.length; i++) {
-            let item = this.state.list[i];
+        for (var i = 0; i < this.state.list.length; i++) {
+            var item = this.state.list[i];
 
             list.push({
                 file_id: item.file_id,
@@ -194,10 +195,10 @@ class ImageHelp extends Component {
     }
 
     handleMouseOut(file_id) {
-        let list = [];
+        var list = [];
 
-        for (let i = 0; i < this.state.list.length; i++) {
-            let item = this.state.list[i];
+        for (var i = 0; i < this.state.list.length; i++) {
+            var item = this.state.list[i];
 
             list.push({
                 file_id: item.file_id,
@@ -213,12 +214,12 @@ class ImageHelp extends Component {
     }
 
     handleSubmit() {
-        let list = [];
+        var list = [];
 
-        let index = 0;
+        var index = 0;
 
-        for (let i = 0; i < this.state.list.length; i++) {
-            let item = this.state.list[i];
+        for (var i = 0; i < this.state.list.length; i++) {
+            var item = this.state.list[i];
 
             if (item.select) {
                 if (index < this.props.limit || this.props.limit === 0) {
@@ -269,6 +270,10 @@ class ImageHelp extends Component {
         this.handleLoad(page);
     }
 
+    handleImageCrop() {
+        notification.emit('notification_image_crop_' + this.props.name + '_show', {});
+    }
+
     render() {
         const props = {
             name: 'file',
@@ -286,16 +291,26 @@ class ImageHelp extends Component {
         };
 
         return (
-            <Modal title={'我的图片'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'我的图片'} maskClosable={false} width={document.documentElement.clientWidth - 200}
+                   className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
-                       <div key="normal" style={{float: 'left', marginLeft: 10}}>
-                           <Upload {...props}>
-                               <Button type="ghost" loading={this.state.is_load}>
+                       this.props.aspect == 0 ?
+                           <div key="normal" style={{float: 'left', marginLeft: 10}}>
+                               <Upload {...props}>
+                                   <Button type="ghost" loading={this.state.is_load}>
+                                       <Icon type="cloud-upload"/>上传图片
+                                   </Button>
+                               </Upload>
+                           </div>
+                           :
+                           <div key="crop" style={{float: 'left', marginLeft: 10}}>
+                               <Button type="ghost" loading={this.state.is_load}
+                                       onClick={this.handleImageCrop.bind(this)}>
                                    <Icon type="cloud-upload"/>上传图片
                                </Button>
-                           </Upload>
-                       </div>,
+                           </div>
+                       ,
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
                                onClick={this.handleCancel.bind(this)}>关闭</Button>,
                        <Button key="submit" type="primary" size="default" icon="check-circle"
@@ -337,6 +352,7 @@ class ImageHelp extends Component {
                 <Modal visible={this.state.is_preview} footer={null} onCancel={this.handleCancelPreview.bind(this)}>
                     <div className="item-image" style={{backgroundImage: 'url(' + this.state.image + ')'}}></div>
                 </Modal>
+                <ImageCrop name={this.props.name} aspect={this.props.aspect}/>
             </Modal>
         );
     }
@@ -345,7 +361,8 @@ class ImageHelp extends Component {
 ImageHelp.propTypes = {
     name: PropTypes.string.isRequired,
     type: PropTypes.string,
-    limit: PropTypes.number.isRequired
+    limit: PropTypes.number.isRequired,
+    aspect: PropTypes.number.isRequired
 };
 
 ImageHelp.defaultProps = {

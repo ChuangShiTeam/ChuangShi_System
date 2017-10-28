@@ -1,7 +1,9 @@
 import dva from "dva";
 import Router from "./router";
 import constant from "./util/constant";
+import 'cropperjs/dist/cropper.css';
 import "./view/Style.css";
+
 import code from "./model/code";
 import http from "./model/http";
 import sql from "./model/sql";
@@ -82,11 +84,8 @@ import minhang_timeline_event from './model/minhang_timeline_event';
 import xietong_organization from './model/xietong_organization';
 import xietong_teacher from './model/xietong_teacher';
 import minhang_video_task from './model/minhang_video_task';
-import gezhouba_supplierinfo from './model/gezhouba_supplierinfo';
-import gezhouba_productinfo from './model/gezhouba_productinfo';
-import gezhouba_stockinfo from './model/gezhouba_stockinfo';
-import gezhouba_stockin from './model/gezhouba_stockin';
-import gezhouba_stockin_detail from './model/gezhouba_stockin_detail';
+import uni_apply from './model/uni_apply';
+import uni_book_consult from './model/uni_book_consult';
 
 document.title = constant.name;
 
@@ -172,11 +171,8 @@ app.model(minhang_timeline_event);
 app.model(xietong_organization);
 app.model(xietong_teacher);
 app.model(minhang_video_task);
-app.model(gezhouba_supplierinfo);
-app.model(gezhouba_productinfo);
-app.model(gezhouba_stockinfo);
-app.model(gezhouba_stockin);
-app.model(gezhouba_stockin_detail);
+app.model(uni_apply);
+app.model(uni_book_consult);
 
 app.router(Router);
 

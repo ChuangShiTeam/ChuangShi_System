@@ -333,21 +333,21 @@ class XietongTeacherDetail extends Component {
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="照片">
-                                    <InputImage name="teacher_image" limit={1} ref="teacher_image"/>
+                                    <InputImage name="teacher_image" limit={1} aspect={100 / 100} ref="teacher_image"/>
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={24}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-item" label="职称">
                                     {
                                         getFieldDecorator('teacher_title', {
                                             initialValue: ''
                                         })(
-                                            <Input type="textarea" rows={8} placeholder={constant.placeholder + '职称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="textarea" rows={5} placeholder={constant.placeholder + '职称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

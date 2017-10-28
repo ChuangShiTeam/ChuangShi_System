@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
-import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class FeijiuFastProductDetail extends Component {
+class UniBookConsultDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -15,37 +14,34 @@ class FeijiuFastProductDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            product_id: '',
-            system_version: '',
-            product_category_list: []
+            book_consult_id: '',
+            system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_feijiu_fast_product_detail_add', this, function (data) {
+        notification.on('notification_uni_book_consult_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_feijiu_fast_product_detail_edit', this, function (data) {
+        notification.on('notification_uni_book_consult_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                product_id: data.product_id
+                book_consult_id: data.book_consult_id
             }, function () {
                 this.handleLoad();
             });
         });
-
-        this.handleLoadProductCategory();
     }
 
     componentWillUnmount() {
-        notification.remove('notification_feijiu_fast_product_detail_add', this);
+        notification.remove('notification_uni_book_consult_detail_add', this);
 
-        notification.remove('notification_feijiu_fast_product_detail_edit', this);
+        notification.remove('notification_uni_book_consult_detail_edit', this);
     }
 
     handleLoad() {
@@ -54,9 +50,9 @@ class FeijiuFastProductDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/feijiu/fast/product/find',
+            url: '/' + constant.action + '/uni/book/consult/find',
             data: {
-                product_id: this.state.product_id
+                book_consult_id: this.state.book_consult_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -66,45 +62,15 @@ class FeijiuFastProductDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    product_category_id: data.product_category_id,
-                    product_name: data.product_name,
-                    product_link: data.product_link,
-                    product_content: data.product_content,
-                    product_applicant_quantity: data.product_applicant_quantity,
-                    product_sort: data.product_sort,
+                    book_consult_name: data.book_consult_name,
+                    book_consult_mobile: data.book_consult_mobile,
+                    book_consult_job: data.book_consult_job,
+                    book_consult_company: data.book_consult_company,
+                    book_consult_address: data.book_consult_address,
                 });
-
-                let product_image = [];
-                if (data.product_image_file !== null) {
-                    product_image.push(data.product_image_file);
-                }
-                this.refs.product_image.handleSetValue(product_image);
 
                 this.setState({
                     system_version: data.system_version
-                });
-            }.bind(this),
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-
-            }.bind(this)
-        });
-    }
-
-    handleLoadProductCategory() {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/' + constant.action + '/feijiu/fast/product/category/list/all',
-            data: {
-            },
-            success: function (data) {
-                this.setState({
-                    product_category_list: data
                 });
             }.bind(this),
             complete: function () {
@@ -122,27 +88,20 @@ class FeijiuFastProductDetail extends Component {
                 return;
             }
 
-            values.product_id = this.state.product_id;
+            values.book_consult_id = this.state.book_consult_id;
             values.system_version = this.state.system_version;
-
-            let file_list = this.refs.product_image.handleGetValue();
-            if (file_list.length === 0) {
-                values.product_image = '';
-            } else {
-                values.product_image = file_list[0].file_id;
-            }
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/feijiu/fast/product/' + this.state.action,
+                url: '/' + constant.action + '/uni/book/consult/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_feijiu_fast_product_index_load', {});
+                    notification.emit('notification_uni_book_consult_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -160,13 +119,11 @@ class FeijiuFastProductDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            product_id: '',
+            book_consult_id: '',
             system_version: ''
         });
 
         this.props.form.resetFields();
-
-        this.refs.product_image.handleReset();
     }
 
     render() {
@@ -205,7 +162,7 @@ class FeijiuFastProductDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.feijiu_fast_product.app_list.map(function (item) {
+                                                            this.props.uni_book_consult.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -226,25 +183,16 @@ class FeijiuFastProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="content-search-item" label="商品分类">
+                                }} className="form-item" label="姓名">
                                     {
-                                        getFieldDecorator('product_category_id', {
+                                        getFieldDecorator('book_consult_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Select allowClear placeholder="请选择商品分类">
-                                                {
-                                                    this.state.product_category_list.map(function (item) {
-                                                        return (
-                                                            <Option key={item.product_category_id}
-                                                                    value={item.product_category_id}>{item.product_category_name}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
+                                            <Input type="text" placeholder={constant.placeholder + '姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -255,16 +203,16 @@ class FeijiuFastProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="商品名称">
+                                }} className="form-item" label="手机号码">
                                     {
-                                        getFieldDecorator('product_name', {
+                                        getFieldDecorator('book_consult_mobile', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '手机号码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -275,46 +223,36 @@ class FeijiuFastProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-image-item form-required-item" label="商品图片">
-                                    <InputImage name="product_image" limit={1} aspect={100 / 100} ref="product_image"/>
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="商品链接">
+                                }} className="form-item" label="职务">
                                     {
-                                        getFieldDecorator('product_link', {
+                                        getFieldDecorator('book_consult_job', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '商品链接'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '职务'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={16}>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 3},
-                                    wrapperCol: {span: 21}
-                                }} className="form-item" label="商品介绍">
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="公司">
                                     {
-                                        getFieldDecorator('product_content', {
+                                        getFieldDecorator('book_consult_company', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="textarea" rows={4} placeholder={constant.placeholder + '商品介绍'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '公司'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -325,36 +263,16 @@ class FeijiuFastProductDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="申请人数">
+                                }} className="form-item" label="地址">
                                     {
-                                        getFieldDecorator('product_applicant_quantity', {
+                                        getFieldDecorator('book_consult_address', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
-                                            initialValue: 0
+                                            initialValue: ''
                                         })(
-                                            <InputNumber min={0} max={999999999} placeholder={constant.placeholder + '申请人数'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="商品排序">
-                                    {
-                                        getFieldDecorator('product_sort', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: 0
-                                        })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '商品排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -367,8 +285,8 @@ class FeijiuFastProductDetail extends Component {
     }
 }
 
-FeijiuFastProductDetail.propTypes = {};
+UniBookConsultDetail.propTypes = {};
 
-FeijiuFastProductDetail = Form.create({})(FeijiuFastProductDetail);
+UniBookConsultDetail = Form.create({})(UniBookConsultDetail);
 
-export default connect(({feijiu_fast_product}) => ({feijiu_fast_product}))(FeijiuFastProductDetail);
+export default connect(({uni_book_consult}) => ({uni_book_consult}))(UniBookConsultDetail);

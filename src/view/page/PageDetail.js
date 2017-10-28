@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, TreeSelect, InputNumber, message} from 'antd';
 
 import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
@@ -67,6 +67,7 @@ class PageDetail extends Component {
                 this.refs.page_content.handleSetValue(data.page_content);
 
                 this.props.form.setFieldsValue({
+                    website_menu_id: data.website_menu_id,
                     page_name: data.page_name,
                     page_template: data.page_template,
                     page_url: data.page_url,
@@ -137,7 +138,26 @@ class PageDetail extends Component {
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
+        const TreeNode = TreeSelect.TreeNode;
         const {getFieldDecorator} = this.props.form;
+        const treeData = [{
+            label: 'Node1',
+            value: '0-0',
+            key: '0-0',
+            children: [{
+                label: 'Child Node1',
+                value: '0-0-1',
+                key: '0-0-1',
+            }, {
+                label: 'Child Node2',
+                value: '0-0-2',
+                key: '0-0-2',
+            }],
+        }, {
+            label: 'Node2',
+            value: '0-1',
+            key: '0-1',
+        }];
 
         return (
             <Modal title={'单页详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
@@ -186,6 +206,26 @@ class PageDetail extends Component {
                                 :
                                 ''
                         }
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="菜单编号">
+                                    {
+                                        getFieldDecorator('website_menu_id', {
+                                            initialValue: ''
+                                        })(
+                                            <TreeSelect
+                                                allowClear
+                                                placeholder="请选择菜单编号"
+                                                treeData={this.props.page.website_menu_list}
+                                            />
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

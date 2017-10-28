@@ -2,17 +2,17 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'page',
+    namespace: 'uni_book_consult',
 
     state: {
         app_id: '',
         app_list: [],
-        page_name: '',
+        book_consult_name: '',
+        book_consult_mobile: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: [],
-        website_menu_list: []
+        list: []
     },
 
     reducers: {

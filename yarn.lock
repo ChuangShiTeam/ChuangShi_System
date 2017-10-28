@@ -134,9 +134,9 @@ ansi-styles@^3.0.0:
   dependencies:
     color-convert "^1.0.0"
 
-antd@^2.13.6:
-  version "2.13.6"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-2.13.6.tgz#eb60b5db2bb03a92f918a2a2be3bca95a82ce1fa"
+antd@^2.13.7:
+  version "2.13.7"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-2.13.7.tgz#9b50249b1909facc2af7f7e8d1bea88e4af68db2"
   dependencies:
     array-tree-filter "~1.0.0"
     babel-runtime "6.x"
@@ -1614,6 +1614,10 @@ create-react-class@15.x, create-react-class@^15.5.1, create-react-class@^15.5.2,
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
+
+cropperjs@v1.0.0-rc.3:
+  version "1.0.0-rc.3"
+  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.0.0-rc.3.tgz#50a7c7611befc442702f845ede77d7df4572e82b"
 
 cross-spawn@4.0.2:
   version "4.0.2"
@@ -5432,6 +5436,13 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
+
+react-cropper@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-cropper/-/react-cropper-1.0.0.tgz#7b65a85bbfcd64fa586be25742b3f16a37847414"
+  dependencies:
+    cropperjs v1.0.0-rc.3
+    prop-types "^15.5.8"
 
 react-dev-utils@^3.0.0:
   version "3.0.0"

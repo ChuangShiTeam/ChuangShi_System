@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import PageDetail from './PageDetail';
+import UniApplyDetail from './UniApplyDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class PageIndex extends Component {
+class UniApplyIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,27 +21,26 @@ class PageIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.page.app_id
+            app_id: this.props.uni_apply.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            page_name: this.props.page.page_name,
+            apply_name: this.props.uni_apply.apply_name,
+            apply_mobile: this.props.uni_apply.apply_mobile,
         });
 
         this.handleLoad();
 
-        this.handleLoadWebsiteMenu();
-
-        notification.on('notification_page_index_load', this, function (data) {
+        notification.on('notification_uni_apply_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_page_index_load', this);
+        notification.remove('notification_uni_apply_index_load', this);
     }
 
     handleLoadApp() {
@@ -50,7 +49,7 @@ class PageIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'page/fetch',
+                    type: 'uni_apply/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,38 +61,22 @@ class PageIndex extends Component {
         });
     }
 
-    handleLoadWebsiteMenu() {
-        http.request({
-            url: '/' + constant.action + '/website/menu/all/list',
-            data: {},
-            success: function (data) {
-                this.props.dispatch({
-                    type: 'page/fetch',
-                    data: {
-                        website_menu_list: data
-                    }
-                });
-            }.bind(this),
-            complete: function () {
-
-            }
-        });
-    }
-
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let page_name = this.props.form.getFieldValue('page_name');
+            let apply_name = this.props.form.getFieldValue('apply_name');
+            let apply_mobile = this.props.form.getFieldValue('apply_mobile');
 
             this.props.dispatch({
-                type: 'page/fetch',
+                type: 'uni_apply/fetch',
                 data: {
                     app_id: app_id,
-                    page_name: page_name,
+                    apply_name: apply_name,
+                    apply_mobile: apply_mobile,
                     page_index: 1
                 }
             });
@@ -110,16 +93,17 @@ class PageIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/page/list',
+            url: '/' + constant.action + '/uni/apply/list',
             data: {
-                app_id: this.props.page.app_id,
-                page_name: this.props.page.page_name,
-                page_index: this.props.page.page_index,
-                page_size: this.props.page.page_size
+                app_id: this.props.uni_apply.app_id,
+                apply_name: this.props.uni_apply.apply_name,
+                apply_mobile: this.props.uni_apply.apply_mobile,
+                page_index: this.props.uni_apply.page_index,
+                page_size: this.props.uni_apply.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'page/fetch',
+                    type: 'uni_apply/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -137,7 +121,7 @@ class PageIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'page/fetch',
+                type: 'uni_apply/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -152,7 +136,7 @@ class PageIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'page/fetch',
+                type: 'uni_apply/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -166,66 +150,24 @@ class PageIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_page_detail_add', {});
+        notification.emit('notification_uni_apply_detail_add', {});
     }
 
-    handleEdit(page_id) {
-        notification.emit('notification_page_detail_edit', {
-            page_id: page_id
+    handleEdit(apply_id) {
+        notification.emit('notification_uni_apply_detail_edit', {
+            apply_id: apply_id
         });
     }
 
-    handleAllWrite() {
+    handleDel(apply_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/page/all/write',
+            url: '/' + constant.action + '/uni/apply/delete',
             data: {
-
-            },
-            success: function (data) {
-                message.success(constant.success);
-            },
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
-    handleWrite(page_id) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/' + constant.action + '/page/write',
-            data: {
-                page_id: page_id
-            },
-            success: function (data) {
-                message.success(constant.success);
-            },
-            complete: function () {
-                this.setState({
-                    is_load: false
-                });
-            }.bind(this)
-        });
-    }
-
-    handleDel(page_id, system_version) {
-        this.setState({
-            is_load: true
-        });
-
-        http.request({
-            url: '/' + constant.action + '/page/delete',
-            data: {
-                page_id: page_id,
+                apply_id: apply_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -247,30 +189,28 @@ class PageIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '单页名称',
-            dataIndex: 'page_name'
+            title: '姓名',
+            dataIndex: 'apply_name'
         }, {
-            title: '单页模板',
-            dataIndex: 'page_template'
+            title: '手机号码',
+            dataIndex: 'apply_mobile'
         }, {
-            title: '单页地址',
-            dataIndex: 'page_url'
+            title: '公司',
+            dataIndex: 'apply_company'
         }, {
-            title: '单页排序',
-            dataIndex: 'page_sort'
+            title: '职务',
+            dataIndex: 'apply_job'
         }, {
-            width: 135,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.page_id)}>{constant.edit}</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleWrite.bind(this, record.page_id)}>生成</a>
+                  <a onClick={this.handleEdit.bind(this, record.apply_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.page_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.apply_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -279,12 +219,12 @@ class PageIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.page.total,
+            total: this.props.uni_apply.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.page.page_index,
-            pageSize: this.props.page.page_size,
+            current: this.props.uni_apply.page_index,
+            pageSize: this.props.uni_apply.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -294,12 +234,9 @@ class PageIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">单页信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="default" icon="export" size="default" className="margin-right"
-                                loading={this.state.is_load}
-                                onClick={this.handleAllWrite.bind(this)}>全部生成</Button>
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
@@ -322,7 +259,7 @@ class PageIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.page.app_list.map(function (item) {
+                                                        this.props.uni_apply.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -341,12 +278,26 @@ class PageIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="单页名称">
+                            }} className="content-search-item" label="姓名">
                                 {
-                                    getFieldDecorator('page_name', {
+                                    getFieldDecorator('apply_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入单页名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入姓名" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="手机号码">
+                                {
+                                    getFieldDecorator('apply_mobile', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入手机号码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -356,21 +307,21 @@ class PageIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="page_id"
+                       rowKey="apply_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.page.list} pagination={pagination}
+                       dataSource={this.props.uni_apply.list} pagination={pagination}
                        bordered/>
-                <PageDetail/>
+                <UniApplyDetail/>
             </QueueAnim>
         );
     }
 }
 
-PageIndex.propTypes = {};
+UniApplyIndex.propTypes = {};
 
-PageIndex = Form.create({})(PageIndex);
+UniApplyIndex = Form.create({})(UniApplyIndex);
 
-export default connect(({page}) => ({
-    page
-}))(PageIndex);
+export default connect(({uni_apply}) => ({
+    uni_apply
+}))(UniApplyIndex);
