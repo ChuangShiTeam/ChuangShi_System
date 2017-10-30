@@ -87,6 +87,8 @@ import GezhoubaProductinfoIndex from './view/gezhouba_product/GezhoubaProductinf
 import GezhoubaStockinfoIndex from './view/gezhouba_stock/GezhoubaStockinfoIndex';
 import GezhoubaStockinIndex from './view/gezhouba_stockin/GezhoubaStockinIndex';
 import GezhoubaStockinDetailIndex from './view/gezhouba_stockin_detail/GezhoubaStockinDetailIndex';
+import RenaultShareIndex from './view/renault_share/RenaultShareIndex';
+import RenaultCustomerIndex from './view/renault_customer/RenaultCustomerIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -202,6 +204,8 @@ function RouterConfig({history}) {
                     <Route path="/getzhouba/stock/index" component={GezhoubaStockinfoIndex}/>
                     <Route path="/getzhouba/stockin/index" component={GezhoubaStockinIndex}/>
                     <Route path="/getzhouba/stockin_detail/index" component={GezhoubaStockinDetailIndex}/>
+                    <Route path="/renault/share/index" component={RenaultShareIndex}/>
+                    <Route path="/renault/customer/index" component={RenaultCustomerIndex}/>
                 </Route>
             </Route>
         </Router>
