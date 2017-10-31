@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '上海星销信息技术有限公司--总控后台',
+    name: '佛山协同国际学校--总控后台',
     app_id: '749388e5dac3465f922c54e61d16a993',
-    index: '/minhang/task/index',
+    index: '/xietong/article/index',
     login: '/admin/admin/login'
 };
