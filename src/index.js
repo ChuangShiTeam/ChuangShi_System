@@ -86,6 +86,7 @@ import xietong_teacher from './model/xietong_teacher';
 import minhang_video_task from './model/minhang_video_task';
 import uni_apply from './model/uni_apply';
 import uni_book_consult from './model/uni_book_consult';
+import renault_member from './model/renault_member';
 
 document.title = constant.name;
 
@@ -173,6 +174,7 @@ app.model(xietong_teacher);
 app.model(minhang_video_task);
 app.model(uni_apply);
 app.model(uni_book_consult);
+app.model(renault_member);
 
 app.router(Router);
 
