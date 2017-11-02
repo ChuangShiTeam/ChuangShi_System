@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MenuDetail from './MenuDetail';
+import RenaultCustomerDetail from './RenaultCustomerDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MenuIndex extends Component {
+class RenaultCustomerIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,34 +21,35 @@ class MenuIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.menu.app_id
+            app_id: this.props.renault_customer.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            menu_name: this.props.menu.menu_name
+            customer_name: this.props.renault_customer.customer_name,
+            customer_phone: this.props.renault_customer.customer_phone,
         });
 
         this.handleLoad();
 
-        notification.on('notification_menu_index_load', this, function (data) {
+        notification.on('notification_renault_customer_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_menu_index_load', this);
+        notification.remove('notification_renault_customer_index_load', this);
     }
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'menu/fetch',
+                    type: 'renault_customer/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +63,20 @@ class MenuIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let menu_name = this.props.form.getFieldValue('menu_name');
+            let customer_name = this.props.form.getFieldValue('customer_name');
+            let customer_phone = this.props.form.getFieldValue('customer_phone');
 
             this.props.dispatch({
-                type: 'menu/fetch',
+                type: 'renault_customer/fetch',
                 data: {
                     app_id: app_id,
-                    menu_name: menu_name,
+                    customer_name: customer_name,
+                    customer_phone: customer_phone,
                     page_index: 1
                 }
             });
@@ -85,25 +88,25 @@ class MenuIndex extends Component {
     }
 
     handleLoad() {
-
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/menu/' + constant.action + '/list',
+            url: '/' + constant.action + '/renault/customer/list',
             data: {
-                app_id: this.props.menu.app_id,
-                menu_name: this.props.menu.menu_name
+                app_id: this.props.renault_customer.app_id,
+                customer_name: this.props.renault_customer.customer_name,
+                customer_phone: this.props.renault_customer.customer_phone,
+                page_index: this.props.renault_customer.page_index,
+                page_size: this.props.renault_customer.page_size
             },
             success: function (data) {
-                let expandedRowKeys = this.setExpandedRowKeys(data);
-
                 this.props.dispatch({
-                    type: 'menu/fetch',
+                    type: 'renault_customer/fetch',
                     data: {
-                        list: data,
-                        expandedRowKeys: expandedRowKeys
+                        total: data.total,
+                        list: data.list
                     }
                 });
             }.bind(this),
@@ -115,24 +118,10 @@ class MenuIndex extends Component {
         });
     }
 
-    setExpandedRowKeys(list) {
-        let expandedRowKeys = [];
-
-        for (let i = 0; i < list.length; i++) {
-            expandedRowKeys.push(list[i].menu_id);
-
-            if (list[i].children) {
-                expandedRowKeys = expandedRowKeys.concat(this.setExpandedRowKeys(list[i].children));
-            }
-        }
-
-        return expandedRowKeys;
-    }
-
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'menu/fetch',
+                type: 'renault_customer/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -147,7 +136,7 @@ class MenuIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'menu/fetch',
+                type: 'renault_customer/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -160,27 +149,25 @@ class MenuIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd(menu_parent_id) {
-        notification.emit('notification_menu_detail_add', {
-            menu_parent_id: menu_parent_id
+    handleAdd() {
+        notification.emit('notification_renault_customer_detail_add', {});
+    }
+
+    handleEdit(customer_id) {
+        notification.emit('notification_renault_customer_detail_edit', {
+            customer_id: customer_id
         });
     }
 
-    handleEdit(menu_id) {
-        notification.emit('notification_menu_detail_edit', {
-            menu_id: menu_id
-        });
-    }
-
-    handleDel(menu_id, system_version) {
+    handleDel(customer_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/menu/' + constant.action + '/delete',
+            url: '/' + constant.action + '/renault/customer/delete',
             data: {
-                menu_id: menu_id,
+                customer_id: customer_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -202,51 +189,53 @@ class MenuIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'menu_name'
+            title: '客户名称',
+            dataIndex: 'customer_name'
+        }, {
+            title: '客户电话',
+            dataIndex: 'customer_phone'
         }, {
             width: 100,
-            title: '图片',
-            dataIndex: 'menu_image'
-        }, {
-            width: 200,
-            title: '地址',
-            dataIndex: 'menu_url'
-        }, {
-            width: 100,
-            title: '排序',
-            dataIndex: 'menu_sort'
-        }, {
-            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleAdd.bind(this, record.menu_id)}>{constant.add}</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.menu_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.customer_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.menu_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.customer_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
             )
         }];
 
+        const pagination = {
+            size: 'defalut',
+            total: this.props.renault_customer.total,
+            showTotal: function (total, range) {
+                return '总共' + total + '条数据';
+            },
+            current: this.props.renault_customer.page_index,
+            pageSize: this.props.renault_customer.page_size,
+            showSizeChanger: true,
+            onShowSizeChange: this.handleChangeSize.bind(this),
+            onChange: this.handleChangeIndex.bind(this)
+        };
+
         return (
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">菜单信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this, '')}>{constant.add}</Button>
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -264,7 +253,7 @@ class MenuIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.menu.app_list.map(function (item) {
+                                                        this.props.renault_customer.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -283,12 +272,26 @@ class MenuIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="客户名称">
                                 {
-                                    getFieldDecorator('menu_name', {
+                                    getFieldDecorator('customer_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入客户名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="客户电话">
+                                {
+                                    getFieldDecorator('customer_phone', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入客户电话" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -298,22 +301,21 @@ class MenuIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="menu_id"
+                       rowKey="customer_id"
                        className="margin-top"
-                       expandedRowKeys={this.props.menu.expandedRowKeys}
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.menu.list} pagination={false}
+                       dataSource={this.props.renault_customer.list} pagination={pagination}
                        bordered/>
-                <MenuDetail/>
+                <RenaultCustomerDetail/>
             </QueueAnim>
         );
     }
 }
 
-MenuIndex.propTypes = {};
+RenaultCustomerIndex.propTypes = {};
 
-MenuIndex = Form.create({})(MenuIndex);
+RenaultCustomerIndex = Form.create({})(RenaultCustomerIndex);
 
-export default connect(({menu}) => ({
-    menu
-}))(MenuIndex);
+export default connect(({renault_customer}) => ({
+    renault_customer
+}))(RenaultCustomerIndex);

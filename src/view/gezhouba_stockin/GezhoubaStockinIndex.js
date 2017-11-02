@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import MenuDetail from './MenuDetail';
+import GezhoubaStockinDetail from './GezhoubaStockinDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class MenuIndex extends Component {
+class GezhoubaStockinIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,34 +21,35 @@ class MenuIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.menu.app_id
+            app_id: this.props.gezhouba_stockin.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            menu_name: this.props.menu.menu_name
+            stockin_no: this.props.gezhouba_stockin.stockin_no,
+            stockin_name: this.props.gezhouba_stockin.stockin_name,
         });
 
         this.handleLoad();
 
-        notification.on('notification_menu_index_load', this, function (data) {
+        notification.on('notification_gezhouba_stockin_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_menu_index_load', this);
+        notification.remove('notification_gezhouba_stockin_index_load', this);
     }
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'menu/fetch',
+                    type: 'gezhouba_stockin/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,18 +63,20 @@ class MenuIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let menu_name = this.props.form.getFieldValue('menu_name');
+            let stockin_no = this.props.form.getFieldValue('stockin_no');
+            let stockin_name = this.props.form.getFieldValue('stockin_name');
 
             this.props.dispatch({
-                type: 'menu/fetch',
+                type: 'gezhouba_stockin/fetch',
                 data: {
                     app_id: app_id,
-                    menu_name: menu_name,
+                    stockin_no: stockin_no,
+                    stockin_name: stockin_name,
                     page_index: 1
                 }
             });
@@ -85,25 +88,25 @@ class MenuIndex extends Component {
     }
 
     handleLoad() {
-
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/menu/' + constant.action + '/list',
+            url: '/' + constant.action + '/gezhouba/stockin/list',
             data: {
-                app_id: this.props.menu.app_id,
-                menu_name: this.props.menu.menu_name
+                app_id: this.props.gezhouba_stockin.app_id,
+                stockin_no: this.props.gezhouba_stockin.stockin_no,
+                stockin_name: this.props.gezhouba_stockin.stockin_name,
+                page_index: this.props.gezhouba_stockin.page_index,
+                page_size: this.props.gezhouba_stockin.page_size
             },
             success: function (data) {
-                let expandedRowKeys = this.setExpandedRowKeys(data);
-
                 this.props.dispatch({
-                    type: 'menu/fetch',
+                    type: 'gezhouba_stockin/fetch',
                     data: {
-                        list: data,
-                        expandedRowKeys: expandedRowKeys
+                        total: data.total,
+                        list: data.list
                     }
                 });
             }.bind(this),
@@ -115,24 +118,10 @@ class MenuIndex extends Component {
         });
     }
 
-    setExpandedRowKeys(list) {
-        let expandedRowKeys = [];
-
-        for (let i = 0; i < list.length; i++) {
-            expandedRowKeys.push(list[i].menu_id);
-
-            if (list[i].children) {
-                expandedRowKeys = expandedRowKeys.concat(this.setExpandedRowKeys(list[i].children));
-            }
-        }
-
-        return expandedRowKeys;
-    }
-
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'menu/fetch',
+                type: 'gezhouba_stockin/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -147,7 +136,7 @@ class MenuIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'menu/fetch',
+                type: 'gezhouba_stockin/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -160,27 +149,25 @@ class MenuIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd(menu_parent_id) {
-        notification.emit('notification_menu_detail_add', {
-            menu_parent_id: menu_parent_id
+    handleAdd() {
+        notification.emit('notification_gezhouba_stockin_detail_add', {});
+    }
+
+    handleEdit(stockin_id) {
+        notification.emit('notification_gezhouba_stockin_detail_edit', {
+            stockin_id: stockin_id
         });
     }
 
-    handleEdit(menu_id) {
-        notification.emit('notification_menu_detail_edit', {
-            menu_id: menu_id
-        });
-    }
-
-    handleDel(menu_id, system_version) {
+    handleDel(stockin_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/menu/' + constant.action + '/delete',
+            url: '/' + constant.action + '/gezhouba/stockin/delete',
             data: {
-                menu_id: menu_id,
+                stockin_id: stockin_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -202,51 +189,59 @@ class MenuIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '名称',
-            dataIndex: 'menu_name'
+            title: '入库单编号',
+            dataIndex: 'stockin_no'
+        }, {
+            title: '入库单名称',
+            dataIndex: 'stockin_name'
+        }, {
+            title: '入库日期',
+            dataIndex: 'stockin_date'
+        }, {
+            title: '供应商id',
+            dataIndex: 'supplier_id'
         }, {
             width: 100,
-            title: '图片',
-            dataIndex: 'menu_image'
-        }, {
-            width: 200,
-            title: '地址',
-            dataIndex: 'menu_url'
-        }, {
-            width: 100,
-            title: '排序',
-            dataIndex: 'menu_sort'
-        }, {
-            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleAdd.bind(this, record.menu_id)}>{constant.add}</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.menu_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.stockin_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.menu_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.stockin_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
             )
         }];
 
+        const pagination = {
+            size: 'defalut',
+            total: this.props.gezhouba_stockin.total,
+            showTotal: function (total, range) {
+                return '总共' + total + '条数据';
+            },
+            current: this.props.gezhouba_stockin.page_index,
+            pageSize: this.props.gezhouba_stockin.page_size,
+            showSizeChanger: true,
+            onShowSizeChange: this.handleChangeSize.bind(this),
+            onChange: this.handleChangeIndex.bind(this)
+        };
+
         return (
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">菜单信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this, '')}>{constant.add}</Button>
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -264,7 +259,7 @@ class MenuIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.menu.app_list.map(function (item) {
+                                                        this.props.gezhouba_stockin.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -283,12 +278,26 @@ class MenuIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="名称">
+                            }} className="content-search-item" label="入库单编号">
                                 {
-                                    getFieldDecorator('menu_name', {
+                                    getFieldDecorator('stockin_no', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入入库单编号" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="入库单名称">
+                                {
+                                    getFieldDecorator('stockin_name', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入入库单名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -298,22 +307,21 @@ class MenuIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="menu_id"
+                       rowKey="stockin_id"
                        className="margin-top"
-                       expandedRowKeys={this.props.menu.expandedRowKeys}
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.menu.list} pagination={false}
+                       dataSource={this.props.gezhouba_stockin.list} pagination={pagination}
                        bordered/>
-                <MenuDetail/>
+                <GezhoubaStockinDetail/>
             </QueueAnim>
         );
     }
 }
 
-MenuIndex.propTypes = {};
+GezhoubaStockinIndex.propTypes = {};
 
-MenuIndex = Form.create({})(MenuIndex);
+GezhoubaStockinIndex = Form.create({})(GezhoubaStockinIndex);
 
-export default connect(({menu}) => ({
-    menu
-}))(MenuIndex);
+export default connect(({gezhouba_stockin}) => ({
+    gezhouba_stockin
+}))(GezhoubaStockinIndex);

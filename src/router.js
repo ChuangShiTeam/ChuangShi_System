@@ -85,6 +85,14 @@ import MinhangVideoTaskIndex from './view/minhang_video/minhang_video_task/Minha
 import XietongTeacherIndex from './view/xietong_teacher/XietongTeacherIndex';
 import UniApplyIndex from './view/uni_apply/UniApplyIndex';
 import UniBookConsultIndex from './view/uni_book_consult/UniBookConsultIndex';
+import GezhoubaSupplierinfoIndex from './view/gezhouba_supplier/GezhoubaSupplierinfoIndex';
+import GezhoubaProductinfoIndex from './view/gezhouba_product/GezhoubaProductinfoIndex';
+import GezhoubaStockinfoIndex from './view/gezhouba_stock/GezhoubaStockinfoIndex';
+import GezhoubaStockinIndex from './view/gezhouba_stockin/GezhoubaStockinIndex';
+import GezhoubaStockinDetailIndex from './view/gezhouba_stockin_detail/GezhoubaStockinDetailIndex';
+import RenaultShareIndex from './view/renault_share/RenaultShareIndex';
+import RenaultCustomerIndex from './view/renault_customer/RenaultCustomerIndex';
+import RenaultMemberIndex from './view/renault_member/RenaultMemberIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -198,6 +206,14 @@ function RouterConfig({history}) {
                     <Route path="/xietong/teacher/index" component={XietongTeacherIndex}/>
                     <Route path="/uni/apply/index" component={UniApplyIndex}/>
                     <Route path="/uni/book/consult/index" component={UniBookConsultIndex}/>
+                    <Route path="/getzhouba/supplier/index" component={GezhoubaSupplierinfoIndex}/>
+                    <Route path="/getzhouba/product/index" component={GezhoubaProductinfoIndex}/>
+                    <Route path="/getzhouba/stock/index" component={GezhoubaStockinfoIndex}/>
+                    <Route path="/getzhouba/stockin/index" component={GezhoubaStockinIndex}/>
+                    <Route path="/getzhouba/stockin_detail/index" component={GezhoubaStockinDetailIndex}/>
+                    <Route path="/renault/share/index" component={RenaultShareIndex}/>
+                    <Route path="/renault/customer/index" component={RenaultCustomerIndex}/>
+                    <Route path="/renault/member/index" component={RenaultMemberIndex}/>
                 </Route>
             </Route>
         </Router>
