@@ -191,8 +191,19 @@ class RenaultShareIndex extends Component {
             title: '点赞次数',
             dataIndex: 'like_num'
         }, {
+            title: '评论数量',
+            dataIndex: 'comment_num'
+        }, {
             title: '描述',
             dataIndex: 'remark'
+        }, {
+            title: '说说图片',
+            dataIndex: 'share_image_list',
+            render: (text, record, index) => (
+                text?<span>
+                  <img alt="example" style={{width: 100}} src={constant.host + text[0].file_path} />
+                </span>:null
+            )
         }, {
             width: 100,
             title: constant.operation,

@@ -85,6 +85,7 @@ class MenuIndex extends Component {
     }
 
     handleLoad() {
+
         this.setState({
             is_load: true
         });

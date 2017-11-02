@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -60,6 +61,13 @@ class RenaultShareDetail extends Component {
                         app_id: data.app_id
                     });
                 }
+
+                //获取图片信息
+                //let share_image = [];
+                //if (data.share_image_list !== null) {
+                //    share_image.push(data.share_image_list);
+                //}
+                //this.refs.share_image.handleSetValue(share_image);
 
                 this.props.form.setFieldsValue({
                     share_user_id: data.share_user_id,
@@ -254,6 +262,19 @@ class RenaultShareDetail extends Component {
                                             <Input type="text" placeholder={constant.placeholder + '描述'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="分享图片">
+
+                                    <InputImage name="share_image_list" limit={5} aspect={100 / 100} ref="share_image_list"/>
+
                                 </FormItem>
                             </Col>
                         </Row>
