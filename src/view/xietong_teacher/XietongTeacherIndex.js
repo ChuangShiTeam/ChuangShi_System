@@ -266,6 +266,9 @@ class XietongTeacherIndex extends Component {
             title: '所属组织机构',
             dataIndex: 'organization_name'
         }, {
+            title: '排序',
+            dataIndex: 'teacher_sort'
+        }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',

@@ -196,6 +196,10 @@ class MemberIndex extends Component {
             dataIndex: 'user_name'
         }, {
             width: 200,
+            title: '新增时间',
+            dataIndex: 'system_create_time'
+        }, {
+            width: 200,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (

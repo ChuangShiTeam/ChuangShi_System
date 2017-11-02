@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, InputNumber, Select, message} from 'antd';
 
 import InputImage from '../../component/InputImage';
 import InputHtml from '../../component/InputHtml';
@@ -86,7 +86,8 @@ class XietongTeacherDetail extends Component {
                     teacher_name: data.teacher_name,
                     teacher_number: data.teacher_number,
                     teacher_category: data.teacher_category,
-                    teacher_title: data.teacher_title
+                    teacher_title: data.teacher_title,
+                    teacher_sort: data.teacher_sort
                 });
 
                 this.setState({
@@ -378,6 +379,26 @@ class XietongTeacherDetail extends Component {
                                             initialValue: ''
                                         })(
                                             <Input type="password" placeholder={constant.placeholder + '登录密码'}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="老师排序">
+                                    {
+                                        getFieldDecorator('teacher_sort', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '老师排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
