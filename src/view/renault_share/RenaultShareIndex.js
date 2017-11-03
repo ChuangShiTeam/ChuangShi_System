@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
-import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
+import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message, Tooltip, Icon} from 'antd';
 
 import RenaultShareDetail from './RenaultShareDetail';
 import constant from '../../util/constant';
@@ -28,7 +28,7 @@ class RenaultShareIndex extends Component {
         }
 
         this.props.form.setFieldsValue({
-            remark: this.props.renault_share.remark,
+            user_name: this.props.renault_share.user_name
         });
 
         this.handleLoad();
@@ -67,13 +67,13 @@ class RenaultShareIndex extends Component {
                 app_id = '';
             }
 
-            let remark = this.props.form.getFieldValue('remark');
+            let user_name = this.props.form.getFieldValue('user_name');
 
             this.props.dispatch({
                 type: 'renault_share/fetch',
                 data: {
                     app_id: app_id,
-                    remark: remark,
+                    user_name: user_name,
                     page_index: 1
                 }
             });
@@ -93,7 +93,7 @@ class RenaultShareIndex extends Component {
             url: '/' + constant.action + '/renault/share/list',
             data: {
                 app_id: this.props.renault_share.app_id,
-                remark: this.props.renault_share.remark,
+                user_name: this.props.renault_share.user_name,
                 page_index: this.props.renault_share.page_index,
                 page_size: this.props.renault_share.page_size
             },
@@ -185,6 +185,44 @@ class RenaultShareIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
+            title: '会员昵称',
+            dataIndex: 'user_name'
+        }, {
+            title: '会员头像',
+            dataIndex: 'user_avatar',
+            render: (text, record, index) => (
+                text ?<span>
+                  <img alt="example" style={{width: 83}} src={text} />
+                </span>:null
+            )
+        }, {
+            width: 400,
+            title: '说说',
+            dataIndex: 'remark',
+            render: (text, record, index) => (
+                text?<span>
+                    {text.length > 30 ?
+                        <span>
+                            {text.substring(0, 30) + '...'}
+                            <Tooltip placement="right" title={text}>
+                                <Icon type="question-circle-o"/>
+                            </Tooltip>
+                        </span>
+                        :text
+                    }
+
+                </span>
+                :null
+            )
+        }, {
+            title: '说说图片',
+            dataIndex: 'share_image_list',
+            render: (text, record, index) => (
+                text && text[0] ?<span>
+                  <img alt="example" style={{width: 83}} src={constant.host + text[0].file_path} />
+                </span>:null
+            )
+        }, {
             title: '分享数量',
             dataIndex: 'share_num'
         }, {
@@ -193,17 +231,6 @@ class RenaultShareIndex extends Component {
         }, {
             title: '评论数量',
             dataIndex: 'comment_num'
-        }, {
-            title: '描述',
-            dataIndex: 'remark'
-        }, {
-            title: '说说图片',
-            dataIndex: 'share_image_list',
-            render: (text, record, index) => (
-                text?<span>
-                  <img alt="example" style={{width: 100}} src={constant.host + text[0].file_path} />
-                </span>:null
-            )
         }, {
             width: 100,
             title: constant.operation,
@@ -238,7 +265,7 @@ class RenaultShareIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">说说信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -282,12 +309,12 @@ class RenaultShareIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="描述">
+                            }} className="content-search-item" label="会员昵称">
                                 {
-                                    getFieldDecorator('remark', {
+                                    getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入描述" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入会员昵称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
