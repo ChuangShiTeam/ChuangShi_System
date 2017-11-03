@@ -189,19 +189,27 @@ class RenaultMemberIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '',
-            dataIndex: 'user_id'
+            title: '会员账号',
+            dataIndex: 'user_account'
         }, {
             title: '会员昵称',
             dataIndex: 'member_nick_name'
+        } ,{
+            title: '会员头像',
+            dataIndex: 'user_avatar',
+            render: (text, record, index) => (
+                text && text[0] ? <span>
+                  <img alt="example" style={{width: 83}} src={text}/>
+                </span> : null
+            )
         }, {
             width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.member_id)}>{constant.edit}</a>
-                  <span className="divider"/>
+                  {/*<a onClick={this.handleEdit.bind(this, record.member_id)}>{constant.edit}</a>*/}
+                  {/*<span className="divider"/>*/}
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
                               onConfirm={this.handleDel.bind(this, record.member_id, record.system_version)}>

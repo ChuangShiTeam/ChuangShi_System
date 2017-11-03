@@ -21,7 +21,7 @@ class RenaultShareIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.renault_share.app_id
+                app_id: this.props.renault_share.app_id
             });
 
             this.handleLoadApp();
@@ -179,6 +179,31 @@ class RenaultShareIndex extends Component {
         });
     }
 
+    handleISTOP(share_id, system_version,is_top) {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/renault/share/istop',
+            data: {
+                share_id: share_id,
+                system_version: system_version,
+                is_top:is_top
+            },
+            success: function (data) {
+                message.success(constant.success);
+
+                this.handleLoad();
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: true
+                });
+            }.bind(this)
+        });
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -191,16 +216,16 @@ class RenaultShareIndex extends Component {
             title: '会员头像',
             dataIndex: 'user_avatar',
             render: (text, record, index) => (
-                text ?<span>
-                  <img alt="example" style={{width: 83}} src={text} />
-                </span>:null
+                text ? <span>
+                  <img alt="example" style={{width: 83}} src={text}/>
+                </span> : null
             )
         }, {
             width: 400,
             title: '说说',
             dataIndex: 'remark',
             render: (text, record, index) => (
-                text?<span>
+                text ? <span>
                     {text.length > 30 ?
                         <span>
                             {text.substring(0, 30) + '...'}
@@ -208,19 +233,19 @@ class RenaultShareIndex extends Component {
                                 <Icon type="question-circle-o"/>
                             </Tooltip>
                         </span>
-                        :text
+                        : text
                     }
 
                 </span>
-                :null
+                    : null
             )
         }, {
             title: '说说图片',
             dataIndex: 'share_image_list',
             render: (text, record, index) => (
-                text && text[0] ?<span>
-                  <img alt="example" style={{width: 83}} src={constant.host + text[0].file_path} />
-                </span>:null
+                text && text[0] ? <span>
+                  <img alt="example" style={{width: 83}} src={constant.host + text[0].file_path}/>
+                </span> : null
             )
         }, {
             title: '分享数量',
@@ -232,7 +257,15 @@ class RenaultShareIndex extends Component {
             title: '评论数量',
             dataIndex: 'comment_num'
         }, {
-            width: 100,
+            title: '是否置顶',
+            dataIndex: 'is_top',
+            render: (text, record, index) => (
+                <span>
+                    {record.is_top ? "是" : "否"}
+                </span>
+            )
+        }, {
+            width: 160,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
@@ -243,6 +276,18 @@ class RenaultShareIndex extends Component {
                               cancelText={constant.popconfirm_cancel}
                               onConfirm={this.handleDel.bind(this, record.share_id, record.system_version)}>
                     <a>{constant.del}</a>
+                  </Popconfirm>
+                             <span className="divider"/>
+                  <Popconfirm title={constant.popconfirm_top_title} okText={constant.popconfirm_ok}
+                              cancelText={constant.popconfirm_cancel}
+                              onConfirm={this.handleISTOP.bind(this, record.share_id, record.system_version, true)}>
+                    <a style={{display: record.is_top ? 'none' : 'inline'}}> {constant.top}</a>
+                  </Popconfirm>
+
+                    <Popconfirm title={constant.popconfirm_canceltop_title} okText={constant.popconfirm_ok}
+                                cancelText={constant.popconfirm_cancel}
+                                onConfirm={this.handleISTOP.bind(this, record.share_id, record.system_version,false)}>
+                    <a  style={{display: record.is_top ? 'inline' : 'none'}}>{constant.canceltop}</a>
                   </Popconfirm>
                 </span>
             )
@@ -314,7 +359,8 @@ class RenaultShareIndex extends Component {
                                     getFieldDecorator('user_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入会员昵称" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入会员昵称"
+                                               onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
