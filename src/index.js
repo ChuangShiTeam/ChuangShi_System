@@ -89,6 +89,8 @@ import uni_book_consult from './model/uni_book_consult';
 import renault_member from './model/renault_member';
 import renault_customer from './model/renault_customer';
 import renault_share from './model/renault_share';
+import xietong_signup_junior from './model/xietong_signup_junior';
+import xietong_signup_pupil from './model/xietong_signup_pupil';
 
 document.title = constant.name;
 
@@ -179,6 +181,8 @@ app.model(uni_book_consult);
 app.model(renault_customer);
 app.model(renault_share);
 app.model(renault_member);
+app.model(xietong_signup_junior);
+app.model(xietong_signup_pupil);
 
 app.router(Router);
 
