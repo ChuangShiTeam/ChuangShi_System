@@ -92,6 +92,7 @@ import renault_share from './model/renault_share';
 import xietong_student_category from './model/xietong_student_category';
 import xietong_signup_junior from './model/xietong_signup_junior';
 import xietong_signup_pupil from './model/xietong_signup_pupil';
+import xietong_teacher_category from './model/xietong_teacher_category';
 
 document.title = constant.name;
 
@@ -185,6 +186,7 @@ app.model(renault_member);
 app.model(xietong_signup_junior);
 app.model(xietong_signup_pupil);
 app.model(xietong_student_category);
+app.model(xietong_teacher_category);
 
 app.router(Router);
 

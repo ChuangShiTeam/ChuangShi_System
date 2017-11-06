@@ -12,7 +12,8 @@ export default {
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: []
+        list: [],
+        student_category_list: []
     },
 
     reducers: {

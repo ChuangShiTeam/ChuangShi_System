@@ -3,13 +3,13 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import WebsiteMenuDetail from './WebsiteMenuDetail';
+import XietongTeacherCategoryDetail from './XietongTeacherCategoryDetail';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class WebsiteMenuIndex extends Component {
+class XietongTeacherCategoryIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,27 +21,25 @@ class WebsiteMenuIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-                app_id: this.props.website_menu.app_id
+            app_id: this.props.xietong_teacher_category.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            website_menu_name: this.props.website_menu.website_menu_name,
+            teacher_category_name: this.props.xietong_teacher_category.teacher_category_name,
         });
 
         this.handleLoad();
 
-        this.handleLoadPage();
-
-        notification.on('notification_website_menu_index_load', this, function (data) {
+        notification.on('notification_xietong_teacher_category_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_website_menu_index_load', this);
+        notification.remove('notification_xietong_teacher_category_index_load', this);
     }
 
     handleLoadApp() {
@@ -50,7 +48,7 @@ class WebsiteMenuIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'website_menu/fetch',
+                    type: 'xietong_teacher_category/fetch',
                     data: {
                         app_list: data
                     }
@@ -62,38 +60,20 @@ class WebsiteMenuIndex extends Component {
         });
     }
 
-    handleLoadPage() {
-        http.request({
-            url: '/' + constant.action + '/page/all/list',
-            data: {},
-            success: function (data) {
-                this.props.dispatch({
-                    type: 'website_menu/fetch',
-                    data: {
-                        page_list: data
-                    }
-                });
-            }.bind(this),
-            complete: function () {
-
-            }
-        });
-    }
-
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let website_menu_name = this.props.form.getFieldValue('website_menu_name');
+            let teacher_category_name = this.props.form.getFieldValue('teacher_category_name');
 
             this.props.dispatch({
-                type: 'website_menu/fetch',
+                type: 'xietong_teacher_category/fetch',
                 data: {
                     app_id: app_id,
-                    website_menu_name: website_menu_name,
+                    teacher_category_name: teacher_category_name,
                     page_index: 1
                 }
             });
@@ -110,19 +90,19 @@ class WebsiteMenuIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/website/menu/list',
+            url: '/' + constant.action + '/xietong/teacher/category/list',
             data: {
-                app_id: this.props.website_menu.app_id,
-                website_menu_name: this.props.website_menu.website_menu_name
+                app_id: this.props.xietong_teacher_category.app_id,
+                teacher_category_name: this.props.xietong_teacher_category.teacher_category_name,
+                page_index: this.props.xietong_teacher_category.page_index,
+                page_size: this.props.xietong_teacher_category.page_size
             },
             success: function (data) {
-                let expandedRowKeys = this.setExpandedRowKeys(data);
-
                 this.props.dispatch({
-                    type: 'website_menu/fetch',
+                    type: 'xietong_teacher_category/fetch',
                     data: {
-                        list: data,
-                        expandedRowKeys: expandedRowKeys
+                        total: data.total,
+                        list: data.list
                     }
                 });
             }.bind(this),
@@ -134,24 +114,10 @@ class WebsiteMenuIndex extends Component {
         });
     }
 
-    setExpandedRowKeys(list) {
-        let expandedRowKeys = [];
-
-        for (let i = 0; i < list.length; i++) {
-            expandedRowKeys.push(list[i].website_menu_id);
-
-            if (list[i].children) {
-                expandedRowKeys = expandedRowKeys.concat(this.setExpandedRowKeys(list[i].children));
-            }
-        }
-
-        return expandedRowKeys;
-    }
-
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'website_menu/fetch',
+                type: 'xietong_teacher_category/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -166,7 +132,7 @@ class WebsiteMenuIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'website_menu/fetch',
+                type: 'xietong_teacher_category/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -179,27 +145,25 @@ class WebsiteMenuIndex extends Component {
         }.bind(this));
     }
 
-    handleAdd(website_menu_parent_id) {
-        notification.emit('notification_website_menu_detail_add', {
-            website_menu_parent_id: website_menu_parent_id
+    handleAdd() {
+        notification.emit('notification_xietong_teacher_category_detail_add', {});
+    }
+
+    handleEdit(teacher_category_id) {
+        notification.emit('notification_xietong_teacher_category_detail_edit', {
+            teacher_category_id: teacher_category_id
         });
     }
 
-    handleEdit(website_menu_id) {
-        notification.emit('notification_website_menu_detail_edit', {
-            website_menu_id: website_menu_id
-        });
-    }
-
-    handleDel(website_menu_id, system_version) {
+    handleDel(teacher_category_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/website/menu/delete',
+            url: '/' + constant.action + '/xietong/teacher/category/delete',
             data: {
-                website_menu_id: website_menu_id,
+                teacher_category_id: teacher_category_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -221,48 +185,53 @@ class WebsiteMenuIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '菜单名称',
-            dataIndex: 'website_menu_name'
+            title: '分类名称',
+            dataIndex: 'teacher_category_name'
         }, {
-            title: '页面编号',
-            dataIndex: 'page_id'
+            title: '分类排序',
+            dataIndex: 'teacher_category_sort'
         }, {
-            title: '菜单地址',
-            dataIndex: 'website_menu_url'
-        }, {
-            title: '菜单排序',
-            dataIndex: 'website_menu_sort'
-        }, {
-            width: 200,
+            width: 100,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleAdd.bind(this, record.website_menu_id)}>{constant.add}</a>
-                  <span className="divider"/>
-                  <a onClick={this.handleEdit.bind(this, record.website_menu_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.teacher_category_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.website_menu_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.teacher_category_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
             )
         }];
 
+        const pagination = {
+            size: 'defalut',
+            total: this.props.xietong_teacher_category.total,
+            showTotal: function (total, range) {
+                return '总共' + total + '条数据';
+            },
+            current: this.props.xietong_teacher_category.page_index,
+            pageSize: this.props.xietong_teacher_category.page_size,
+            showSizeChanger: true,
+            onShowSizeChange: this.handleChangeSize.bind(this),
+            onChange: this.handleChangeIndex.bind(this)
+        };
+
         return (
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">菜单信息</div>
+                        <div className="">信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this, '')}>{constant.add}</Button>
+                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -280,7 +249,7 @@ class WebsiteMenuIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.website_menu.app_list.map(function (item) {
+                                                        this.props.xietong_teacher_category.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -299,13 +268,12 @@ class WebsiteMenuIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="菜单名称">
+                            }} className="content-search-item" label="分类名称">
                                 {
-                                    getFieldDecorator('website_menu_name', {
+                                    getFieldDecorator('teacher_category_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入菜单名称"
-                                               onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入分类名称" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -315,22 +283,21 @@ class WebsiteMenuIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="website_menu_id"
+                       rowKey="teacher_category_id"
                        className="margin-top"
-                       expandedRowKeys={this.props.website_menu.expandedRowKeys}
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.website_menu.list} pagination={false}
+                       dataSource={this.props.xietong_teacher_category.list} pagination={pagination}
                        bordered/>
-                <WebsiteMenuDetail/>
+                <XietongTeacherCategoryDetail/>
             </QueueAnim>
         );
     }
 }
 
-WebsiteMenuIndex.propTypes = {};
+XietongTeacherCategoryIndex.propTypes = {};
 
-WebsiteMenuIndex = Form.create({})(WebsiteMenuIndex);
+XietongTeacherCategoryIndex = Form.create({})(XietongTeacherCategoryIndex);
 
-export default connect(({website_menu}) => ({
-    website_menu
-}))(WebsiteMenuIndex);
+export default connect(({xietong_teacher_category}) => ({
+    xietong_teacher_category
+}))(XietongTeacherCategoryIndex);

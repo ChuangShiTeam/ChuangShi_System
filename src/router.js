@@ -96,6 +96,7 @@ import RenaultMemberIndex from './view/renault_member/RenaultMemberIndex';
 import XietongStudentCategoryIndex from './view/xietong_student_category/XietongStudentCategoryIndex';
 import XietongSignupPupilIndex from './view/xietong_signup_pupil/XietongSignupPupilIndex';
 import XietongSignupJuniorIndex from './view/xietong_signup_junior/XietongSignupJuniorIndex';
+import XietongTeacherCategoryIndex from './view/xietong_teacher_category/XietongTeacherCategoryIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -220,6 +221,7 @@ function RouterConfig({history}) {
                     <Route path="/xietong/signup/junior/index" component={XietongSignupJuniorIndex}/>
                     <Route path="/renault/signup/pupil/index" component={XietongSignupPupilIndex}/>
                     <Route path="/xietong/student/category/index" component={XietongStudentCategoryIndex}/>
+                    <Route path="/xietong/teacher/category/index" component={XietongTeacherCategoryIndex}/>
                 </Route>
             </Route>
         </Router>

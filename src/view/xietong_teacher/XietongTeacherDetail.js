@@ -85,7 +85,7 @@ class XietongTeacherDetail extends Component {
                     organization_id: data.organization_id,
                     teacher_name: data.teacher_name,
                     teacher_number: data.teacher_number,
-                    teacher_category: data.teacher_category,
+                    teacher_category_id: data.teacher_category_id,
                     teacher_title: data.teacher_title,
                     teacher_sort: data.teacher_sort
                 });
@@ -317,14 +317,25 @@ class XietongTeacherDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="分类">
-                                    {
-                                        getFieldDecorator('teacher_category', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '分类'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                }} className="form-item" label="所属分类">                                    {
+                                    getFieldDecorator('teacher_category_id', {
+                                        rules: [{
+                                            required: true,
+                                            message: constant.required
+                                        }],
+                                        initialValue: ''
+                                    })(
+                                        <Select allowClear placeholder="请选择分类">
+                                            {
+                                                this.props.xietong_teacher.teacher_category_list.map(function (item) {
+                                                    return (
+                                                        <Option key={item.teacher_category_id} value={item.teacher_category_id}>{item.teacher_category_name}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    )
+                                }
                                 </FormItem>
                             </Col>
                         </Row>
