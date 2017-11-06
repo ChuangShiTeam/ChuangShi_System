@@ -195,17 +195,23 @@ class XietongSignupJuniorIndex extends Component {
             title: '学生性别',
             dataIndex: 'student_sex'
         }, {
-            title: '面试时间',
-            dataIndex: 'interview_time'
+            title: '生日',
+            dataIndex: 'student_birthday'
         }, {
-            title: '原就读小学',
-            dataIndex: 'primary_school'
+            title: '担任职务',
+            dataIndex: 'job'
+        }, {
+            title: '证件类型',
+            dataIndex: 'id_type'
         }, {
             title: '证件号码',
             dataIndex: 'id_no'
         }, {
-            title: '报名状态',
-            dataIndex: 'signup_status'
+            title: '户籍地址',
+            dataIndex: 'permanent_address'
+        }, {
+            title: '家庭住址',
+            dataIndex: 'live_addresss'
         }, {
             width: 100,
             title: constant.operation,
