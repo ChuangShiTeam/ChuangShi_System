@@ -93,6 +93,7 @@ import GezhoubaStockinDetailIndex from './view/gezhouba_stockin_detail/GezhoubaS
 import RenaultShareIndex from './view/renault_share/RenaultShareIndex';
 import RenaultCustomerIndex from './view/renault_customer/RenaultCustomerIndex';
 import RenaultMemberIndex from './view/renault_member/RenaultMemberIndex';
+import XietongStudentCategoryIndex from './view/xietong_student_category/XietongStudentCategoryIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -214,6 +215,7 @@ function RouterConfig({history}) {
                     <Route path="/renault/share/index" component={RenaultShareIndex}/>
                     <Route path="/renault/customer/index" component={RenaultCustomerIndex}/>
                     <Route path="/renault/member/index" component={RenaultMemberIndex}/>
+                    <Route path="/xietong/student/category/index" component={XietongStudentCategoryIndex}/>
                 </Route>
             </Route>
         </Router>

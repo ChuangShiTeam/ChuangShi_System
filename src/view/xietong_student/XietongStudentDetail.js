@@ -17,7 +17,8 @@ class XietongStudentDetail extends Component {
             student_id: '',
             user_id: '',
             system_version: '',
-            clazz: []
+            clazz: [],
+            category: []
         }
     }
 
@@ -26,7 +27,8 @@ class XietongStudentDetail extends Component {
             this.setState({
                 is_show: true,
                 action: 'save',
-                clazz: data.clazz
+                clazz: data.clazz,
+                category: data.category
             });
         });
 
@@ -35,6 +37,7 @@ class XietongStudentDetail extends Component {
                 is_show: true,
                 action: 'update',
                 clazz: data.clazz,
+                category: data.category,
                 student_id: data.student_id
             }, function () {
                 this.handleLoad();
@@ -66,6 +69,7 @@ class XietongStudentDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
+                    student_category: JSON.parse(data.student_category),
                     clazz_id: data.clazz_id,
                     student_name: data.student_name,
                     student_number: data.student_number,
@@ -202,6 +206,35 @@ class XietongStudentDetail extends Component {
                                                     this.state.clazz.map(function (item) {
                                                         return (
                                                             <Option key={item.clazz_id} value={item.clazz_id}>{item.clazz_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="所属分类">
+                                    {
+                                        getFieldDecorator('student_category', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required,
+                                                type: 'array'
+                                            }],
+                                            initialValue: []
+                                        })(
+                                            <Select mode="multiple" placeholder="请选择分类">
+                                                {
+                                                    this.state.category.map(function (item) {
+                                                        return (
+                                                            <Option key={item.student_category_id} value={item.student_category_id}>{item.student_category_name}</Option>
                                                         )
                                                     })
                                                 }
