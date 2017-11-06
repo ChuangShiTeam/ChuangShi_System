@@ -1,5 +1,5 @@
 export default {
-     host: 'http://localhost:8080',
+    host: 'http://localhost:8080',
     //host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
@@ -22,8 +22,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '雷诺--总控后台',
-    app_id: '443c30390b3d4eebad80e231a2929113',
-    index: '/advertisement/index',
+    name: '佛山协同国际学校--总控后台',
+    app_id: '749388e5dac3465f922c54e61d16a993',
+    index: '/xietong/article/index',
     login: '/admin/admin/login'
 };
