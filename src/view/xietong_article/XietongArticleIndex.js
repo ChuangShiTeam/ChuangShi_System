@@ -236,15 +236,15 @@ class XietongArticleIndex extends Component {
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.article_id)}>{constant.edit}</a>
+                    <a onClick={this.handleEdit.bind(this, record.article_id)}>{constant.edit}</a>
                     <span className="divider"/>
-                  <a onClick={this.handlePublish.bind(this, record.article_id)}>发布</a>
-                  <span className="divider"/>
-                  <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
-                              cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.article_id, record.system_version)}>
-                    <a>{constant.del}</a>
-                  </Popconfirm>
+                    /*<a onClick={this.handlePublish.bind(this, record.article_id)}>发布</a>
+                    <span className="divider"/>*/
+                    <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+                                  cancelText={constant.popconfirm_cancel}
+                                  onConfirm={this.handleDel.bind(this, record.article_id, record.system_version)}>
+                        <a>{constant.del}</a>
+                    </Popconfirm>
                 </span>
             )
         }];
