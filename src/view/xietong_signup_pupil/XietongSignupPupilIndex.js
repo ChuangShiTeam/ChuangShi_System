@@ -154,10 +154,18 @@ class XietongSignupPupilIndex extends Component {
     }
 
     handleEdit(signup_id) {
-        notification.emit('notification_xietong_signup_pupil_detail_edit', {
+        notification.em
+
+        it('notification_xietong_signup_pupil_detail_edit', {
             signup_id: signup_id
         });
     }
+    //
+    // handleInterview(signup_id) {
+    //     notification.emit('notification_xietong_signup_pupil_detail_edit', {
+    //         signup_id: signup_id
+    //     });
+    // }
 
     handleDel(signup_id, system_version) {
         this.setState({
@@ -207,11 +215,13 @@ class XietongSignupPupilIndex extends Component {
             title: '报名状态',
             dataIndex: 'signup_status'
         }, {
-            width: 100,
+            width: 180,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
+                    {/*<a onClick={this.handleInterview.bind(this, record.signup_id)}>{"预约面谈"}</a>*/}
+                                      {/*<span className="divider"/>*/}
                   <a onClick={this.handleEdit.bind(this, record.signup_id)}>{constant.edit}</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
