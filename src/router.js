@@ -219,7 +219,7 @@ function RouterConfig({history}) {
                     <Route path="/renault/customer/index" component={RenaultCustomerIndex}/>
                     <Route path="/renault/member/index" component={RenaultMemberIndex}/>
                     <Route path="/xietong/signup/junior/index" component={XietongSignupJuniorIndex}/>
-                    <Route path="/renault/signup/pupil/index" component={XietongSignupPupilIndex}/>
+                    <Route path="/xietong/signup/pupil/index" component={XietongSignupPupilIndex}/>
                     <Route path="/xietong/student/category/index" component={XietongStudentCategoryIndex}/>
                     <Route path="/xietong/teacher/category/index" component={XietongTeacherCategoryIndex}/>
                 </Route>
