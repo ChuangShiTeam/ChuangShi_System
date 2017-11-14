@@ -154,9 +154,7 @@ class XietongSignupPupilIndex extends Component {
     }
 
     handleEdit(signup_id) {
-        notification.em
-
-        it('notification_xietong_signup_pupil_detail_edit', {
+        notification.emit('notification_xietong_signup_pupil_detail_edit', {
             signup_id: signup_id
         });
     }
