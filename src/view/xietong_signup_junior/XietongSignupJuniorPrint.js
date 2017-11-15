@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Row, Col, Spin, Button} from 'antd';
 import Print from 'rc-print';
 
 import constant from '../../util/constant';

@@ -7,7 +7,6 @@ import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
-import validate from '../../util/validate';
 
 class XietongTeacherDetail extends Component {
     constructor(props) {
