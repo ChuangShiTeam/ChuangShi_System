@@ -224,9 +224,6 @@ class WebsiteMenuIndex extends Component {
             title: '菜单名称',
             dataIndex: 'website_menu_name'
         }, {
-            title: '页面编号',
-            dataIndex: 'page_id'
-        }, {
             title: '菜单地址',
             dataIndex: 'website_menu_url'
         }, {

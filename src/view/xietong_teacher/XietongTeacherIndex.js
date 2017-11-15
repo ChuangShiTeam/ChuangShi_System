@@ -271,7 +271,7 @@ class XietongTeacherIndex extends Component {
             dataIndex: 'teacher_number'
         }, {
             title: '分类',
-            dataIndex: 'teacher_category_id'
+            dataIndex: 'teacher_category_name'
         }, {
             title: '照片',
             dataIndex: 'file_path',
