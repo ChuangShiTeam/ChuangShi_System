@@ -6,6 +6,7 @@
     "antd": "^2.13.7",
     "dva": "1.2.1",
     "prop-types": "^15.5.10",
+    "rc-print": "^1.0.2",
     "rc-queue-anim": "^1.0.5",
     "react": "^15.6.1",
     "react-cropper": "^1.0.0",

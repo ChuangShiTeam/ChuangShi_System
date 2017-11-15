@@ -179,6 +179,10 @@ class XietongTeacherRecruitmentIndex extends Component {
         });
     }
 
+    handleExcel() {
+        window.open(constant.host + '/admin/xietong/teacher/recruitment/all/export')
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -233,12 +237,14 @@ class XietongTeacherRecruitmentIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">招聘信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleExcel.bind(this)}>导出招聘信息</Button>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
