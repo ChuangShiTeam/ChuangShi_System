@@ -10,83 +10,82 @@ import {compress} from '../util/function';
 let htmlEditor;
 
 class InputHtml extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-
+        this.state = {}
     }
-  }
 
-  componentDidMount() {
-    notification.on('notification_image_help_' + this.props.name + '_Submit', this, function (data) {
-      let html = '';
+    componentDidMount() {
+        notification.on('notification_image_help_' + this.props.name + '_Submit', this, function (data) {
+            let html = '';
 
-      for (let i = 0; i < data.length; i++) {
-        html += '<img src="' + constant.host + data[i].file_path + '" />';
-      }
+            for (let i = 0; i < data.length; i++) {
+                html += '<img src="' + constant.host + data[i].file_path + '" />';
+            }
 
-      htmlEditor.insertContent(html);
-    });
-  }
+            htmlEditor.insertContent(html);
+        });
+    }
 
-  componentWillUnmount() {
-    notification.remove('notification_image_help_' + this.props.name + '_Submit', this);
+    componentWillUnmount() {
+        notification.remove('notification_image_help_' + this.props.name + '_Submit', this);
 
-    htmlEditor.remove();
-  }
+        htmlEditor.remove();
+    }
 
-  handleSetValue(content) {
-    htmlEditor.setContent(content);
-  }
+    handleSetValue(content) {
+        htmlEditor.setContent(content);
+    }
 
-  handleGetValue() {
-    return compress(htmlEditor.getContent());
-  }
+    handleGetValue() {
+        return compress(htmlEditor.getContent());
+    }
 
-  handleReset() {
-    this.handleSetValue("");
-  }
+    handleReset() {
+        this.handleSetValue("");
+    }
 
-  render() {
+    render() {
 
-    return (
-      <div>
-        <TinyMCE
-          config={{
-            menubar: false,
-            border_width: 1,
-            convert_urls: false,
-            statusbar: false,
-            elementpath: false,
-            visual: false,
-            keep_values: false,
-            show_system_default_font: false,
-            forced_root_block: 'div',
-            plugins: 'code image imagetools autoresize media preview',
-            imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
-            toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough removeformat | alignleft aligncenter alignright | media | mybutton image | code | preview',
-            setup: function (editor) {
-              htmlEditor = editor;
+        return (
+            <div>
+                <TinyMCE
+                    config={{
+                        menubar: false,
+                        border_width: 1,
+                        convert_urls: false,
+                        statusbar: false,
+                        elementpath: false,
+                        visual: false,
+                        keep_values: false,
+                        show_system_default_font: false,
+                        forced_root_block: 'div',
+                        plugins: 'code image imagetools autoresize media preview',
+                        imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage imageoptions",
+                        toolbar: 'fontselect fontsizeselect | bold italic underline strikethrough removeformat | alignleft aligncenter alignright | media | mybutton image | code | preview',
+                        fontsize_formats: '10px 12px 14px 16px 18px 20px 24px 36px 48px 64px 72px',
+                        setup: function (editor) {
+                            htmlEditor = editor;
 
-              editor.addButton('mybutton', {
-                icon: 'mce-ico mce-i-browse',
-                tooltip: 'Insert image',
-                onclick: function () {
-                  notification.emit('notification_image_help_' + this.props.name + '_show', {});
-                }.bind(this)
-              });
-            }.bind(this)
-          }}
-        />
-        <ImageHelp name={this.props.name} type={'original'} limit={0} aspect={0} ref="image"/>
-      </div>
-    );
-  }
+                            editor.addButton('mybutton', {
+                                icon: 'mce-ico mce-i-browse',
+                                tooltip: 'Insert image',
+                                onclick: function () {
+                                    notification.emit('notification_image_help_' + this.props.name + '_show', {});
+                                }.bind(this)
+                            });
+                        }.bind(this)
+                    }}
+                />
+                <ImageHelp name={this.props.name} type={'original'} limit={0} aspect={0} ref="image"/>
+            </div>
+        );
+    }
 }
 
 InputHtml.propTypes = {
-  name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired
 };
 
 export default InputHtml;
