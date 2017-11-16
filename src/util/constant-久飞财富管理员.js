@@ -23,7 +23,7 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '久飞财富快速贷款--总控后台',
+    name: '快捷借贷平台--总控后台',
     app_id: 'd49579df8f8342699657335868f90561',
     index: '/feijiu/fast/product/index',
     login: '/admin/admin/login'

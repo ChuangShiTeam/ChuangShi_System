@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import XietongSignupJuniorDetail from './XietongSignupJuniorDetail';
+import XietongSignupJuniorPrint from './XietongSignupJuniorPrint';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -159,6 +160,12 @@ class XietongSignupJuniorIndex extends Component {
         });
     }
 
+    handlePrint(signup_id) {
+        notification.emit('notification_xietong_signup_junior_print', {
+            signup_id: signup_id
+        });
+    }
+
     handleDel(signup_id, system_version) {
         this.setState({
             is_load: true
@@ -181,6 +188,10 @@ class XietongSignupJuniorIndex extends Component {
                 });
             }.bind(this)
         });
+    }
+
+    handleExcel() {
+        window.open(constant.host + '/admin/xietong/signup/junior/all/export')
     }
 
     render() {
@@ -213,12 +224,14 @@ class XietongSignupJuniorIndex extends Component {
             title: '家庭住址',
             dataIndex: 'live_addresss'
         }, {
-            width: 100,
+            width: 180,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.signup_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <a onClick={this.handlePrint.bind(this, record.signup_id)}>打印</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -246,12 +259,14 @@ class XietongSignupJuniorIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">中心报名信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleExcel.bind(this)}>导出报名信息</Button>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
@@ -325,6 +340,7 @@ class XietongSignupJuniorIndex extends Component {
                        dataSource={this.props.xietong_signup_junior.list} pagination={pagination}
                        bordered/>
                 <XietongSignupJuniorDetail/>
+                <XietongSignupJuniorPrint/>
             </QueueAnim>
         );
     }

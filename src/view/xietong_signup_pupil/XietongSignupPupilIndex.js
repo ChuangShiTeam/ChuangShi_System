@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import XietongSignupPupilDetail from './XietongSignupPupilDetail';
+import XietongSignupPupilPrint from './XietongSignupPupilPrint';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -154,9 +155,13 @@ class XietongSignupPupilIndex extends Component {
     }
 
     handleEdit(signup_id) {
-        notification.em
+        notification.emit('notification_xietong_signup_pupil_detail_edit', {
+            signup_id: signup_id
+        });
+    }
 
-        it('notification_xietong_signup_pupil_detail_edit', {
+    handlePrint(signup_id) {
+        notification.emit('notification_xietong_signup_pupil_print', {
             signup_id: signup_id
         });
     }
@@ -189,6 +194,10 @@ class XietongSignupPupilIndex extends Component {
                 });
             }.bind(this)
         });
+    }
+
+    handleExcel() {
+        window.open(constant.host + '/admin/xietong/signup/pupil/all/export')
     }
 
     render() {
@@ -224,6 +233,8 @@ class XietongSignupPupilIndex extends Component {
                                       {/*<span className="divider"/>*/}
                   <a onClick={this.handleEdit.bind(this, record.signup_id)}>{constant.edit}</a>
                   <span className="divider"/>
+                  <a onClick={this.handlePrint.bind(this, record.signup_id)}>打印</a>
+                  <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
                               onConfirm={this.handleDel.bind(this, record.signup_id, record.system_version)}>
@@ -250,12 +261,14 @@ class XietongSignupPupilIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">小学报名信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleExcel.bind(this)}>导出报名信息</Button>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
@@ -329,6 +342,7 @@ class XietongSignupPupilIndex extends Component {
                        dataSource={this.props.xietong_signup_pupil.list} pagination={pagination}
                        bordered/>
                 <XietongSignupPupilDetail/>
+                <XietongSignupPupilPrint/>
             </QueueAnim>
         );
     }

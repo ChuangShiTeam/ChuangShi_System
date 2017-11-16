@@ -68,7 +68,6 @@ import InfinitiMemberIndex from './view/infiniti_member/InfinitiMemberIndex';
 import InfinitiPrizeIndex from './view/infiniti_prize/InfinitiPrizeIndex';
 import UniLotteryIndex from './view/uni_lottery/UniLotteryIndex';
 import XietongTeacherRecruitmentIndex from './view/xietong_teacher_recruitment/XietongTeacherRecruitmentIndex';
-import XietongAdmissionsIndex from './view/xietong_admissions/XietongAdmissionsIndex';
 import ProductCategorySkuAttributeIndex from './view/product_category_sku_attribute/ProductCategorySkuAttributeIndex';
 import ProductCategorySkuAttributeItemIndex from './view/product_category_sku_attribute_item/ProductCategorySkuAttributeItemIndex';
 import MinhangKeyIndex from './view/minhang_key/MinhangKeyIndex';
@@ -193,7 +192,6 @@ function RouterConfig({history}) {
                     <Route path="/xietong/course/config/index" component={XietongCourseConfigIndex}/>
                     <Route path="/uni/lottery/index" component={UniLotteryIndex}/>
                     <Route path="/xietong/teacher/recruitment/index" component={XietongTeacherRecruitmentIndex}/>
-                    <Route path="/xietong/admissions/index" component={XietongAdmissionsIndex}/>
                     <Route path="/product/category/sku/attribute/index" component={ProductCategorySkuAttributeIndex}/>
                     <Route path="/product/category/sku/attribute/item/index" component={ProductCategorySkuAttributeItemIndex}/>
                     <Route path="/minhang/key/index" component={MinhangKeyIndex}/>
@@ -219,7 +217,7 @@ function RouterConfig({history}) {
                     <Route path="/renault/customer/index" component={RenaultCustomerIndex}/>
                     <Route path="/renault/member/index" component={RenaultMemberIndex}/>
                     <Route path="/xietong/signup/junior/index" component={XietongSignupJuniorIndex}/>
-                    <Route path="/renault/signup/pupil/index" component={XietongSignupPupilIndex}/>
+                    <Route path="/xietong/signup/pupil/index" component={XietongSignupPupilIndex}/>
                     <Route path="/xietong/student/category/index" component={XietongStudentCategoryIndex}/>
                     <Route path="/xietong/teacher/category/index" component={XietongTeacherCategoryIndex}/>
                 </Route>
