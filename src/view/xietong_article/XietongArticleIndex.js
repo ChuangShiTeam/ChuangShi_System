@@ -231,6 +231,9 @@ class XietongArticleIndex extends Component {
             title: '文章名称',
             dataIndex: 'article_name'
         }, {
+            title: '文章分类',
+            dataIndex: 'article_category_name'
+        }, {
             width: 150,
             title: constant.operation,
             dataIndex: '',
