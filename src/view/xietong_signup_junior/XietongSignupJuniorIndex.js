@@ -3,13 +3,14 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import XietongAdmissionsDetail from './XietongAdmissionsDetail';
+import XietongSignupJuniorDetail from './XietongSignupJuniorDetail';
+import XietongSignupJuniorPrint from './XietongSignupJuniorPrint';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class XietongAdmissionsIndex extends Component {
+class XietongSignupJuniorIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -21,26 +22,26 @@ class XietongAdmissionsIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.xietong_admissions.app_id
+            app_id: this.props.xietong_signup_junior.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            admissions_no: this.props.xietong_admissions.admissions_no,
-            admissions_name: this.props.xietong_admissions.admissions_name,
+            student_name: this.props.xietong_signup_junior.student_name,
+            id_no: this.props.xietong_signup_junior.id_no,
         });
 
         this.handleLoad();
 
-        notification.on('notification_xietong_admissions_index_load', this, function (data) {
+        notification.on('notification_xietong_signup_junior_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_xietong_admissions_index_load', this);
+        notification.remove('notification_xietong_signup_junior_index_load', this);
     }
 
     handleLoadApp() {
@@ -49,7 +50,7 @@ class XietongAdmissionsIndex extends Component {
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'xietong_admissions/fetch',
+                    type: 'xietong_signup_junior/fetch',
                     data: {
                         app_list: data
                     }
@@ -63,20 +64,20 @@ class XietongAdmissionsIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let admissions_no = this.props.form.getFieldValue('admissions_no');
-            let admissions_name = this.props.form.getFieldValue('admissions_name');
+            let student_name = this.props.form.getFieldValue('student_name');
+            let id_no = this.props.form.getFieldValue('id_no');
 
             this.props.dispatch({
-                type: 'xietong_admissions/fetch',
+                type: 'xietong_signup_junior/fetch',
                 data: {
                     app_id: app_id,
-                    admissions_no: admissions_no,
-                    admissions_name: admissions_name,
+                    student_name: student_name,
+                    id_no: id_no,
                     page_index: 1
                 }
             });
@@ -93,17 +94,17 @@ class XietongAdmissionsIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/xietong/admissions/list',
+            url: '/' + constant.action + '/xietong/signup/junior/list',
             data: {
-                app_id: this.props.xietong_admissions.app_id,
-                admissions_no: this.props.xietong_admissions.admissions_no,
-                admissions_name: this.props.xietong_admissions.admissions_name,
-                page_index: this.props.xietong_admissions.page_index,
-                page_size: this.props.xietong_admissions.page_size
+                app_id: this.props.xietong_signup_junior.app_id,
+                student_name: this.props.xietong_signup_junior.student_name,
+                id_no: this.props.xietong_signup_junior.id_no,
+                page_index: this.props.xietong_signup_junior.page_index,
+                page_size: this.props.xietong_signup_junior.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'xietong_admissions/fetch',
+                    type: 'xietong_signup_junior/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -121,7 +122,7 @@ class XietongAdmissionsIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'xietong_admissions/fetch',
+                type: 'xietong_signup_junior/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -136,7 +137,7 @@ class XietongAdmissionsIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'xietong_admissions/fetch',
+                type: 'xietong_signup_junior/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -150,24 +151,30 @@ class XietongAdmissionsIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_xietong_admissions_detail_add', {});
+        notification.emit('notification_xietong_signup_junior_detail_add', {});
     }
 
-    handleEdit(admissions_id) {
-        notification.emit('notification_xietong_admissions_detail_edit', {
-            admissions_id: admissions_id
+    handleEdit(signup_id) {
+        notification.emit('notification_xietong_signup_junior_detail_edit', {
+            signup_id: signup_id
         });
     }
 
-    handleDel(admissions_id, system_version) {
+    handlePrint(signup_id) {
+        notification.emit('notification_xietong_signup_junior_print', {
+            signup_id: signup_id
+        });
+    }
+
+    handleDel(signup_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/xietong/admissions/delete',
+            url: '/' + constant.action + '/xietong/signup/junior/delete',
             data: {
-                admissions_id: admissions_id,
+                signup_id: signup_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -183,37 +190,52 @@ class XietongAdmissionsIndex extends Component {
         });
     }
 
+    handleExcel() {
+        window.open(constant.host + '/admin/xietong/signup/junior/all/export')
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
-            title: '序号',
-            dataIndex: 'admissions_no'
+            title: '学生姓名',
+            dataIndex: 'student_name'
         }, {
-            title: '姓名',
-            dataIndex: 'admissions_name'
+            title: '学生性别',
+            dataIndex: 'student_sex'
+        }, {
+            title: '生日',
+            dataIndex: 'student_birthday'
+        }, {
+            title: '担任职务',
+            dataIndex: 'job'
         }, {
             title: '证件类型',
-            dataIndex: 'admissions_certificate_type'
+            dataIndex: 'id_type'
         }, {
-            title: '证件号码(身份证号码）',
-            dataIndex: 'admissions_certificate_number'
+            title: '证件号码',
+            dataIndex: 'id_no'
         }, {
-            title: '性别',
-            dataIndex: 'admissions_sex'
+            title: '户籍地址',
+            dataIndex: 'permanent_address'
         }, {
-            width: 100,
+            title: '家庭住址',
+            dataIndex: 'live_addresss'
+        }, {
+            width: 180,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.admissions_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.signup_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <a onClick={this.handlePrint.bind(this, record.signup_id)}>打印</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.admissions_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.signup_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -222,12 +244,12 @@ class XietongAdmissionsIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.xietong_admissions.total,
+            total: this.props.xietong_signup_junior.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.xietong_admissions.page_index,
-            pageSize: this.props.xietong_admissions.page_size,
+            current: this.props.xietong_signup_junior.page_index,
+            pageSize: this.props.xietong_signup_junior.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -237,12 +259,14 @@ class XietongAdmissionsIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">中心报名信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleExcel.bind(this)}>导出报名信息</Button>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
@@ -262,7 +286,7 @@ class XietongAdmissionsIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.xietong_admissions.app_list.map(function (item) {
+                                                        this.props.xietong_signup_junior.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -281,12 +305,12 @@ class XietongAdmissionsIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="序号">
+                            }} className="content-search-item" label="学生姓名">
                                 {
-                                    getFieldDecorator('admissions_no', {
+                                    getFieldDecorator('student_name', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入序号" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入学生姓名" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -295,12 +319,12 @@ class XietongAdmissionsIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="姓名">
+                            }} className="content-search-item" label="证件号码">
                                 {
-                                    getFieldDecorator('admissions_name', {
+                                    getFieldDecorator('id_no', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入姓名" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入证件号码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -310,21 +334,22 @@ class XietongAdmissionsIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="admissions_id"
+                       rowKey="signup_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.xietong_admissions.list} pagination={pagination}
+                       dataSource={this.props.xietong_signup_junior.list} pagination={pagination}
                        bordered/>
-                <XietongAdmissionsDetail/>
+                <XietongSignupJuniorDetail/>
+                <XietongSignupJuniorPrint/>
             </QueueAnim>
         );
     }
 }
 
-XietongAdmissionsIndex.propTypes = {};
+XietongSignupJuniorIndex.propTypes = {};
 
-XietongAdmissionsIndex = Form.create({})(XietongAdmissionsIndex);
+XietongSignupJuniorIndex = Form.create({})(XietongSignupJuniorIndex);
 
-export default connect(({xietong_admissions}) => ({
-    xietong_admissions
-}))(XietongAdmissionsIndex);
+export default connect(({xietong_signup_junior}) => ({
+    xietong_signup_junior
+}))(XietongSignupJuniorIndex);

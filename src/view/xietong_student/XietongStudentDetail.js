@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -17,7 +18,8 @@ class XietongStudentDetail extends Component {
             student_id: '',
             user_id: '',
             system_version: '',
-            clazz: []
+            clazz: [],
+            category: []
         }
     }
 
@@ -26,7 +28,8 @@ class XietongStudentDetail extends Component {
             this.setState({
                 is_show: true,
                 action: 'save',
-                clazz: data.clazz
+                clazz: data.clazz,
+                category: data.category
             });
         });
 
@@ -35,6 +38,7 @@ class XietongStudentDetail extends Component {
                 is_show: true,
                 action: 'update',
                 clazz: data.clazz,
+                category: data.category,
                 student_id: data.student_id
             }, function () {
                 this.handleLoad();
@@ -65,7 +69,17 @@ class XietongStudentDetail extends Component {
                     });
                 }
 
+                let student_image = [];
+                if (data.file_id !== null) {
+                    student_image.push({
+                        file_id: data.file_id,
+                        file_path: data.file_path
+                    });
+                }
+                this.refs.student_image.handleSetValue(student_image);
+
                 this.props.form.setFieldsValue({
+                    student_category_id: data.student_category_id,
                     clazz_id: data.clazz_id,
                     student_name: data.student_name,
                     student_number: data.student_number,
@@ -95,6 +109,13 @@ class XietongStudentDetail extends Component {
             values.student_id = this.state.student_id;
             values.system_version = this.state.system_version;
             values.user_id = this.state.user_id;
+
+            let file_list = this.refs.student_image.handleGetValue();
+            if (file_list.length === 0) {
+                values.student_image = '';
+            } else {
+                values.student_image = file_list[0].file_id;
+            }
 
             this.setState({
                 is_load: true
@@ -130,6 +151,8 @@ class XietongStudentDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.student_image.handleReset();
     }
 
     render() {
@@ -208,6 +231,44 @@ class XietongStudentDetail extends Component {
                                             </Select>
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="所属分类">
+                                    {
+                                        getFieldDecorator('student_category_id', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Select placeholder="请选择分类">
+                                                {
+                                                    this.state.category.map(function (item) {
+                                                        return (
+                                                            <Option key={item.student_category_id} value={item.student_category_id}>{item.student_category_name}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="照片">
+                                    <InputImage name="student_image" limit={1} aspect={100 / 100} ref="student_image"/>
                                 </FormItem>
                             </Col>
                         </Row>

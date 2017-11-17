@@ -33,6 +33,8 @@ class WebsiteMenuIndex extends Component {
 
         this.handleLoad();
 
+        this.handleLoadPage();
+
         notification.on('notification_website_menu_index_load', this, function (data) {
             this.handleLoad();
         });
@@ -51,6 +53,24 @@ class WebsiteMenuIndex extends Component {
                     type: 'website_menu/fetch',
                     data: {
                         app_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
+    handleLoadPage() {
+        http.request({
+            url: '/' + constant.action + '/page/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'website_menu/fetch',
+                    data: {
+                        page_list: data
                     }
                 });
             }.bind(this),

@@ -7,6 +7,7 @@ export default {
         app_list: [],
         website_menu_name: '',
         list: [],
+        page_list: [],
         expandedRowKeys: []
     },
 

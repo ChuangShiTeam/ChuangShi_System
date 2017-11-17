@@ -104,7 +104,7 @@ class InputImage extends Component {
         }
 
         this.setState({
-            image: constant.host + file_path,
+            image: constant.image_host + file_path,
             is_preview: true
         });
     }
@@ -184,7 +184,7 @@ class InputImage extends Component {
                         return (
                             <div key={index} className="item">
                                 <div className="item-image"
-                                     style={{backgroundImage: 'url(' + constant.host + item.file_path + ')'}}></div>
+                                     style={{backgroundImage: 'url(' + constant.image_host + item.file_path + ')'}}></div>
                                 <div onMouseOver={this.handleMouseOver.bind(this, item.file_id)}
                                      onMouseOut={this.handleMouseOut.bind(this)}>
                                     <div className={mask}></div>

@@ -284,7 +284,8 @@ class TradeIndex extends Component {
                     {record.trade_flow === "WAIT_PAY" ? "待付款" :
                         record.trade_flow === "WAIT_SEND" ? "待发货" :
                             record.trade_flow === "WAIT_RECEIVE" ? "待收货" :
-                                record.trade_flow === "COMPLETE" ? "已完成" : ""}
+                                record.trade_flow === "CANCEL" ? "已取消" :
+                                    record.trade_flow === "COMPLETE" ? "已完成" : ""}
                 </div>
             )
         }, {

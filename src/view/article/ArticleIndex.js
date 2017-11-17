@@ -207,7 +207,10 @@ class ArticleIndex extends Component {
         const columns = [{
             title: '文章名称',
             dataIndex: 'article_name'
-        }, {
+        },{
+            title: '文章分类',
+            dataIndex: 'article_category_name'
+        },{
             width: 100,
             title: constant.operation,
             dataIndex: '',

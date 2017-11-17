@@ -32,12 +32,13 @@ class XietongTeacherIndex extends Component {
             organization_id: this.props.xietong_teacher.organization_id,
             teacher_name: this.props.xietong_teacher.teacher_name,
             teacher_number: this.props.xietong_teacher.teacher_number,
-            teacher_category: this.props.xietong_teacher.teacher_category
+            teacher_category_id: this.props.xietong_teacher.teacher_category_id
         });
 
         this.handleLoad();
         this.handleLoadOrganization();
         this.handleClazzList();
+        this.handleLoadTeacherCategory();
 
         notification.on('notification_xietong_teacher_index_load', this, function (data) {
             this.handleLoad();
@@ -108,6 +109,24 @@ class XietongTeacherIndex extends Component {
         });
     }
 
+    handleLoadTeacherCategory() {
+        http.request({
+            url: '/' + constant.action + '/xietong/teacher/category/all/list',
+            data: {},
+            success: function (data) {
+                this.props.dispatch({
+                    type: 'xietong_teacher/fetch',
+                    data: {
+                        teacher_category_list: data
+                    }
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
+    }
+
     handleSearch() {
         new Promise(function (resolve, reject) {
             var app_id = this.props.form.getFieldValue('app_id');
@@ -118,7 +137,7 @@ class XietongTeacherIndex extends Component {
             let organization_id = this.props.form.getFieldValue('organization_id');
             let teacher_name = this.props.form.getFieldValue('teacher_name');
             let teacher_number = this.props.form.getFieldValue('teacher_number');
-            let teacher_category = this.props.form.getFieldValue('teacher_category');
+            let teacher_category_id = this.props.form.getFieldValue('teacher_category_id');
 
             this.props.dispatch({
                 type: 'xietong_teacher/fetch',
@@ -127,7 +146,7 @@ class XietongTeacherIndex extends Component {
                     organization_id: organization_id,
                     teacher_name: teacher_name,
                     teacher_number: teacher_number,
-                    teacher_category: teacher_category,
+                    teacher_category_id: teacher_category_id,
                     page_index: 1
                 }
             });
@@ -150,7 +169,7 @@ class XietongTeacherIndex extends Component {
                 organization_id: this.props.xietong_teacher.organization_id,
                 teacher_name: this.props.xietong_teacher.teacher_name,
                 teacher_number: this.props.xietong_teacher.teacher_number,
-                teacher_category: this.props.xietong_teacher.teacher_category,
+                teacher_category_id: this.props.xietong_teacher.teacher_category_id,
                 page_index: this.props.xietong_teacher.page_index,
                 page_size: this.props.xietong_teacher.page_size
             },
@@ -252,7 +271,7 @@ class XietongTeacherIndex extends Component {
             dataIndex: 'teacher_number'
         }, {
             title: '分类',
-            dataIndex: 'teacher_category'
+            dataIndex: 'teacher_category_name'
         }, {
             title: '照片',
             dataIndex: 'file_path',
@@ -401,7 +420,7 @@ class XietongTeacherIndex extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="content-search-item" label="分类">
                                 {
-                                    getFieldDecorator('teacher_category', {
+                                    getFieldDecorator('teacher_category_id', {
                                     initialValue: ''
                                 })(
                                     <Input type="text" placeholder="请输入分类" onPressEnter={this.handleSearch.bind(this)}/>

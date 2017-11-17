@@ -274,10 +274,6 @@ class PageDetail extends Component {
                                 }} className="form-item" label="单页地址">
                                     {
                                         getFieldDecorator('page_url', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Input type="text" placeholder={constant.placeholder + '单页地址'} onPressEnter={this.handleSubmit.bind(this)}/>

@@ -147,7 +147,7 @@ class ImageHelp extends Component {
         }
 
         this.setState({
-            image: constant.host + file_path,
+            image: constant.image_host + file_path,
             is_preview: true
         });
     }
@@ -279,7 +279,7 @@ class ImageHelp extends Component {
             name: 'file',
             multiple: true,
             showUploadList: false,
-            action: constant.host + '/admin/file/upload',
+            action: constant.image_host + '/admin/file/upload',
             accept: 'image/jpg,image/jpeg,image/png',
             headers: {
                 'app_id': constant.app_id,
@@ -326,7 +326,7 @@ class ImageHelp extends Component {
                             return (
                                 <div key={item.file_id} className="item">
                                     <div className="item-image"
-                                         style={{backgroundImage: 'url(' + constant.host + item.file_path + ')'}}></div>
+                                         style={{backgroundImage: 'url(' + constant.image_host + item.file_path + ')'}}></div>
                                     <div onMouseOver={this.handleMouseOver.bind(this, item.file_id)}
                                          onMouseOut={this.handleMouseOut.bind(this, item.file_id)}>
                                         <div className={mask} onClick={this.handleClick.bind(this, item.file_id)}></div>

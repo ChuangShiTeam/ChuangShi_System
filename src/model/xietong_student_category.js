@@ -2,21 +2,16 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'xietong_teacher',
+    namespace: 'xietong_student_category',
 
     state: {
         app_id: '',
         app_list: [],
-        organization_id: '',
-        organization_list: [],
-        teacher_name: '',
-        teacher_number: '',
-        teacher_category_id: '',
+        student_category_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,
-        list: [],
-        teacher_category_list: []
+        list: []
     },
 
     reducers: {

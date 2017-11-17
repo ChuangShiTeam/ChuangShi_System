@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, Switch, message, DatePicker} from 'antd';
-import moment from 'moment';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class XietongAdmissionsDetail extends Component {
+class XietongSignupPupilDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -15,25 +14,24 @@ class XietongAdmissionsDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            admissions_id: '',
-            user_id: '',
+            signup_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_xietong_admissions_detail_add', this, function (data) {
+        notification.on('notification_xietong_signup_pupil_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_xietong_admissions_detail_edit', this, function (data) {
+        notification.on('notification_xietong_signup_pupil_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                admissions_id: data.admissions_id
+                signup_id: data.signup_id
             }, function () {
                 this.handleLoad();
             });
@@ -41,9 +39,9 @@ class XietongAdmissionsDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_xietong_admissions_detail_add', this);
+        notification.remove('notification_xietong_signup_pupil_detail_add', this);
 
-        notification.remove('notification_xietong_admissions_detail_edit', this);
+        notification.remove('notification_xietong_signup_pupil_detail_edit', this);
     }
 
     handleLoad() {
@@ -52,9 +50,9 @@ class XietongAdmissionsDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/xietong/admissions/find',
+            url: '/' + constant.action + '/xietong/signup/pupil/find',
             data: {
-                admissions_id: this.state.admissions_id
+                signup_id: this.state.signup_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -64,27 +62,29 @@ class XietongAdmissionsDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    admissions_no: data.admissions_no,
-                    admissions_name: data.admissions_name,
-                    admissions_certificate_type: data.admissions_certificate_type,
-                    admissions_certificate_number: data.admissions_certificate_number,
-                    admissions_sex: data.admissions_sex,
-                    admissions_birthday: data.admissions_birthday?moment(data.admissions_birthday):null,
-                    admissions_is_apply_live_school: data.admissions_is_apply_live_school,
-                    admissions_old_school: data.admissions_old_school,
-                    admissions_registration_address: data.admissions_registration_address,
-                    admissions_home_address: data.admissions_home_address,
-                    admissions_home_first_name: data.admissions_home_first_name,
-                    admissions_home_first_unit: data.admissions_home_first_unit,
-                    admissions_home_first_tel: data.admissions_home_first_tel,
-                    admissions_home_second_name: data.admissions_home_second_name,
-                    admissions_home_second_unit: data.admissions_home_second_unit,
-                    admissions_home_second_tel: data.admissions_home_second_tel,
-                    admissions_notes: data.admissions_notes,
+                    student_name: data.student_name,
+                    student_sex: data.student_sex,
+                    student_birthday: data.student_birthday,
+                    interview_time: data.interview_time,
+                    kindergarten: data.kindergarten,
+                    id_type: data.id_type,
+                    id_no: data.id_no,
+                    permanent_address: data.permanent_address,
+                    live_addresss: data.live_addresss,
+                    father_name: data.father_name,
+                    father_id_no: data.father_id_no,
+                    father_work: data.father_work,
+                    father_phone: data.father_phone,
+                    mother_name: data.mother_name,
+                    mother_id_no: data.mother_id_no,
+                    mother_work: data.mother_work,
+                    mother_phone: data.mother_phone,
+                    remark: data.remark,
+                    mark: data.mark,
+                    signup_status: data.signup_status,
                 });
 
                 this.setState({
-                    user_id: data.user_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -103,22 +103,20 @@ class XietongAdmissionsDetail extends Component {
                 return;
             }
 
-            values.admissions_id = this.state.admissions_id;
+            values.signup_id = this.state.signup_id;
             values.system_version = this.state.system_version;
-            values.user_id = this.state.user_id;
-            values.admissions_birthday = values.admissions_birthday.format('YYYY-MM-DD');
 
             this.setState({
                 is_load: true
             });
 
             http.request({
-                url: '/' + constant.action + '/xietong/admissions/' + this.state.action,
+                url: '/' + constant.action + '/xietong/signup/pupil/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_xietong_admissions_index_load', {});
+                    notification.emit('notification_xietong_signup_pupil_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -136,8 +134,7 @@ class XietongAdmissionsDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            admissions_id: '',
-            user_id: '',
+            signup_id: '',
             system_version: ''
         });
 
@@ -148,7 +145,6 @@ class XietongAdmissionsDetail extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-        const { TextArea } = Input;
 
         return (
             <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
@@ -181,7 +177,7 @@ class XietongAdmissionsDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.xietong_admissions.app_list.map(function (item) {
+                                                            this.props.xietong_signup_pupil.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -197,45 +193,101 @@ class XietongAdmissionsDetail extends Component {
                                 :
                                 ''
                         }
-                        {
-                            this.state.action === 'update' ?
-                                <Row>
-                                    <Col span={8}>
-                                        <FormItem hasFeedback {...{
-                                            labelCol: {span: 6},
-                                            wrapperCol: {span: 18}
-                                        }} className="form-item" label="序号">
-                                            {
-                                                getFieldDecorator('admissions_no', {
-                                                    rules: [{
-                                                        required: true,
-                                                        message: constant.required
-                                                    }],
-                                                    initialValue: ''
-                                                })(
-                                                    <Input type="text" placeholder={constant.placeholder + '序号'}
-                                                           onPressEnter={this.handleSubmit.bind(this)} disabled/>
-                                                )
-                                            }
-                                        </FormItem>
-                                    </Col>
-                                </Row>:null
-                        }
-                            <Row>
-                                <Col span={8}>
+                        <Row>
+                            <Col span={8}>
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="姓名">
+                                }} className="form-item" label="学生姓名">
                                     {
-                                        getFieldDecorator('admissions_name', {
+                                        getFieldDecorator('student_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '学生姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="学生性别">
+                                    {
+                                        getFieldDecorator('student_sex', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '学生性别'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="生日">
+                                    {
+                                        getFieldDecorator('student_birthday', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '生日'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="面试时间">
+                                    {
+                                        getFieldDecorator('interview_time', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '面试时间'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="原就读幼儿园">
+                                    {
+                                        getFieldDecorator('kindergarten', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '原就读幼儿园'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -248,7 +300,7 @@ class XietongAdmissionsDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="证件类型">
                                     {
-                                        getFieldDecorator('admissions_certificate_type', {
+                                        getFieldDecorator('id_type', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
@@ -266,94 +318,16 @@ class XietongAdmissionsDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="证件号码(身份证号码）">
+                                }} className="form-item" label="证件号码">
                                     {
-                                        getFieldDecorator('admissions_certificate_number', {
+                                        getFieldDecorator('id_no', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '证件号码(身份证号码）'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="性别">
-                                    {
-                                        getFieldDecorator('admissions_sex', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }]
-                                        })(
-                                            <Select placeholder="请选择性别">
-                                                <Option key="男" value="男">男</Option>
-                                                <Option key="女" value="女">女</Option>
-                                            </Select>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="出生日期">
-                                    {
-                                        getFieldDecorator('admissions_birthday', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }]
-                                        })(
-                                            <DatePicker />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="是否申请住校">
-                                    {
-                                        getFieldDecorator('admissions_is_apply_live_school', {
-                                            valuePropName: 'checked',
-                                            initialValue: false
-                                        })(
-                                            <Switch />
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="原就读学校">
-                                    {
-                                        getFieldDecorator('admissions_old_school', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '原就读学校'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '证件号码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -366,14 +340,14 @@ class XietongAdmissionsDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="户籍地址">
                                     {
-                                        getFieldDecorator('admissions_registration_address', {
+                                        getFieldDecorator('permanent_address', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '户籍地址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '户籍地址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -386,14 +360,14 @@ class XietongAdmissionsDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="家庭住址">
                                     {
-                                        getFieldDecorator('admissions_home_address', {
+                                        getFieldDecorator('live_addresss', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '家庭住址'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '家庭住址'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -404,16 +378,16 @@ class XietongAdmissionsDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="家庭成员一姓名">
+                                }} className="form-item" label="父亲姓名">
                                     {
-                                        getFieldDecorator('admissions_home_first_name', {
+                                        getFieldDecorator('father_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭成员一姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '父亲姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -424,32 +398,16 @@ class XietongAdmissionsDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="家庭成员一单位">
+                                }} className="form-item" label="父亲证件号码">
                                     {
-                                        getFieldDecorator('admissions_home_first_unit', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭成员一单位'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="家庭成员一联系电话">
-                                    {
-                                        getFieldDecorator('admissions_home_first_tel', {
+                                        getFieldDecorator('father_id_no', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭成员一联系电话'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '父亲证件号码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -460,16 +418,16 @@ class XietongAdmissionsDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="家庭成员二姓名">
+                                }} className="form-item" label="父亲工作单位">
                                     {
-                                        getFieldDecorator('admissions_home_second_name', {
+                                        getFieldDecorator('father_work', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭成员二姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '父亲工作单位'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -480,32 +438,96 @@ class XietongAdmissionsDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="家庭成员二单位">
+                                }} className="form-item" label="父亲联系电话">
                                     {
-                                        getFieldDecorator('admissions_home_second_unit', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭成员二单位'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="家庭成员二联系电话">
-                                    {
-                                        getFieldDecorator('admissions_home_second_tel', {
+                                        getFieldDecorator('father_phone', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '家庭成员二联系电话'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '父亲联系电话'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="母亲姓名">
+                                    {
+                                        getFieldDecorator('mother_name', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '母亲姓名'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="母亲证件号码">
+                                    {
+                                        getFieldDecorator('mother_id_no', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '母亲证件号码'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="母亲工作单位">
+                                    {
+                                        getFieldDecorator('mother_work', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '母亲工作单位'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="母亲联系电话">
+                                    {
+                                        getFieldDecorator('mother_phone', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '母亲联系电话'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -518,38 +540,59 @@ class XietongAdmissionsDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="需要说明事项">
                                     {
-                                        getFieldDecorator('admissions_notes', {
+                                        getFieldDecorator('remark', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
                                             initialValue: ''
                                         })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '需要说明事项'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '需要说明事项'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
-                        {
-                            this.state.action === 'update' ?
-                                <Row>
-                                    <Col span={8}>
-                                        <FormItem hasFeedback {...{
-                                            labelCol: {span: 6},
-                                            wrapperCol: {span: 18}
-                                        }} className="form-item" label="登录密码">
-                                            {
-                                                getFieldDecorator('user_password', {
-                                                    rules: [{
-                                                        required: false,
-                                                        message: constant.required
-                                                    }],
-                                                    initialValue: ''
-                                                })(
-                                                    <Input type="text" placeholder={constant.placeholder + '登录密码'}/>
-                                                )
-                                            }
-                                        </FormItem>
-                                    </Col>
-                                </Row>:null
-                        }
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="评分">
+                                    {
+                                        getFieldDecorator('mark', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '评分'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="报名状态">
+                                    {
+                                        getFieldDecorator('signup_status', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '报名状态'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                     </form>
                 </Spin>
             </Modal>
@@ -557,8 +600,8 @@ class XietongAdmissionsDetail extends Component {
     }
 }
 
-XietongAdmissionsDetail.propTypes = {};
+XietongSignupPupilDetail.propTypes = {};
 
-XietongAdmissionsDetail = Form.create({})(XietongAdmissionsDetail);
+XietongSignupPupilDetail = Form.create({})(XietongSignupPupilDetail);
 
-export default connect(({xietong_admissions}) => ({xietong_admissions}))(XietongAdmissionsDetail);
+export default connect(({xietong_signup_pupil}) => ({xietong_signup_pupil}))(XietongSignupPupilDetail);

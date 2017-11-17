@@ -6,7 +6,7 @@ import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class WebsiteMenuDetail extends Component {
+class XietongStudentCategoryDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,26 +14,24 @@ class WebsiteMenuDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            website_menu_id: '',
-            website_menu_pawebsite_menu_parent_idrent_id: '',
+            student_category_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_website_menu_detail_add', this, function (data) {
+        notification.on('notification_xietong_student_category_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
-                action: 'save',
-                website_menu_parent_id: data.website_menu_parent_id
+                action: 'save'
             });
         });
 
-        notification.on('notification_website_menu_detail_edit', this, function (data) {
+        notification.on('notification_xietong_student_category_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                website_menu_id: data.website_menu_id
+                student_category_id: data.student_category_id
             }, function () {
                 this.handleLoad();
             });
@@ -41,9 +39,9 @@ class WebsiteMenuDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_website_menu_detail_add', this);
+        notification.remove('notification_xietong_student_category_detail_add', this);
 
-        notification.remove('notification_website_menu_detail_edit', this);
+        notification.remove('notification_xietong_student_category_detail_edit', this);
     }
 
     handleLoad() {
@@ -52,9 +50,9 @@ class WebsiteMenuDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/website/menu/find',
+            url: '/' + constant.action + '/xietong/student/category/find',
             data: {
-                website_menu_id: this.state.website_menu_id
+                student_category_id: this.state.student_category_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
@@ -64,14 +62,11 @@ class WebsiteMenuDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
-                    page_id: data.page_id,
-                    website_menu_name: data.website_menu_name,
-                    website_menu_url: data.website_menu_url,
-                    website_menu_sort: data.website_menu_sort,
+                    student_category_name: data.student_category_name,
+                    student_category_sort: data.student_category_sort,
                 });
 
                 this.setState({
-                    website_menu_parent_id: data.website_menu_parent_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -90,8 +85,7 @@ class WebsiteMenuDetail extends Component {
                 return;
             }
 
-            values.website_menu_id = this.state.website_menu_id;
-            values.website_menu_parent_id = this.state.website_menu_parent_id;
+            values.student_category_id = this.state.student_category_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -99,12 +93,12 @@ class WebsiteMenuDetail extends Component {
             });
 
             http.request({
-                url: '/' + constant.action + '/website/menu/' + this.state.action,
+                url: '/' + constant.action + '/xietong/student/category/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_website_menu_index_load', {});
+                    notification.emit('notification_xietong_student_category_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -122,7 +116,7 @@ class WebsiteMenuDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            website_menu_id: '',
+            student_category_id: '',
             system_version: ''
         });
 
@@ -135,7 +129,7 @@ class WebsiteMenuDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'菜单详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -165,7 +159,7 @@ class WebsiteMenuDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.website_menu.app_list.map(function (item) {
+                                                            this.props.xietong_student_category.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -186,41 +180,16 @@ class WebsiteMenuDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="content-search-item" label="所属页面">
+                                }} className="form-item" label="分类名称">
                                     {
-                                        getFieldDecorator('page_id', {
-                                            initialValue: ''
-                                        })(
-                                            <Select allowClear placeholder="请选择页面">
-                                                {
-                                                    this.props.website_menu.page_list.map(function (item) {
-                                                        return (
-                                                            <Option key={item.page_id}
-                                                                    value={item.page_id}>{item.page_name}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="菜单名称">
-                                    {
-                                        getFieldDecorator('website_menu_name', {
+                                        getFieldDecorator('student_category_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '菜单名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '分类名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -231,32 +200,16 @@ class WebsiteMenuDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="菜单地址">
+                                }} className="form-item" label="分类排序">
                                     {
-                                        getFieldDecorator('website_menu_url', {
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '菜单地址'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="菜单排序">
-                                    {
-                                        getFieldDecorator('website_menu_sort', {
+                                        getFieldDecorator('student_category_sort', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '菜单排序'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '分类排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -269,8 +222,8 @@ class WebsiteMenuDetail extends Component {
     }
 }
 
-WebsiteMenuDetail.propTypes = {};
+XietongStudentCategoryDetail.propTypes = {};
 
-WebsiteMenuDetail = Form.create({})(WebsiteMenuDetail);
+XietongStudentCategoryDetail = Form.create({})(XietongStudentCategoryDetail);
 
-export default connect(({website_menu}) => ({website_menu}))(WebsiteMenuDetail);
+export default connect(({xietong_student_category}) => ({xietong_student_category}))(XietongStudentCategoryDetail);

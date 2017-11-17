@@ -4,6 +4,7 @@ import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
 import XietongTeacherRecruitmentDetail from './XietongTeacherRecruitmentDetail';
+import XietongTeacherRecruitmentPrint from './XietongTeacherRecruitmentPrint';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
@@ -155,6 +156,12 @@ class XietongTeacherRecruitmentIndex extends Component {
         });
     }
 
+    handlePrint(teacher_recruitment_id) {
+        notification.emit('notification_xietong_teacher_recruitment_print', {
+            teacher_recruitment_id: teacher_recruitment_id
+        });
+    }
+
     handleDel(teacher_recruitment_id, system_version) {
         this.setState({
             is_load: true
@@ -179,6 +186,10 @@ class XietongTeacherRecruitmentIndex extends Component {
         });
     }
 
+    handleExcel() {
+        window.open(constant.host + '/admin/xietong/teacher/recruitment/all/export')
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -200,12 +211,14 @@ class XietongTeacherRecruitmentIndex extends Component {
             title: '应聘学科',
             dataIndex: 'teacher_recruitment_subject'
         }, {
-            width: 100,
+            width: 180,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.teacher_recruitment_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <a onClick={this.handlePrint.bind(this, record.teacher_recruitment_id)}>打印</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -233,12 +246,14 @@ class XietongTeacherRecruitmentIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">招聘信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleExcel.bind(this)}>导出招聘信息</Button>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
@@ -298,6 +313,7 @@ class XietongTeacherRecruitmentIndex extends Component {
                        dataSource={this.props.xietong_teacher_recruitment.list} pagination={pagination}
                        bordered/>
                 <XietongTeacherRecruitmentDetail/>
+                <XietongTeacherRecruitmentPrint/>
             </QueueAnim>
         );
     }

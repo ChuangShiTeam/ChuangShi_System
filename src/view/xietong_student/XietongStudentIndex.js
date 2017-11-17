@@ -17,6 +17,7 @@ class XietongStudentIndex extends Component {
         this.state = {
             is_load: false,
             clazz: [],
+            category: [],
             selectedRowKeys: []
         }
     }
@@ -39,6 +40,8 @@ class XietongStudentIndex extends Component {
 
         this.handleClazzList();
 
+        this.handleCategoryList();
+
         notification.on('notification_xietong_student_index_load', this, function (data) {
             this.handleLoad();
         });
@@ -46,6 +49,21 @@ class XietongStudentIndex extends Component {
 
     componentWillUnmount() {
         notification.remove('notification_xietong_student_index_load', this);
+    }
+
+    handleCategoryList() {
+        http.request({
+            url: '/' + constant.action + '/xietong/student/category/all/list',
+            data: { },
+            success: function (data) {
+                this.setState({
+                    category: data
+                });
+            }.bind(this),
+            complete: function () {
+
+            }
+        });
     }
 
     handleClazzList() {
@@ -179,13 +197,14 @@ class XietongStudentIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_xietong_student_detail_add', {clazz: this.state.clazz});
+        notification.emit('notification_xietong_student_detail_add', {clazz: this.state.clazz, category: this.state.category});
     }
 
     handleEdit(student_id) {
         notification.emit('notification_xietong_student_detail_edit', {
             student_id: student_id,
-            clazz: this.state.clazz
+            clazz: this.state.clazz,
+            category: this.state.category
         });
     }
 

@@ -266,8 +266,8 @@ class PageIndex extends Component {
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.page_id)}>{constant.edit}</a>
                   <span className="divider"/>
-                  <a onClick={this.handleWrite.bind(this, record.page_id)}>生成</a>
-                  <span className="divider"/>
+                  {/*<a onClick={this.handleWrite.bind(this, record.page_id)}>生成</a>*/}
+                  {/*<span className="divider"/>*/}
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
                               onConfirm={this.handleDel.bind(this, record.page_id, record.system_version)}>
@@ -297,9 +297,9 @@ class PageIndex extends Component {
                         <div className="">单页信息</div>
                     </Col>
                     <Col span={16} className="content-button">
-                        <Button type="default" icon="export" size="default" className="margin-right"
-                                loading={this.state.is_load}
-                                onClick={this.handleAllWrite.bind(this)}>全部生成</Button>
+                        {/*<Button type="default" icon="export" size="default" className="margin-right"*/}
+                                {/*loading={this.state.is_load}*/}
+                                {/*onClick={this.handleAllWrite.bind(this)}>全部生成</Button>*/}
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>

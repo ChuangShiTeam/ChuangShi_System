@@ -2,13 +2,12 @@ import constant from '../util/constant';
 
 export default {
 
-    namespace: 'xietong_admissions',
+    namespace: 'xietong_teacher_category',
 
     state: {
         app_id: '',
         app_list: [],
-        admissions_no: '',
-        admissions_name: '',
+        teacher_category_name: '',
         total: 0,
         page_index: 1,
         page_size: constant.page_size,

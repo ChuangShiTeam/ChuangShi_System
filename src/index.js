@@ -69,7 +69,6 @@ import xietong_student from './model/xietong_student';
 import xietong_clazz from './model/xietong_clazz';
 import xietong_course_config from './model/xietong_course_config';
 import xietong_teacher_recruitment from './model/xietong_teacher_recruitment';
-import xietong_admissions from './model/xietong_admissions';
 import minhang_key from './model/minhang_key';
 import minhang_video from './model/minhang_video';
 import minhang_task from './model/minhang_task';
@@ -89,6 +88,10 @@ import uni_book_consult from './model/uni_book_consult';
 import renault_member from './model/renault_member';
 import renault_customer from './model/renault_customer';
 import renault_share from './model/renault_share';
+import xietong_student_category from './model/xietong_student_category';
+import xietong_signup_junior from './model/xietong_signup_junior';
+import xietong_signup_pupil from './model/xietong_signup_pupil';
+import xietong_teacher_category from './model/xietong_teacher_category';
 
 document.title = constant.name;
 
@@ -159,7 +162,6 @@ app.model(xietong_student);
 app.model(xietong_clazz);
 app.model(xietong_course_config);
 app.model(xietong_teacher_recruitment);
-app.model(xietong_admissions);
 app.model(minhang_key);
 app.model(minhang_video);
 app.model(minhang_task);
@@ -179,6 +181,10 @@ app.model(uni_book_consult);
 app.model(renault_customer);
 app.model(renault_share);
 app.model(renault_member);
+app.model(xietong_signup_junior);
+app.model(xietong_signup_pupil);
+app.model(xietong_student_category);
+app.model(xietong_teacher_category);
 
 app.router(Router);
 
