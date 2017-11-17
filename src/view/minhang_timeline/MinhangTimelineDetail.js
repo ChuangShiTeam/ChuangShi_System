@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
+import InputHtml from '../../component/InputHtml';
 import InputImage from '../../component/InputImage';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -34,7 +35,9 @@ class MinhangTimelineDetail extends Component {
                 action: 'update',
                 timeline_id: data.timeline_id
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -66,9 +69,9 @@ class MinhangTimelineDetail extends Component {
                     timeline_image.push(data.timeline_image_file);
                 }
                 this.refs.timeline_image.handleSetValue(timeline_image);
+                this.refs.timeline_description.handleSetValue(data.timeline_description);
                 this.props.form.setFieldsValue({
-                    timeline_year: data.timeline_year,
-                    timeline_description: data.timeline_description
+                    timeline_year: data.timeline_year
                 });
 
                 this.setState({
@@ -99,6 +102,7 @@ class MinhangTimelineDetail extends Component {
             } else {
                 values.timeline_image = file_list[0].file_id;
             }
+            values.timeline_description = this.refs.timeline_description.handleGetValue();
 
             this.setState({
                 is_load: true
@@ -134,13 +138,13 @@ class MinhangTimelineDetail extends Component {
 
         this.props.form.resetFields();
         this.refs.timeline_image.handleReset();
+        this.refs.timeline_description.handleReset();
     }
 
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
-        const { TextArea } = Input;
 
         return (
             <Modal title={'时间轴详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
@@ -220,18 +224,12 @@ class MinhangTimelineDetail extends Component {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={24}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-item" label="描述">
-                                    {
-                                        getFieldDecorator('timeline_description', {
-                                            initialValue: ''
-                                        })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '描述'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                    <InputHtml name="timeline_description" ref="timeline_description"/>
                                 </FormItem>
                             </Col>
                         </Row>

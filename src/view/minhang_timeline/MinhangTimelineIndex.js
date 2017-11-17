@@ -199,9 +199,11 @@ class MinhangTimelineIndex extends Component {
             title: '图片',
             dataIndex: 'timeline_image',
             render: (text, record, index) => (
+                record.timeline_image_file ?
                 <div className="clearfix">
                     <img alt="example" style={{ height: '83px' }} src={constant.host + record.timeline_image_file.file_original_path}/>
                 </div>
+                : null
             )
         }, {
             width: 200,
