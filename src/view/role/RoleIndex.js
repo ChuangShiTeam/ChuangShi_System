@@ -3,14 +3,14 @@ import {connect} from 'dva';
 import QueueAnim from 'rc-queue-anim';
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from 'antd';
 
-import AdminDetail from './AdminDetail';
-import AdminAuthorization from './AdminAuthorization';
+import RoleDetail from './RoleDetail';
+import RoleAuthorization from './RoleAuthorization';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import validate from '../../util/validate';
 import http from '../../util/http';
 
-class AdminIndex extends Component {
+class RoleIndex extends Component {
     constructor(props) {
         super(props);
 
@@ -22,34 +22,35 @@ class AdminIndex extends Component {
     componentDidMount() {
         if (constant.action === 'system') {
             this.props.form.setFieldsValue({
-            app_id: this.props.admin.app_id
+                app_id: this.props.role.app_id
             });
 
             this.handleLoadApp();
         }
 
         this.props.form.setFieldsValue({
-            user_name: this.props.admin.user_name
+            role_name: this.props.role.role_name,
+            role_code: this.props.role.role_code
         });
 
         this.handleLoad();
 
-        notification.on('notification_admin_index_load', this, function (data) {
+        notification.on('notification_role_index_load', this, function (data) {
             this.handleLoad();
         });
     }
 
     componentWillUnmount() {
-        notification.remove('notification_admin_index_load', this);
+        notification.remove('notification_role_index_load', this);
     }
 
     handleLoadApp() {
         http.request({
-            url: '/app/' + constant.action + '/all/list',
+            url: '/' + constant.action + '/app/all/list',
             data: {},
             success: function (data) {
                 this.props.dispatch({
-                    type: 'admin/fetch',
+                    type: 'role/fetch',
                     data: {
                         app_list: data
                     }
@@ -63,18 +64,20 @@ class AdminIndex extends Component {
 
     handleSearch() {
         new Promise(function (resolve, reject) {
-            let app_id = this.props.form.getFieldValue('app_id');
+            var app_id = this.props.form.getFieldValue('app_id');
             if (validate.isUndefined(app_id)) {
                 app_id = '';
             }
 
-            let user_name = this.props.form.getFieldValue('user_name');
+            let role_name = this.props.form.getFieldValue('role_name');
+            let role_code = this.props.form.getFieldValue('role_code');
 
             this.props.dispatch({
-                type: 'admin/fetch',
+                type: 'role/fetch',
                 data: {
                     app_id: app_id,
-                    user_name: user_name,
+                    role_name: role_name,
+                    role_code: role_code,
                     page_index: 1
                 }
             });
@@ -91,16 +94,17 @@ class AdminIndex extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/admin/list',
+            url: '/' + constant.action + '/role/list',
             data: {
-                app_id: this.props.admin.app_id,
-                user_name: this.props.admin.user_name,
-                page_index: this.props.admin.page_index,
-                page_size: this.props.admin.page_size
+                app_id: this.props.role.app_id,
+                role_name: this.props.role.role_name,
+                role_code: this.props.role.role_code,
+                page_index: this.props.role.page_index,
+                page_size: this.props.role.page_size
             },
             success: function (data) {
                 this.props.dispatch({
-                    type: 'admin/fetch',
+                    type: 'role/fetch',
                     data: {
                         total: data.total,
                         list: data.list
@@ -118,7 +122,7 @@ class AdminIndex extends Component {
     handleChangeIndex(page_index) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'admin/fetch',
+                type: 'role/fetch',
                 data: {
                     page_index: page_index
                 }
@@ -133,7 +137,7 @@ class AdminIndex extends Component {
     handleChangeSize(page_index, page_size) {
         new Promise(function (resolve, reject) {
             this.props.dispatch({
-                type: 'admin/fetch',
+                type: 'role/fetch',
                 data: {
                     page_index: page_index,
                     page_size: page_size
@@ -147,30 +151,30 @@ class AdminIndex extends Component {
     }
 
     handleAdd() {
-        notification.emit('notification_admin_detail_add', {});
+        notification.emit('notification_role_detail_add', {});
     }
 
-    handleEdit(admin_id) {
-        notification.emit('notification_admin_detail_edit', {
-            admin_id: admin_id
+    handleEdit(role_id) {
+        notification.emit('notification_role_detail_edit', {
+            role_id: role_id
         });
     }
 
-    handleAuthorization(user_id) {
-        notification.emit('notification_admin_authorization', {
-            user_id: user_id
+    handleAuthorization(role_id) {
+        notification.emit('notification_role_authorization', {
+            role_id: role_id
         });
     }
 
-    handleDel(admin_id, system_version) {
+    handleDel(role_id, system_version) {
         this.setState({
             is_load: true
         });
 
         http.request({
-            url: '/' + constant.action + '/admin/delete',
+            url: '/' + constant.action + '/role/delete',
             data: {
-                admin_id: admin_id,
+                role_id: role_id,
                 system_version: system_version
             },
             success: function (data) {
@@ -193,20 +197,26 @@ class AdminIndex extends Component {
 
         const columns = [{
             title: '名称',
-            dataIndex: 'user_name'
+            dataIndex: 'role_name'
+        }, {
+            title: '编码',
+            dataIndex: 'role_code'
+        }, {
+            title: '排序',
+            dataIndex: 'role_sort'
         }, {
             width: 150,
             title: constant.operation,
             dataIndex: '',
             render: (text, record, index) => (
                 <span>
-                  <a onClick={this.handleEdit.bind(this, record.admin_id)}>{constant.edit}</a>
+                  <a onClick={this.handleEdit.bind(this, record.role_id)}>{constant.edit}</a>
                   <span className="divider"/>
-                  <a onClick={this.handleAuthorization.bind(this, record.user_id)}>授权</a>
+                    <a onClick={this.handleAuthorization.bind(this, record.role_id)}>授权</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
-                              onConfirm={this.handleDel.bind(this, record.admin_id, record.system_version)}>
+                              onConfirm={this.handleDel.bind(this, record.role_id, record.system_version)}>
                     <a>{constant.del}</a>
                   </Popconfirm>
                 </span>
@@ -215,12 +225,12 @@ class AdminIndex extends Component {
 
         const pagination = {
             size: 'defalut',
-            total: this.props.admin.total,
+            total: this.props.role.total,
             showTotal: function (total, range) {
                 return '总共' + total + '条数据';
             },
-            current: this.props.admin.page_index,
-            pageSize: this.props.admin.page_size,
+            current: this.props.role.page_index,
+            pageSize: this.props.role.page_size,
             showSizeChanger: true,
             onShowSizeChange: this.handleChangeSize.bind(this),
             onChange: this.handleChangeIndex.bind(this)
@@ -230,7 +240,7 @@ class AdminIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">管理员信息</div>
+                        <div className="">角色信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
@@ -255,7 +265,7 @@ class AdminIndex extends Component {
                                             })(
                                                 <Select allowClear placeholder="请选择应用">
                                                     {
-                                                        this.props.admin.app_list.map(function (item) {
+                                                        this.props.role.app_list.map(function (item) {
                                                             return (
                                                                 <Option key={item.app_id}
                                                                         value={item.app_id}>{item.app_name}</Option>
@@ -276,10 +286,24 @@ class AdminIndex extends Component {
                                 wrapperCol: {span: 18}
                             }} className="content-search-item" label="名称">
                                 {
-                                    getFieldDecorator('user_name', {
+                                    getFieldDecorator('role_name', {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入名称" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="编码">
+                                {
+                                    getFieldDecorator('role_code', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入编码" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
@@ -289,22 +313,22 @@ class AdminIndex extends Component {
                     </Row>
                 </Form>
                 <Table key="2"
-                       rowKey="admin_id"
+                       rowKey="role_id"
                        className="margin-top"
                        loading={this.state.is_load} columns={columns}
-                       dataSource={this.props.admin.list} pagination={pagination}
+                       dataSource={this.props.role.list} pagination={pagination}
                        bordered/>
-                <AdminDetail/>
-                <AdminAuthorization/>
+                <RoleDetail/>
+                <RoleAuthorization/>
             </QueueAnim>
         );
     }
 }
 
-AdminIndex.propTypes = {};
+RoleIndex.propTypes = {};
 
-AdminIndex = Form.create({})(AdminIndex);
+RoleIndex = Form.create({})(RoleIndex);
 
-export default connect(({admin}) => ({
-    admin
-}))(AdminIndex);
+export default connect(({role}) => ({
+    role
+}))(RoleIndex);

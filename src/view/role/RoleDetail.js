@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
 
-class AdminDetail extends Component {
+class RoleDetail extends Component {
     constructor(props) {
         super(props);
 
@@ -14,24 +14,24 @@ class AdminDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            admin_id: '',
+            role_id: '',
             system_version: ''
         }
     }
 
     componentDidMount() {
-        notification.on('notification_admin_detail_add', this, function (data) {
+        notification.on('notification_role_detail_add', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'save'
             });
         });
 
-        notification.on('notification_admin_detail_edit', this, function (data) {
+        notification.on('notification_role_detail_edit', this, function (data) {
             this.setState({
                 is_show: true,
                 action: 'update',
-                admin_id: data.admin_id
+                role_id: data.role_id
             }, function () {
                 this.handleLoad();
             });
@@ -39,9 +39,9 @@ class AdminDetail extends Component {
     }
 
     componentWillUnmount() {
-        notification.remove('notification_admin_detail_add', this);
+        notification.remove('notification_role_detail_add', this);
 
-        notification.remove('notification_admin_detail_edit', this);
+        notification.remove('notification_role_detail_edit', this);
     }
 
     handleLoad() {
@@ -50,20 +50,22 @@ class AdminDetail extends Component {
         });
 
         http.request({
-            url: '/' + constant.action + '/admin/find',
+            url: '/' + constant.action + '/role/find',
             data: {
-                admin_id: this.state.admin_id
+                role_id: this.state.role_id
             },
             success: function (data) {
                 if (constant.action === 'system') {
                     this.props.form.setFieldsValue({
-                        app_id: data.app_id,
+                        app_id: data.app_id
                     });
                 }
 
                 this.props.form.setFieldsValue({
-                    user_name: data.user_name,
-                    user_account: data.user_account
+                    role_name: data.role_name,
+                    role_code: data.role_code,
+                    role_description: data.role_description,
+                    role_sort: data.role_sort,
                 });
 
                 this.setState({
@@ -85,7 +87,7 @@ class AdminDetail extends Component {
                 return;
             }
 
-            values.admin_id = this.state.admin_id;
+            values.role_id = this.state.role_id;
             values.system_version = this.state.system_version;
 
             this.setState({
@@ -93,12 +95,12 @@ class AdminDetail extends Component {
             });
 
             http.request({
-                url: '/admin/' + constant.action + '/' + this.state.action,
+                url: '/' + constant.action + '/role/' + this.state.action,
                 data: values,
                 success: function (data) {
                     message.success(constant.success);
 
-                    notification.emit('notification_admin_index_load', {});
+                    notification.emit('notification_role_index_load', {});
 
                     this.handleCancel();
                 }.bind(this),
@@ -116,7 +118,7 @@ class AdminDetail extends Component {
             is_load: false,
             is_show: false,
             action: '',
-            admin_id: '',
+            role_id: '',
             system_version: ''
         });
 
@@ -127,10 +129,10 @@ class AdminDetail extends Component {
         const FormItem = Form.Item;
         const Option = Select.Option;
         const {getFieldDecorator} = this.props.form;
+        const {TextArea} = Input;
 
         return (
-            <Modal title={'管理员详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
-                   className="modal"
+            <Modal title={'角色详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -160,7 +162,7 @@ class AdminDetail extends Component {
                                                 })(
                                                     <Select allowClear placeholder="请选择应用">
                                                         {
-                                                            this.props.admin.app_list.map(function (item) {
+                                                            this.props.role.app_list.map(function (item) {
                                                                 return (
                                                                     <Option key={item.app_id}
                                                                             value={item.app_id}>{item.app_name}</Option>
@@ -181,16 +183,16 @@ class AdminDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户名称">
+                                }} className="form-item" label="名称">
                                     {
-                                        getFieldDecorator('user_name', {
+                                        getFieldDecorator('role_name', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户名称'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '名称'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -201,16 +203,16 @@ class AdminDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户帐号">
+                                }} className="form-item" label="编码">
                                     {
-                                        getFieldDecorator('user_account', {
+                                        getFieldDecorator('role_code', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户帐号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '编码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -221,16 +223,36 @@ class AdminDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="用户密码">
+                                }} className="form-item" label="描述">
                                     {
-                                        getFieldDecorator('user_password', {
+                                        getFieldDecorator('role_description', {
                                             rules: [{
                                                 required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '用户密码'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <TextArea rows="4" placeholder={constant.placeholder + '描述'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="排序">
+                                    {
+                                        getFieldDecorator('role_sort', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: 0
+                                        })(
+                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '排序'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -243,8 +265,8 @@ class AdminDetail extends Component {
     }
 }
 
-AdminDetail.propTypes = {};
+RoleDetail.propTypes = {};
 
-AdminDetail = Form.create({})(AdminDetail);
+RoleDetail = Form.create({})(RoleDetail);
 
-export default connect(({admin}) => ({admin}))(AdminDetail);
+export default connect(({role}) => ({role}))(RoleDetail);
