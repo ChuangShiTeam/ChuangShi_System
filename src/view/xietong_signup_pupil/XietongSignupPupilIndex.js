@@ -334,7 +334,7 @@ class XietongSignupPupilIndex extends Component {
                                         initialValue: ''
                                     })(
                                         <Select allowClear placeholder="请选择报名分类">
-                                            <Option key="一年级新生" value="一年级新生">一年级新生</Option>
+                                            <Option key="小学一年级新生" value="小学一年级新生">小学一年级新生</Option>
                                             <Option key="插班生" value="插班生">插班生</Option>
                                         </Select>
                                     )
