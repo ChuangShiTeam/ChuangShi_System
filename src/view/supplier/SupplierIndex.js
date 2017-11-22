@@ -3,6 +3,7 @@ import {connect} from "dva";
 import QueueAnim from "rc-queue-anim";
 import {Row, Col, Button, Form, Select, Input, Table, Popconfirm, message} from "antd";
 import SupplierDetail from "./SupplierDetail";
+import SupplierAuthorization from "./SupplierAuthorization";
 import constant from "../../util/constant";
 import notification from "../../util/notification";
 import validate from "../../util/validate";
@@ -154,6 +155,12 @@ class SupplierIndex extends Component {
         });
     }
 
+    handleAuthorization(user_id) {
+        notification.emit('notification_supplier_authorization', {
+            user_id: user_id
+        });
+    }
+
     handleDel(supplier_id, system_version) {
         this.setState({
             is_load: true
@@ -205,6 +212,8 @@ class SupplierIndex extends Component {
             render: (text, record, index) => (
                 <span>
                   <a onClick={this.handleEdit.bind(this, record.supplier_id)}>{constant.edit}</a>
+                  <span className="divider"/>
+                  <a onClick={this.handleAuthorization.bind(this, record.user_id)}>授权</a>
                   <span className="divider"/>
                   <Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
                               cancelText={constant.popconfirm_cancel}
@@ -298,6 +307,7 @@ class SupplierIndex extends Component {
                        dataSource={this.props.supplier.list} pagination={pagination}
                        bordered/>
                 <SupplierDetail/>
+                <SupplierAuthorization/>
             </QueueAnim>
         );
     }

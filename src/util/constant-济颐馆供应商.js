@@ -4,7 +4,7 @@ export default {
     image_host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
-    is_show_menu: false,
+    is_show_menu: true,
     platform: 'Supplier',
     version: '1.0.0',
     page_size: 10,
