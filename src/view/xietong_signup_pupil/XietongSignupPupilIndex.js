@@ -30,6 +30,7 @@ class XietongSignupPupilIndex extends Component {
 
         this.props.form.setFieldsValue({
             student_name: this.props.xietong_signup_pupil.student_name,
+            student_category: this.props.xietong_signup_pupil.student_category,
             id_no: this.props.xietong_signup_pupil.id_no,
         });
 
@@ -70,6 +71,7 @@ class XietongSignupPupilIndex extends Component {
             }
 
             let student_name = this.props.form.getFieldValue('student_name');
+            let student_category = this.props.form.getFieldValue('student_category');
             let id_no = this.props.form.getFieldValue('id_no');
 
             this.props.dispatch({
@@ -77,6 +79,7 @@ class XietongSignupPupilIndex extends Component {
                 data: {
                     app_id: app_id,
                     student_name: student_name,
+                    student_category: student_category,
                     id_no: id_no,
                     page_index: 1
                 }
@@ -98,6 +101,7 @@ class XietongSignupPupilIndex extends Component {
             data: {
                 app_id: this.props.xietong_signup_pupil.app_id,
                 student_name: this.props.xietong_signup_pupil.student_name,
+                student_category: this.props.xietong_signup_pupil.student_category,
                 id_no: this.props.xietong_signup_pupil.id_no,
                 page_index: this.props.xietong_signup_pupil.page_index,
                 page_size: this.props.xietong_signup_pupil.page_size
@@ -209,6 +213,9 @@ class XietongSignupPupilIndex extends Component {
             title: '学生姓名',
             dataIndex: 'student_name'
         }, {
+            title: '报名分类',
+            dataIndex: 'student_category'
+        }, {
             title: '学生性别',
             dataIndex: 'student_sex'
         }, {
@@ -313,6 +320,23 @@ class XietongSignupPupilIndex extends Component {
                                         initialValue: ''
                                     })(
                                         <Input type="text" placeholder="请输入学生姓名" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="报名分类">
+                                {
+                                    getFieldDecorator('student_category', {
+                                        initialValue: ''
+                                    })(
+                                        <Select allowClear placeholder="请选择报名分类">
+                                            <Option key="一年级新生" value="一年级新生">一年级新生</Option>
+                                            <Option key="插班生" value="插班生">插班生</Option>
+                                        </Select>
                                     )
                                 }
                             </FormItem>
