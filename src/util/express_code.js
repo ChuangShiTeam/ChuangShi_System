@@ -26,5 +26,9 @@ export default [
 	{
 		label: '德邦物流',
 		value: 'DBL'
+	},
+	{
+		label: '优速快递',
+		value: 'UC'
 	}
 ]
