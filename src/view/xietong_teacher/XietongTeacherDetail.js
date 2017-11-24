@@ -80,7 +80,7 @@ class XietongTeacherDetail extends Component {
                 this.refs.teacher_description.handleSetValue(data.teacher_description);
 
                 this.props.form.setFieldsValue({
-                    clazz_id: JSON.parse(data.clazz_id),
+                    clazz_id: data.clazz_id,
                     organization_id: data.organization_id,
                     teacher_name: data.teacher_name,
                     teacher_number: data.teacher_number,
