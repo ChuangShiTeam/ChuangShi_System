@@ -122,6 +122,10 @@ class XietongStudentDetail extends Component {
                 values.student_image = file_list[0].file_id;
             }
 
+            if (!values.clazz_id) {
+                values.clazz_id = '';
+            }
+
             this.setState({
                 is_load: true
             });
