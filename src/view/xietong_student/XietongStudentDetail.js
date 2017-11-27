@@ -3,6 +3,7 @@ import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
 
 import InputImage from '../../component/InputImage';
+import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
@@ -41,7 +42,9 @@ class XietongStudentDetail extends Component {
                 category: data.category,
                 student_id: data.student_id
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -77,13 +80,14 @@ class XietongStudentDetail extends Component {
                     });
                 }
                 this.refs.student_image.handleSetValue(student_image);
+                this.refs.student_description.handleSetValue(data.student_description);
 
                 this.props.form.setFieldsValue({
                     student_category_id: data.student_category_id,
                     clazz_id: data.clazz_id,
                     student_name: data.student_name,
                     student_number: data.student_number,
-                    student_sex: data.student_sex,
+                    student_sex: data.student_sex
                 });
 
                 this.setState({
@@ -109,6 +113,7 @@ class XietongStudentDetail extends Component {
             values.student_id = this.state.student_id;
             values.system_version = this.state.system_version;
             values.user_id = this.state.user_id;
+            values.student_description = this.refs.student_description.handleGetValue();
 
             let file_list = this.refs.student_image.handleGetValue();
             if (file_list.length === 0) {
@@ -153,6 +158,7 @@ class XietongStudentDetail extends Component {
         this.props.form.resetFields();
 
         this.refs.student_image.handleReset();
+        this.refs.student_description.handleReset();
     }
 
     render() {
@@ -214,10 +220,6 @@ class XietongStudentDetail extends Component {
                                     wrapperCol: {span: 18}
                                 }} className="form-item" label="班级编号">                                    {
                                         getFieldDecorator('clazz_id', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
                                             initialValue: ''
                                         })(
                                             <Select placeholder="请选择班级">
@@ -332,6 +334,16 @@ class XietongStudentDetail extends Component {
                                             </Select>
                                         )
                                     }
+                                </FormItem>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
+                                }} className="form-item" label="简介">
+                                    <InputHtml name="student_description" ref="student_description"/>
                                 </FormItem>
                             </Col>
                         </Row>

@@ -369,7 +369,7 @@ class XietongTeacherDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 2},
                                     wrapperCol: {span: 22}
-                                }} className="form-item" label="描述">
+                                }} className="form-item" label="简介">
                                     <InputHtml name="teacher_description" ref="teacher_description"/>
                                 </FormItem>
                             </Col>
