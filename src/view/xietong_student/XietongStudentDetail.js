@@ -222,7 +222,7 @@ class XietongStudentDetail extends Component {
                                         getFieldDecorator('clazz_id', {
                                             initialValue: ''
                                         })(
-                                            <Select placeholder="请选择班级">
+                                            <Select allowClear placeholder="请选择班级">
                                                 {
                                                     this.state.clazz.map(function (item) {
                                                         return (
