@@ -144,7 +144,6 @@ class XietongStudentIndex extends Component {
             data: {
                 app_id: this.props.xietong_student.app_id,
                 student_name: this.props.xietong_student.student_name,
-                clazz_id: this.props.xietong_student.clazz_id,
                 page_index: this.props.xietong_student.page_index,
                 page_size: this.props.xietong_student.page_size
             },
