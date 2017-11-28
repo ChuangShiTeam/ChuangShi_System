@@ -97,6 +97,7 @@ import XietongSignupPupilIndex from './view/xietong_signup_pupil/XietongSignupPu
 import XietongSignupJuniorIndex from './view/xietong_signup_junior/XietongSignupJuniorIndex';
 import XietongTeacherCategoryIndex from './view/xietong_teacher_category/XietongTeacherCategoryIndex';
 import RoleIndex from './view/role/RoleIndex';
+import AppConfigIndex from './view/app_config/AppConfigIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -222,6 +223,7 @@ function RouterConfig({history}) {
                     <Route path="/xietong/student/category/index" component={XietongStudentCategoryIndex}/>
                     <Route path="/xietong/teacher/category/index" component={XietongTeacherCategoryIndex}/>
                     <Route path="/role/index" component={RoleIndex}/>
+                    <Route path="/app/config/index" component={AppConfigIndex}/>
                 </Route>
             </Route>
         </Router>

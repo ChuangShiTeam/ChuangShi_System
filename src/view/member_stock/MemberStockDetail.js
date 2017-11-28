@@ -89,7 +89,7 @@ class MemberStockDetail extends Component {
 		});
 
 		http.request({
-			url: '/member/' + constant.action + '/list',
+			url: '/' + constant.action + '/member/list',
 			data: {
 				app_id: this.state.app_id,
 				user_name: this.state.user_name,

@@ -93,6 +93,7 @@ import xietong_signup_junior from './model/xietong_signup_junior';
 import xietong_signup_pupil from './model/xietong_signup_pupil';
 import xietong_teacher_category from './model/xietong_teacher_category';
 import role from './model/role';
+import app_config from './model/app_config';
 
 document.title = constant.name;
 
@@ -187,6 +188,7 @@ app.model(xietong_signup_pupil);
 app.model(xietong_student_category);
 app.model(xietong_teacher_category);
 app.model(role);
+app.model(app_config);
 
 app.router(Router);
 
