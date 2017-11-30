@@ -98,6 +98,10 @@ import XietongSignupJuniorIndex from './view/xietong_signup_junior/XietongSignup
 import XietongTeacherCategoryIndex from './view/xietong_teacher_category/XietongTeacherCategoryIndex';
 import RoleIndex from './view/role/RoleIndex';
 import AppConfigIndex from './view/app_config/AppConfigIndex';
+import GuangqiSingConfigIndex from './view/guangqi_sing_config/GuangqiSingConfigIndex';
+import GuangqiGameAreaIndex from './view/guangqi_game_area/GuangqiGameAreaIndex';
+import GuangqiGameAreaDetailIndex from './view/guangqi_game_area/detail/GuangqiGameAreaDetailIndex';
+import GuangqiWonderfulShowIndex from './view/guangqi_wonderful_show/GuangqiWonderfulShowIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -224,6 +228,10 @@ function RouterConfig({history}) {
                     <Route path="/xietong/teacher/category/index" component={XietongTeacherCategoryIndex}/>
                     <Route path="/role/index" component={RoleIndex}/>
                     <Route path="/app/config/index" component={AppConfigIndex}/>
+                    <Route path="/guangqi/sing/config/index" component={GuangqiSingConfigIndex}/>
+                    <Route path="/guangqi/game/area/index" component={GuangqiGameAreaIndex}/>
+                    <Route path="/guangqi/game/area/detail/:game_area_id" component={GuangqiGameAreaDetailIndex}/>
+                    <Route path="/guangqi/wonderful/show/index" component={GuangqiWonderfulShowIndex}/>
                 </Route>
             </Route>
         </Router>
