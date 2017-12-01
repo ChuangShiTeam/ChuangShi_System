@@ -1,7 +1,6 @@
 export default {
     // host: 'http://localhost:8080',
-    host: 'http://118.31.229.16:8080',
-    // host: 'http://api.chuangshi.nowui.com',
+    host: 'http://api.chuangshi.nowui.com',
     image_host: 'http://api.chuangshi.nowui.com',
     // action: 'system',
     action: 'admin',
@@ -24,8 +23,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '广州市济颐馆贸易有限公司--总控后台',
-    app_id: 'df2078d6c9eb46babb0df957127273ab',
-    index: '/trade/index',
+    name: '广汽三菱--总控后台',
+    app_id: 'b0f1cf1b4705403ea4e2567c7d860f33',
+    index: '/guangqi/sing/config/index',
     login: '/admin/admin/login'
 };

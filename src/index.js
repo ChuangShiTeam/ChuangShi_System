@@ -94,6 +94,9 @@ import xietong_signup_pupil from './model/xietong_signup_pupil';
 import xietong_teacher_category from './model/xietong_teacher_category';
 import role from './model/role';
 import app_config from './model/app_config';
+import guangqi_sing_config from './model/guangqi_sing_config';
+import guangqi_game_area from './model/guangqi_game_area';
+import guangqi_wonderful_show from './model/guangqi_wonderful_show';
 
 document.title = constant.name;
 
@@ -189,6 +192,9 @@ app.model(xietong_student_category);
 app.model(xietong_teacher_category);
 app.model(role);
 app.model(app_config);
+app.model(guangqi_sing_config);
+app.model(guangqi_game_area);
+app.model(guangqi_wonderful_show);
 
 app.router(Router);
 
