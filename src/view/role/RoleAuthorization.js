@@ -137,6 +137,8 @@ class RoleAuthorization extends Component {
 	}
 
 	onCheck(checkedKeys, object) {
+		console.log('checkedKeys', checkedKeys);
+		console.log('object', object);
 		this.setState({
 			checkedKeys: checkedKeys
 		});
@@ -162,6 +164,7 @@ class RoleAuthorization extends Component {
 						</Col>
 						<Col span={20}>
 							<Tree showLine checkable
+								  checkStrictly
 								  expandedKeys={this.state.expandedKeys}
 								  checkedKeys={this.state.checkedKeys}
 								  onExpand={this.onExpand.bind(this)}
