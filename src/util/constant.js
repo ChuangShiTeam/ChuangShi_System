@@ -23,8 +23,8 @@ export default {
     required: '不能为空',
     placeholder: '请输入',
     detail_width: 1080,
-    name: '佛山协同国际学校--总控后台',
-    app_id: '749388e5dac3465f922c54e61d16a993',
-    index: '/xietong/article/index',
+    name: '广州市济颐馆贸易有限公司--总控后台',
+    app_id: 'df2078d6c9eb46babb0df957127273ab',
+    index: '/trade/index',
     login: '/admin/admin/login'
 };
