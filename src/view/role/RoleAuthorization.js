@@ -52,6 +52,9 @@ class RoleAuthorization extends Component {
 				for (let i = 0; i < menuList.length; i++) {
 					let item = menuList[i];
 					expandedArray.push(item.menu_id);
+					if (item.is_select) {
+                        checkedArray.push(item.menu_id);
+					}
 					for (let j = 0; j < item.children.length; j++) {
 						let children = item.children[j];
 						if (children.children && children.children.length > 0) {
@@ -90,14 +93,17 @@ class RoleAuthorization extends Component {
 		});
 		let array = [];
 
-		for (let i = 0; i < this.state.checkedKeys.length; i++) {
-			let item = this.state.checkedKeys[i];
-			if (item.length == 32) {
-				array.push({
-					menu_id: item
-				});
-			}
+        if(this.state.checkedKeys.checked) {
+            for (let i = 0; i < this.state.checkedKeys.checked.length; i++) {
+                let item = this.state.checkedKeys.checked[i];
+                if (item.length === 32) {
+                    array.push({
+                        menu_id: item
+                    });
+                }
+            }
 		}
+
 		http.request({
 			url: '/admin/role/menu/update',
 			data: {
@@ -137,8 +143,6 @@ class RoleAuthorization extends Component {
 	}
 
 	onCheck(checkedKeys, object) {
-		console.log('checkedKeys', checkedKeys);
-		console.log('object', object);
 		this.setState({
 			checkedKeys: checkedKeys
 		});
