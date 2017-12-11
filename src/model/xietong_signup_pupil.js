@@ -8,7 +8,6 @@ export default {
         app_id: '',
         app_list: [],
         student_name: '',
-        student_category: '',
         id_no: '',
         total: 0,
         page_index: 1,

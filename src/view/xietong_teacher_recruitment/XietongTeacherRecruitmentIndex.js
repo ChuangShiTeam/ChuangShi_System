@@ -30,6 +30,9 @@ class XietongTeacherRecruitmentIndex extends Component {
 
         this.props.form.setFieldsValue({
             teacher_recruitment_name: this.props.xietong_teacher_recruitment.teacher_recruitment_name,
+            teacher_recruitment_mobile: this.props.xietong_teacher_recruitment.teacher_recruitment_mobile,
+            teacher_recruitment_faculty: this.props.xietong_teacher_recruitment.teacher_recruitment_faculty,
+            teacher_recruitment_subject: this.props.xietong_teacher_recruitment.teacher_recruitment_subject
         });
 
         this.handleLoad();
@@ -69,12 +72,18 @@ class XietongTeacherRecruitmentIndex extends Component {
             }
 
             let teacher_recruitment_name = this.props.form.getFieldValue('teacher_recruitment_name');
+            let teacher_recruitment_mobile = this.props.form.getFieldValue('teacher_recruitment_mobile');
+            let teacher_recruitment_faculty = this.props.form.getFieldValue('teacher_recruitment_faculty');
+            let teacher_recruitment_subject = this.props.form.getFieldValue('teacher_recruitment_subject');
 
             this.props.dispatch({
                 type: 'xietong_teacher_recruitment/fetch',
                 data: {
                     app_id: app_id,
                     teacher_recruitment_name: teacher_recruitment_name,
+                    teacher_recruitment_mobile: teacher_recruitment_mobile,
+                    teacher_recruitment_faculty: teacher_recruitment_faculty,
+                    teacher_recruitment_subject: teacher_recruitment_subject,
                     page_index: 1
                 }
             });
@@ -95,6 +104,9 @@ class XietongTeacherRecruitmentIndex extends Component {
             data: {
                 app_id: this.props.xietong_teacher_recruitment.app_id,
                 teacher_recruitment_name: this.props.xietong_teacher_recruitment.teacher_recruitment_name,
+                teacher_recruitment_mobile: this.props.xietong_teacher_recruitment.teacher_recruitment_mobile,
+                teacher_recruitment_faculty: this.props.xietong_teacher_recruitment.teacher_recruitment_faculty,
+                teacher_recruitment_subject: this.props.xietong_teacher_recruitment.teacher_recruitment_subject,
                 page_index: this.props.xietong_teacher_recruitment.page_index,
                 page_size: this.props.xietong_teacher_recruitment.page_size
             },
@@ -303,6 +315,49 @@ class XietongTeacherRecruitmentIndex extends Component {
                             </FormItem>
                         </Col>
                         <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="手机号码">
+                                {
+                                    getFieldDecorator('teacher_recruitment_mobile', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入手机号码" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="应聘学部">
+                                {
+                                    getFieldDecorator('teacher_recruitment_faculty', {
+                                        initialValue: ''
+                                    })(
+                                        <Select allowClear placeholder="请选择应聘学部">
+                                            <Option key={'小学部'} value={'小学部'}>小学部</Option>
+                                            <Option key={'中学部'} value={'中学部'}>中学部</Option>
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                        </Col>
+                        <Col span={8}>
+                            <FormItem hasFeedback {...{
+                                labelCol: {span: 6},
+                                wrapperCol: {span: 18}
+                            }} className="content-search-item" label="应聘学科">
+                                {
+                                    getFieldDecorator('teacher_recruitment_subject', {
+                                        initialValue: ''
+                                    })(
+                                        <Input type="text" placeholder="请输入应聘学科" onPressEnter={this.handleSearch.bind(this)}/>
+                                    )
+                                }
+                            </FormItem>
                         </Col>
                     </Row>
                 </Form>
