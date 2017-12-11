@@ -105,7 +105,7 @@ class XietongTeacherRecruitmentIndex extends Component {
                 app_id: this.props.xietong_teacher_recruitment.app_id,
                 teacher_recruitment_name: this.props.xietong_teacher_recruitment.teacher_recruitment_name,
                 teacher_recruitment_mobile: this.props.xietong_teacher_recruitment.teacher_recruitment_mobile,
-                teacher_recruitment_faculty: this.props.xietong_teacher_recruitment.teacher_recruitment_faculty,
+                teacher_recruitment_faculty: this.props.xietong_teacher_recruitment.teacher_recruitment_faculty?this.props.xietong_teacher_recruitment.teacher_recruitment_faculty:'',
                 teacher_recruitment_subject: this.props.xietong_teacher_recruitment.teacher_recruitment_subject,
                 page_index: this.props.xietong_teacher_recruitment.page_index,
                 page_size: this.props.xietong_teacher_recruitment.page_size
