@@ -184,7 +184,7 @@ class RenaultNewYearIndex extends Component {
     }
 
     handleExcel() {
-        window.open(constant.host + '/admin/new/year/customer/all/export')
+        window.open(constant.host + '/admin/renault/new/year/all/export')
     }
 
     render() {
