@@ -135,7 +135,7 @@ class GuangqiNewYearPrizeDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'奖品详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -266,7 +266,7 @@ class GuangqiNewYearPrizeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="">
+                                }} className="form-item" label="单价">
                                     {
                                         getFieldDecorator('new_year_prize_unit_price', {
                                             rules: [{
@@ -275,7 +275,7 @@ class GuangqiNewYearPrizeDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + ''} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={99999999} placeholder={constant.placeholder + '单价'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

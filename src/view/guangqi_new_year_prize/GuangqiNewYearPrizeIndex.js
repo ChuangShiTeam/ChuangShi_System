@@ -197,7 +197,7 @@ class GuangqiNewYearPrizeIndex extends Component {
             title: '奖品总数',
             dataIndex: 'new_year_prize_quantity'
         }, {
-            title: '',
+            title: '单价',
             dataIndex: 'new_year_prize_unit_price'
         }, {
             title: '每天上限',
@@ -207,7 +207,10 @@ class GuangqiNewYearPrizeIndex extends Component {
             dataIndex: 'new_year_prize_sort'
         }, {
             title: '是否默认中奖',
-            dataIndex: 'new_year_prize_is_default'
+            dataIndex: 'new_year_prize_is_default',
+            render: (text, record, index) => (
+                <span>{text?'是':'否'}</span>
+            )
         }, {
             width: 100,
             title: constant.operation,
