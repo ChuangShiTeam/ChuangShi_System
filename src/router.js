@@ -104,6 +104,8 @@ import GuangqiGameAreaDetailIndex from './view/guangqi_game_area/detail/GuangqiG
 import GuangqiWonderfulShowIndex from './view/guangqi_wonderful_show/GuangqiWonderfulShowIndex';
 import RenaultNewYearIndex from './view/renault_new_year/RenaultNewYearIndex';
 import RenaultNewYearShareIndex from './view/renault_new_year_share/RenaultNewYearShareIndex';
+import GuangqiNewYearPrizeIndex from './view/guangqi_new_year_prize/GuangqiNewYearPrizeIndex';
+import GuangqiNewYearCustomerIndex from './view/guangqi_new_year_customer/GuangqiNewYearCustomerIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -236,6 +238,8 @@ function RouterConfig({history}) {
                     <Route path="/guangqi/wonderful/show/index" component={GuangqiWonderfulShowIndex}/>
                     <Route path="/renault/new/year/index" component={RenaultNewYearIndex}/>
                     <Route path="/renault/new/year/share/index" component={RenaultNewYearShareIndex}/>
+                    <Route path="/guangqi/new/year/prize/index" component={GuangqiNewYearPrizeIndex}/>
+                    <Route path="/guangqi/new/year/customer/index" component={GuangqiNewYearCustomerIndex}/>
                 </Route>
             </Route>
         </Router>

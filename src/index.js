@@ -99,6 +99,8 @@ import guangqi_game_area from './model/guangqi_game_area';
 import guangqi_wonderful_show from './model/guangqi_wonderful_show';
 import renault_new_year from './model/renault_new_year';
 import renault_new_year_share from './model/renault_new_year_share';
+import guangqi_new_year_customer from './model/guangqi_new_year_customer';
+import guangqi_new_year_prize from './model/guangqi_new_year_prize';
 
 document.title = constant.name;
 
@@ -199,6 +201,8 @@ app.model(guangqi_game_area);
 app.model(guangqi_wonderful_show);
 app.model(renault_new_year);
 app.model(renault_new_year_share);
+app.model(guangqi_new_year_customer);
+app.model(guangqi_new_year_prize);
 
 app.router(Router);
 
