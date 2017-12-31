@@ -86,35 +86,7 @@ class GuangqiNewYearCustomerDetail extends Component {
     }
 
     handleSubmit() {
-        this.props.form.validateFieldsAndScroll((errors, values) => {
-            if (!!errors) {
-                return;
-            }
-
-            values.new_year_customer_id = this.state.new_year_customer_id;
-            values.system_version = this.state.system_version;
-
-            this.setState({
-                is_load: true
-            });
-
-            http.request({
-                url: '/' + constant.action + '/guangqi/new/year/customer/' + this.state.action,
-                data: values,
-                success: function (data) {
-                    message.success(constant.success);
-
-                    notification.emit('notification_guangqi_new_year_customer_index_load', {});
-
-                    this.handleCancel();
-                }.bind(this),
-                complete: function () {
-                    this.setState({
-                        is_load: false
-                    });
-                }.bind(this)
-            });
-        });
+        this.handleCancel();
     }
 
     handleCancel() {
@@ -306,7 +278,7 @@ class GuangqiNewYearCustomerDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="门店">
+                                }} className="form-item" label="经销商">
                                     {
                                         getFieldDecorator('new_year_customer_dealer', {
                                             rules: [{
@@ -315,7 +287,7 @@ class GuangqiNewYearCustomerDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '门店'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <Input type="text" placeholder={constant.placeholder + '经销商'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

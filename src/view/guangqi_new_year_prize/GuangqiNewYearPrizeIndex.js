@@ -191,7 +191,7 @@ class GuangqiNewYearPrizeIndex extends Component {
             title: '奖品名称',
             dataIndex: 'new_year_prize_name'
         }, {
-            title: '中奖率',
+            title: '中奖率(%)',
             dataIndex: 'new_year_prize_probability'
         }, {
             title: '奖品总数',

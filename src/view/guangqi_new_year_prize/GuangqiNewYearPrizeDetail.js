@@ -226,7 +226,7 @@ class GuangqiNewYearPrizeDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="中奖率">
+                                }} className="form-item" label="中奖率(%)">
                                     {
                                         getFieldDecorator('new_year_prize_probability', {
                                             rules: [{
@@ -235,7 +235,7 @@ class GuangqiNewYearPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '中奖率'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={100} placeholder={constant.placeholder + '中奖率'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -255,7 +255,7 @@ class GuangqiNewYearPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '奖品总数'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999999} placeholder={constant.placeholder + '奖品总数'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -295,7 +295,7 @@ class GuangqiNewYearPrizeDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '每天上限'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={999999} placeholder={constant.placeholder + '每天上限'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>

@@ -203,6 +203,10 @@ class GuangqiNewYearCustomerIndex extends Component {
         });
     }
 
+    handleExcel() {
+        window.open(constant.host + '/admin/guangqi/new/year/customer/all/export')
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -272,8 +276,8 @@ class GuangqiNewYearCustomerIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+                        <Button type="primary" icon="file-excel" size="default"
+                                onClick={this.handleExcel.bind(this)}>导出中奖名单</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">
@@ -380,12 +384,12 @@ class GuangqiNewYearCustomerIndex extends Component {
                             <FormItem hasFeedback {...{
                                 labelCol: {span: 6},
                                 wrapperCol: {span: 18}
-                            }} className="content-search-item" label="门店">
+                            }} className="content-search-item" label="经销商">
                                 {
                                     getFieldDecorator('new_year_customer_dealer', {
                                         initialValue: ''
                                     })(
-                                        <Input type="text" placeholder="请输入门店" onPressEnter={this.handleSearch.bind(this)}/>
+                                        <Input type="text" placeholder="请输入经销商" onPressEnter={this.handleSearch.bind(this)}/>
                                     )
                                 }
                             </FormItem>
