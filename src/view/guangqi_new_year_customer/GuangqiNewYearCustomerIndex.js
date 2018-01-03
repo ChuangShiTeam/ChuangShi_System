@@ -228,14 +228,14 @@ class GuangqiNewYearCustomerIndex extends Component {
             title: '城市',
             dataIndex: 'new_year_customer_city'
         }, {
-            title: '城市地址',
-            dataIndex: 'new_year_customer_address'
-        }, {
             title: '门店',
             dataIndex: 'new_year_customer_dealer'
         }, {
             title: '来源',
             dataIndex: 'new_year_customer_from'
+        }, {
+            title: '奖品',
+            dataIndex: 'new_year_prize_name'
         }, {
             width: 100,
             title: constant.operation,
