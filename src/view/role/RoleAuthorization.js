@@ -93,9 +93,9 @@ class RoleAuthorization extends Component {
 		});
 		let array = [];
 
-        if(this.state.checkedKeys.checked) {
-            for (let i = 0; i < this.state.checkedKeys.checked.length; i++) {
-                let item = this.state.checkedKeys.checked[i];
+        if(this.state.checkedKeys) {
+            for (let i = 0; i < this.state.checkedKeys.length; i++) {
+                let item = this.state.checkedKeys[i];
                 if (item.length === 32) {
                     array.push({
                         menu_id: item

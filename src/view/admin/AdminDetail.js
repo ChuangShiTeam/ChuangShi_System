@@ -15,6 +15,7 @@ class AdminDetail extends Component {
             is_show: false,
             action: '',
             admin_id: '',
+            user_id: '',
             system_version: ''
         }
     }
@@ -67,6 +68,7 @@ class AdminDetail extends Component {
                 });
 
                 this.setState({
+                    user_id: data.user_id,
                     system_version: data.system_version
                 });
             }.bind(this),
@@ -86,6 +88,7 @@ class AdminDetail extends Component {
             }
 
             values.admin_id = this.state.admin_id;
+            values.user_id = this.state.user_id;
             values.system_version = this.state.system_version;
 
             this.setState({

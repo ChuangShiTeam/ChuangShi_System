@@ -73,7 +73,7 @@ class Login extends Component {
                                         required: true,
                                         message: constant.required
                                     }],
-                                    initialValue: 'admin'
+                                    initialValue: ''
                                 })(
                                     <Input type="text" placeholder={'用户名'} onPressEnter={this.handleSubmit.bind(this)}/>
                                 )
@@ -86,7 +86,7 @@ class Login extends Component {
                                         required: true,
                                         message: constant.required
                                     }],
-                                    initialValue: 'admin'
+                                    initialValue: ''
                                 })(
                                     <Input type="password" placeholder={'密码'} onPressEnter={this.handleSubmit.bind(this)}/>
                                 )
