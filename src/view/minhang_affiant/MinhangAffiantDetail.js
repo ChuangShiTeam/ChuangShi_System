@@ -278,7 +278,7 @@ class MinhangAffiantDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 2},
                                     wrapperCol: {span: 22}
-                                }} className="form-item" label="摘要">
+                                }} className="form-item" label="职务">
                                     {
                                         getFieldDecorator('affiant_summary', {
                                             rules: [{
@@ -287,7 +287,7 @@ class MinhangAffiantDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <TextArea rows={4} placeholder={constant.placeholder + '摘要'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <TextArea rows={4} placeholder={constant.placeholder + '职务'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
@@ -298,7 +298,7 @@ class MinhangAffiantDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 2},
                                     wrapperCol: {span: 22}
-                                }} className="form-item" label="简介">
+                                }} className="form-item" label="荣誉称号">
                                     <InputHtml name="affiant_description" ref="affiant_description"/>
                                 </FormItem>
                             </Col>
