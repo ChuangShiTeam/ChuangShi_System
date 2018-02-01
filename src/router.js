@@ -76,6 +76,7 @@ import MinhangTaskIndex from './view/minhang_task/MinhangTaskIndex';
 import MinhangQuestionIndex from './view/minhang_task/minhang_question/MinhangQuestionIndex';
 import MinhangPosterIndex from './view/minhang_poster/MinhangPosterIndex';
 import MinhangAffiantIndex from './view/minhang_affiant/MinhangAffiantIndex';
+import MinhangCompanyIndex from './view/minhang_company/MinhangCompanyIndex';
 import MinhangPartyHistoryIndex from './view/minhang_party_history/MinhangPartyHistoryIndex';
 import MinhangPartySongIndex from './view/minhang_party_song/MinhangPartySongIndex';
 import MinhangTimelineIndex from './view/minhang_timeline/MinhangTimelineIndex';
@@ -214,6 +215,7 @@ function RouterConfig({history}) {
                     <Route path="/minhang/party/song/index" component={MinhangPartySongIndex}/>
                     <Route path="/minhang/timeline/index" component={MinhangTimelineIndex}/>
                     <Route path="/minhang/affiant/index" component={MinhangAffiantIndex}/>
+                    <Route path="/minhang/company/index" component={MinhangCompanyIndex}/>
                     <Route path="/minhang/timeline/event/index/:timeline_id" component={MinhangTimelineEventIndex}/>
                     <Route path="/minhang/video/task/index/:video_id" component={MinhangVideoTaskIndex}/>
                     <Route path="/xietong/organization/index" component={XietongOrganizationIndex}/>
