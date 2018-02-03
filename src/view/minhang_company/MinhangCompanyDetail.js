@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {connect} from 'dva';
 import {Modal, Form, Row, Col, Spin, Button, Input, Select, InputNumber, message} from 'antd';
 
+import InputHtml from '../../component/InputHtml';
 import constant from '../../util/constant';
 import notification from '../../util/notification';
 import http from '../../util/http';
+import validate from '../../util/validate';
 
 class MinhangCompanyDetail extends Component {
     constructor(props) {
@@ -33,7 +35,9 @@ class MinhangCompanyDetail extends Component {
                 action: 'update',
                 company_id: data.company_id
             }, function () {
-                this.handleLoad();
+                setTimeout(function () {
+                    this.handleLoad();
+                }.bind(this), 300);
             });
         });
     }
@@ -61,11 +65,11 @@ class MinhangCompanyDetail extends Component {
                     });
                 }
 
+                this.refs.compnay_description.handleSetValue(validate.unescapeHtml(data.compnay_description));
+
                 this.props.form.setFieldsValue({
                     company_name: data.company_name,
-                    company_logo: data.company_logo,
                     company_view_width: data.company_view_width,
-                    compnay_description: data.compnay_description,
                     compnay_sort: data.compnay_sort,
                 });
 
@@ -90,6 +94,9 @@ class MinhangCompanyDetail extends Component {
 
             values.company_id = this.state.company_id;
             values.system_version = this.state.system_version;
+
+            values.company_logo = '';
+            values.compnay_description = this.refs.compnay_description.handleGetValue();
 
             this.setState({
                 is_load: true
@@ -124,6 +131,8 @@ class MinhangCompanyDetail extends Component {
         });
 
         this.props.form.resetFields();
+
+        this.refs.compnay_description.handleReset();
     }
 
     render() {
@@ -132,7 +141,7 @@ class MinhangCompanyDetail extends Component {
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <Modal title={'详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
+            <Modal title={'公司详情'} maskClosable={false} width={document.documentElement.clientWidth - 200} className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
                    footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
@@ -203,27 +212,7 @@ class MinhangCompanyDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="公司logo">
-                                    {
-                                        getFieldDecorator('company_logo', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '公司logo'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={8}>
-                                <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
-                                }} className="form-item" label="公司展示宽度">
+                                }} className="form-item" label="公司展示位置">
                                     {
                                         getFieldDecorator('company_view_width', {
                                             rules: [{
@@ -232,29 +221,19 @@ class MinhangCompanyDetail extends Component {
                                             }],
                                             initialValue: 0
                                         })(
-                                            <InputNumber min={0} max={999} placeholder={constant.placeholder + '公司展示宽度'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <InputNumber min={0} max={9999999} placeholder={constant.placeholder + '公司展示位置'} onPressEnter={this.handleSubmit.bind(this)}/>
                                         )
                                     }
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={8}>
+                            <Col span={24}>
                                 <FormItem hasFeedback {...{
-                                    labelCol: {span: 6},
-                                    wrapperCol: {span: 18}
+                                    labelCol: {span: 2},
+                                    wrapperCol: {span: 22}
                                 }} className="form-item" label="公司简介">
-                                    {
-                                        getFieldDecorator('compnay_description', {
-                                            rules: [{
-                                                required: true,
-                                                message: constant.required
-                                            }],
-                                            initialValue: ''
-                                        })(
-                                            <Input type="text" placeholder={constant.placeholder + '公司简介'} onPressEnter={this.handleSubmit.bind(this)}/>
-                                        )
-                                    }
+                                    <InputHtml name="compnay_description" ref="compnay_description"/>
                                 </FormItem>
                             </Col>
                         </Row>

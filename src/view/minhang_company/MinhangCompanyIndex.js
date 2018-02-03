@@ -188,11 +188,11 @@ class MinhangCompanyIndex extends Component {
             title: '公司名称',
             dataIndex: 'company_name'
         }, {
-            title: '公司logo',
-            dataIndex: 'company_logo'
-        }, {
-            title: '公司展示宽度',
-            dataIndex: 'company_view_width'
+            title: '公司展示位置',
+            dataIndex: 'company_view_width',
+            render: (text, record, index) => (
+                <span>{text ? text + 'px' : null}</span>
+            )
         }, {
             title: '公司排序',
             dataIndex: 'compnay_sort'
@@ -230,7 +230,7 @@ class MinhangCompanyIndex extends Component {
             <QueueAnim>
                 <Row key="0" className="content-title">
                     <Col span={8}>
-                        <div className="">信息</div>
+                        <div className="">公司信息</div>
                     </Col>
                     <Col span={16} className="content-button">
                         <Button type="default" icon="search" size="default" className="margin-right"
