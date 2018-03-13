@@ -292,8 +292,8 @@ class XietongSignupPupilIndex extends Component {
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="default" icon="file-excel" size="default" className="margin-right"
                                 onClick={this.handleExcel.bind(this)}>导出报名信息</Button>
-                        <Button type="default" icon="file-excel" size="default" className="margin-right"
-                                onClick={this.handleGenerate.bind(this)}>生成报名编号</Button>
+                        {/*<Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleGenerate.bind(this)}>生成报名编号</Button>*/}
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
