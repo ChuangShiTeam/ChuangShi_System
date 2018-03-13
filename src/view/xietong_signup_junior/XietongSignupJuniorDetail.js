@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'dva';
-import {Modal, Form, Row, Col, Spin, Button, Input, Select, message} from 'antd';
+import {Modal, Form, Row, Col, Spin, Button, Input, Select, message, DatePicker} from 'antd';
+import moment from 'moment';
 
 import constant from '../../util/constant';
 import notification from '../../util/notification';
@@ -66,8 +67,8 @@ class XietongSignupJuniorDetail extends Component {
                     student_name: data.student_name,
                     student_category: data.student_category,
                     student_sex: data.student_sex,
-                    student_birthday: data.student_birthday,
-                    interview_time: data.interview_time,
+                    student_birthday: data.student_birthday?moment(data.student_birthday):null,
+                    interview_time: data.interview_time?moment(data.interview_time):null,
                     job: data.job,
                     primary_school_class: data.primary_school_class,
                     primary_school: data.primary_school,
@@ -112,6 +113,9 @@ class XietongSignupJuniorDetail extends Component {
 
             values.signup_id = this.state.signup_id;
             values.system_version = this.state.system_version;
+
+            values.student_birthday = values.student_birthday.format('YYYY-MM-DD');
+            values.interview_time = values.interview_time.format('YYYY-MM-DD HH:mm:ss');
 
             this.setState({
                 is_load: true
@@ -294,7 +298,7 @@ class XietongSignupJuniorDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '生日'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker />
                                         )
                                     }
                                 </FormItem>
@@ -314,7 +318,7 @@ class XietongSignupJuniorDetail extends Component {
                                             }],
                                             initialValue: ''
                                         })(
-                                            <Input type="text" placeholder={constant.placeholder + '面试时间'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"/>
                                         )
                                     }
                                 </FormItem>
@@ -329,7 +333,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('job', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -469,7 +472,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('father_name', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -489,7 +491,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('father_id_no', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -509,7 +510,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('father_work', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -529,7 +529,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('father_phone', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -549,7 +548,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('mother_name', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -569,7 +567,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('mother_id_no', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -589,7 +586,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('mother_work', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -609,7 +605,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('mother_phone', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -629,7 +624,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('mark', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -645,11 +639,10 @@ class XietongSignupJuniorDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="需要说明事项">
+                                }} className="form-item" label="特长爱好">
                                     {
                                         getFieldDecorator('remark', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -685,11 +678,10 @@ class XietongSignupJuniorDetail extends Component {
                                 <FormItem hasFeedback {...{
                                     labelCol: {span: 6},
                                     wrapperCol: {span: 18}
-                                }} className="form-item" label="数据分数">
+                                }} className="form-item" label="数学成绩">
                                     {
                                         getFieldDecorator('math_score', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -709,7 +701,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('english_score', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
@@ -729,7 +720,6 @@ class XietongSignupJuniorDetail extends Component {
                                     {
                                         getFieldDecorator('chinese_score', {
                                             rules: [{
-                                                required: true,
                                                 message: constant.required
                                             }],
                                             initialValue: ''
