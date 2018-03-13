@@ -62,6 +62,7 @@ class XietongSignupJuniorDetail extends Component {
                 }
 
                 this.props.form.setFieldsValue({
+                    signup_number: data.signup_number,
                     student_name: data.student_name,
                     student_category: data.student_category,
                     student_sex: data.student_sex,
@@ -199,6 +200,26 @@ class XietongSignupJuniorDetail extends Component {
                                 :
                                 ''
                         }
+                        <Row>
+                            <Col span={8}>
+                                <FormItem hasFeedback {...{
+                                    labelCol: {span: 6},
+                                    wrapperCol: {span: 18}
+                                }} className="form-item" label="报名序号">
+                                    {
+                                        getFieldDecorator('signup_number', {
+                                            rules: [{
+                                                required: true,
+                                                message: constant.required
+                                            }],
+                                            initialValue: ''
+                                        })(
+                                            <Input type="text" placeholder={constant.placeholder + '报名序号'} onPressEnter={this.handleSubmit.bind(this)}/>
+                                        )
+                                    }
+                                </FormItem>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col span={8}>
                                 <FormItem hasFeedback {...{

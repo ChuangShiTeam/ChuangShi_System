@@ -82,14 +82,18 @@ class XietongSignupPupilPrint extends Component {
 				<Spin spinning={this.state.is_load}>
 					<Print ref="print" insertHead={false}>
 						<div>
-							<div style={{marginBottom: '50px'}}></div>
+							<div style={{marginBottom: '10px'}}></div>
 							<Row>
 								<Col md={24} style={{textAlign: 'center'}}>
 									<span style={{fontSize: '30px', fontWeight: '1000'}}>佛山协同（国际）学校一年级新生报名表</span>
 								</Col>
 							</Row>
-							<div style={{marginBottom: '50px'}}></div>
-							<table width="100%" style={{width: '100%', border: 'solid 1px black'}}>
+							<div style={{marginBottom: '25px'}}></div>
+							<Row>
+								<Col md={3}></Col>
+								<Col md={18}>
+									<span>报名序号：{this.state.signup_pupil.signup_number}</span>
+									<table width="100%" style={{width: '100%', border: 'solid 1px black'}}>
 								<tr>
 									<td style={{width: '25%',padding: '15px', borderRight: 'solid 1px black', borderBottom: 'solid 1px black', textAlign: 'center'}}>
 										姓名
@@ -207,6 +211,24 @@ class XietongSignupPupilPrint extends Component {
 								</tr>
 								<tr dangerouslySetInnerHTML={{__html: `<td colspan='1' style="padding: 15px; border-right: solid 1px black; text-align: center">填报日期</td><td colspan='1' style="padding: 15px; border-right: solid 1px black; text-align: center"></td><td colspan='1' style="padding: 15px; border-right: solid 1px black; text-align: center">报名状态</td><td colspan='1' style="padding: 15px; text-align: left">已报名</td>`}}></tr>
 							</table>
+								</Col>
+								<Col md={3}></Col>
+							</Row>
+							<div style={{marginBottom: '25px'}}></div>
+							<Row>
+								<Col md={3}></Col>
+								<Col md={18}>
+									<p><h3>温馨提示：</h3></p>
+									<p>1.面谈当天需要携带的资料：</p>
+									<p>1）学生户口本原件及复印件（港澳地区身份证、外籍儿童护照）；</p>
+									<p>2）报名表。</p>
+									<p>2.面谈内容及时间：面谈分破冰游戏--闯关游戏--情境故事--分享交流四个环节，</p>
+									<p>共40分钟，请提醒孩子以轻松，自然的状态参加活动。</p>
+									<p>3.请家长车辆在东鄱南路和轻工三路右侧车道斜停放。</p>
+									<p>4.联系我们：0757-82596128、82596001、18188719581。</p>
+								</Col>
+								<Col md={3}></Col>
+							</Row>
 						</div>
 					</Print>
 				</Spin>

@@ -190,6 +190,26 @@ class XietongSignupJuniorIndex extends Component {
         });
     }
 
+    handleGenerate() {
+        this.setState({
+            is_load: true
+        });
+
+        http.request({
+            url: '/' + constant.action + '/xietong/signup/junior/generate/number',
+            data: {
+            },
+            success: function (data) {
+                message.success(constant.success);
+            }.bind(this),
+            complete: function () {
+                this.setState({
+                    is_load: false
+                });
+            }.bind(this)
+        });
+    }
+
     handleExcel() {
         window.open(constant.host + '/admin/xietong/signup/junior/all/export')
     }
@@ -200,6 +220,9 @@ class XietongSignupJuniorIndex extends Component {
         const {getFieldDecorator} = this.props.form;
 
         const columns = [{
+            title: '报名序号',
+            dataIndex: 'signup_number'
+        }, {
             title: '学生姓名',
             dataIndex: 'student_name'
         }, {
@@ -267,6 +290,8 @@ class XietongSignupJuniorIndex extends Component {
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
                         <Button type="default" icon="file-excel" size="default" className="margin-right"
                                 onClick={this.handleExcel.bind(this)}>导出报名信息</Button>
+                        <Button type="default" icon="file-excel" size="default" className="margin-right"
+                                onClick={this.handleGenerate.bind(this)}>生成报名编号</Button>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
