@@ -100,8 +100,9 @@ class MemberStockReplenishDetail extends Component {
         });
 
         http.request({
-            url: '/member/' + constant.action + '/list',
+            url: '/' + constant.action + '/member/list',
             data: {
+                app_id: this.state.app_id,
                 user_name: this.state.user_name,
                 page_index: this.state.page_index,
                 page_size: this.state.page_size
