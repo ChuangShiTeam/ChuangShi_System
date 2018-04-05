@@ -57,6 +57,8 @@ import PageIndex from './view/page/PageIndex';
 import CaptchaIndex from './view/captcha/CaptchaIndex';
 import JianglingCustomerIndex from './view/jiangling_customer/JianglingCustomerIndex';
 import JianglingGameIndex from './view/jiangling_game/JianglingGameIndex';
+import JianglingNewCustomerIndex from './view/jiangling_new_customer/JianglingNewCustomerIndex';
+import JianglingNewGameIndex from './view/jiangling_new_game/JianglingNewGameIndex';
 import WebsiteMenuIndex from './view/website_menu/WebsiteMenuIndex';
 import AdvertisementIndex from './view/advertisement/AdvertisementIndex';
 import XietongArticleIndex from './view/xietong_article/XietongArticleIndex';
@@ -193,6 +195,8 @@ function RouterConfig({history}) {
                     <Route path="/captcha/index" component={CaptchaIndex}/>
                     <Route path="/jiangling/customer/index" component={JianglingCustomerIndex}/>
                     <Route path="/jiangling/game/index" component={JianglingGameIndex}/>
+                    <Route path="/jiangling/new/customer/index" component={JianglingNewCustomerIndex}/>
+                    <Route path="/jiangling/new/game/index" component={JianglingNewGameIndex}/>
                     <Route path="/website/menu/index" component={WebsiteMenuIndex}/>
                     <Route path="/advertisement/index" component={AdvertisementIndex}/>
                     <Route path="/xietong/article/index" component={XietongArticleIndex}/>
