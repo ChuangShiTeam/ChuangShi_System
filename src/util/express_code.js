@@ -30,5 +30,29 @@ export default [
 	{
 		label: '优速快递',
 		value: 'UC'
-	}
+	},
+    {
+        label: '百世快递',
+        value: 'HTKY'
+    },
+    {
+        label: 'EMS',
+        value: 'EMS'
+    },
+    {
+        label: '京东物流',
+        value: 'JD'
+    },
+    {
+        label: '快捷快递',
+        value: 'FAST'
+    },
+    {
+        label: '宅急送',
+        value: 'ZJS'
+    },
+    {
+        label: 'TNT快递',
+        value: 'TNT'
+    }
 ]
