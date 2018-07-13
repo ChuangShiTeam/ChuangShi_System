@@ -54,5 +54,9 @@ export default [
     {
         label: 'TNT快递',
         value: 'TNT'
-    }
+    },
+	{
+		label: '中国邮政',
+		value: 'YZPY'
+	}
 ]
