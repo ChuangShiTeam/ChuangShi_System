@@ -110,6 +110,7 @@ import RenaultNewYearIndex from './view/renault_new_year/RenaultNewYearIndex';
 import RenaultNewYearShareIndex from './view/renault_new_year_share/RenaultNewYearShareIndex';
 import GuangqiNewYearPrizeIndex from './view/guangqi_new_year_prize/GuangqiNewYearPrizeIndex';
 import GuangqiNewYearCustomerIndex from './view/guangqi_new_year_customer/GuangqiNewYearCustomerIndex';
+import GuangqiJoinApplyIndex from './view/guangqi_join_apply/GuangqiJoinApplyIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -248,6 +249,7 @@ function RouterConfig({history}) {
                     <Route path="/renault/new/year/share/index" component={RenaultNewYearShareIndex}/>
                     <Route path="/guangqi/new/year/prize/index" component={GuangqiNewYearPrizeIndex}/>
                     <Route path="/guangqi/new/year/customer/index" component={GuangqiNewYearCustomerIndex}/>
+                    <Route path="/guangqi/join/apply/index" component={GuangqiJoinApplyIndex}/>
                 </Route>
             </Route>
         </Router>

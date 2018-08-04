@@ -105,6 +105,7 @@ import renault_new_year_share from './model/renault_new_year_share';
 import guangqi_new_year_customer from './model/guangqi_new_year_customer';
 import guangqi_new_year_prize from './model/guangqi_new_year_prize';
 import minhang_company from './model/minhang_company';
+import guangqi_join_apply from './model/guangqi_join_apply';
 
 document.title = constant.name;
 
@@ -211,6 +212,7 @@ app.model(renault_new_year_share);
 app.model(guangqi_new_year_customer);
 app.model(guangqi_new_year_prize);
 app.model(minhang_company);
+app.model(guangqi_join_apply);
 
 app.router(Router);
 
