@@ -111,6 +111,9 @@ import RenaultNewYearShareIndex from './view/renault_new_year_share/RenaultNewYe
 import GuangqiNewYearPrizeIndex from './view/guangqi_new_year_prize/GuangqiNewYearPrizeIndex';
 import GuangqiNewYearCustomerIndex from './view/guangqi_new_year_customer/GuangqiNewYearCustomerIndex';
 import GuangqiJoinApplyIndex from './view/guangqi_join_apply/GuangqiJoinApplyIndex';
+import GuangqiConferenceConfigIndex from './view/guangqi_conference_config/GuangqiConferenceConfigIndex';
+import GuangqiConferenceCustomerIndex from './view/guangqi_conference_customer/GuangqiConferenceCustomerIndex';
+import GuangqiConferencePrizeIndex from './view/guangqi_conference_prize/GuangqiConferencePrizeIndex';
 
 import storage from "./util/storage";
 import constant from "./util/constant";
@@ -250,6 +253,9 @@ function RouterConfig({history}) {
                     <Route path="/guangqi/new/year/prize/index" component={GuangqiNewYearPrizeIndex}/>
                     <Route path="/guangqi/new/year/customer/index" component={GuangqiNewYearCustomerIndex}/>
                     <Route path="/guangqi/join/apply/index" component={GuangqiJoinApplyIndex}/>
+                    <Route path="/guangqi/conference/config/index" component={GuangqiConferenceConfigIndex}/>
+                    <Route path="/guangqi/conference/customer/index" component={GuangqiConferenceCustomerIndex}/>
+                    <Route path="/guangqi/conference/prize/index" component={GuangqiConferencePrizeIndex}/>
                 </Route>
             </Route>
         </Router>
