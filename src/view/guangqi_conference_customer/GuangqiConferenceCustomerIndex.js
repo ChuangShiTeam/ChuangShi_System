@@ -183,6 +183,10 @@ class GuangqiConferenceCustomerIndex extends Component {
         });
     }
 
+    handleExcel() {
+        window.open(constant.host + '/admin/guangqi/conference/customer/all/export')
+    }
+
     render() {
         const FormItem = Form.Item;
         const Option = Select.Option;
@@ -206,6 +210,9 @@ class GuangqiConferenceCustomerIndex extends Component {
         }, {
             title: '来源',
             dataIndex: 'conference_customer_from'
+        },  {
+            title: '奖品',
+            dataIndex: 'conference_prize_name'
         }, {
             width: 100,
             title: constant.operation,
@@ -246,8 +253,8 @@ class GuangqiConferenceCustomerIndex extends Component {
                         <Button type="default" icon="search" size="default" className="margin-right"
                                 loading={this.state.is_load}
                                 onClick={this.handleSearch.bind(this)}>{constant.search}</Button>
-                        {/*<Button type="primary" icon="plus-circle" size="default"*/}
-                                {/*onClick={this.handleAdd.bind(this)}>{constant.add}</Button>*/}
+                        <Button type="primary" icon="file-excel" size="default"
+                                onClick={this.handleExcel.bind(this)}>导出中奖名单</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

@@ -232,10 +232,7 @@ class ProductDetail extends Component {
             <Modal title={'商品详情'} maskClosable={false} width={document.documentElement.clientWidth - 200}
                    className="modal"
                    visible={this.state.is_show} onCancel={this.handleCancel.bind(this)}
-                   footer={constant.app_id === 'c1af3f1ae00e4e0da9b20f5bd41b4279' ? [
-                       <Button key="back" type="ghost" size="default" icon="cross-circle"
-                               onClick={this.handleCancel.bind(this)}>关闭</Button>
-                   ] : [
+                   footer={[
                        <Button key="back" type="ghost" size="default" icon="cross-circle"
                                onClick={this.handleCancel.bind(this)}>关闭</Button>,
                        <Button key="submit" type="primary" size="default" icon="check-circle"
