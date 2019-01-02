@@ -225,6 +225,27 @@ class XietongCourseIndex extends Component {
         });
     }
 
+	handleDeleteAll() {
+		this.setState({
+			is_load: true
+		});
+
+		http.request({
+			url: '/admin/xietong/course/all/delete',
+			data: {},
+			success: function (json) {
+				message.success(constant.success);
+
+				this.handleLoad();
+			}.bind(this),
+			complete: function () {
+				this.setState({
+					is_load: false
+				});
+			}.bind(this)
+		});
+	}
+
     handleChange(info) {
         if (info.file.status === 'done') {
             if (info.file.response.code === 200) {
@@ -354,6 +375,11 @@ class XietongCourseIndex extends Component {
                         <Upload className="margin-right" {...props}>
                             <Button type="default" icon="upload" size="default" className="button-reload">导入课程数据</Button>
                         </Upload>
+						<Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+									cancelText={constant.popconfirm_cancel}
+									onConfirm={this.handleDeleteAll.bind(this)}>
+							<Button className="margin-right" type="default" icon="delete" size="default">删除所有课程信息</Button>
+						</Popconfirm>
                         <Button type="primary" icon="plus-circle" size="default"
                                 onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>

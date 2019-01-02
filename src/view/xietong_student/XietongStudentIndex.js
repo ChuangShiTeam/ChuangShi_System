@@ -349,8 +349,13 @@ class XietongStudentIndex extends Component {
                             <Button type="default" icon="upload" size="default"
                                     className="button-reload">导入学生资料</Button>
                         </Upload>
-                        <Button type="primary" icon="plus-circle" size="default"
-                                onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
+						<Popconfirm title={constant.popconfirm_title} okText={constant.popconfirm_ok}
+									cancelText={constant.popconfirm_cancel}
+									onConfirm={this.handleDeleteAll.bind(this)}>
+							<Button className="margin-right" type="default" icon="delete" size="default">删除所有学生信息</Button>
+						</Popconfirm>
+						<Button type="primary" icon="plus-circle" size="default"
+								onClick={this.handleAdd.bind(this)}>{constant.add}</Button>
                     </Col>
                 </Row>
                 <Form key="1" className="content-search margin-top">

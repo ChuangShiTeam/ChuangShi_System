@@ -94,9 +94,10 @@ class XietongSignupJuniorPrint extends Component {
 								<Col md={18}>
 									<span>报名序号：{this.state.signup_junior.signup_number}</span>
 									<table width="100%" style={{width: '100%', borderLeft: 'solid 1px black', borderTop: 'solid 1px black', borderRight: 'solid 1px black'}}>
+										<tbody>
 										<tr>
 											<td style={{width: '20%', padding: '10px', borderRight: 'solid 1px black', borderBottom: 'solid 1px black', textAlign: 'center'}}>
-												姓名
+												学生姓名
 											</td>
 											<td style={{width: '20%', padding: '10px', borderRight: 'solid 1px black', borderBottom: 'solid 1px black', textAlign: 'center'}}>
 												{this.state.signup_junior.student_name}
@@ -139,6 +140,7 @@ class XietongSignupJuniorPrint extends Component {
 												{this.state.signup_junior.job}
 											</td>
 										</tr>
+										</tbody>
 									</table>
 									<table width="100%" style={{width: '100%', borderLeft: 'solid 1px black', borderTop: 'solid 1px black', borderRight: 'solid 1px black'}}>
 										<tr>
@@ -240,9 +242,9 @@ class XietongSignupJuniorPrint extends Component {
 								<Col md={3}></Col>
 								<Col md={18}>
 									<span>温馨提示：</span><br/>
-                                    1.面谈时间：2018年6月29日至6月30日，按规定的时间（短信通知）到校参加面谈，请提前20分钟领取面谈证。<br/>
-                                    2.面谈内容：人文素养，数理思维，英语交流，共50分钟。<br/>
-									3.面谈资料：报名表、学生户口本复印件、3张一寸近照（其中1张贴报名表右上角）。<br/>
+									1.面谈时间：按规定的时间到校参加面谈<br/>
+									2.面谈内容：人文素养，数理思维，英语交流，共50分钟<br/>
+									3.面谈资料：报名表、学生户口本复印件、3张一寸近照（其中1张贴报名表右上角）<br/>
 								</Col>
 								<Col md={3}></Col>
 							</Row>
